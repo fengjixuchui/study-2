@@ -151,8 +151,8 @@ bsp_processor_enter:
         mov DWORD [20100h], 0
 
         ;*
-        ;* 下面发送 IPIs，使用 INIT-SIPI-SIPI 序列
-        ;* 发送 SIPI 时，发送 startup routine 地址位于 200000h
+        ;* 下面发送 IPIs, 使用 INIT-SIPI-SIPI 序列
+        ;* 发送 SIPI 时, 发送 startup routine 地址位于 200000h
         ;*
         mov DWORD [APIC_BASE + ICR0], 000c4500h                ; 发送 INIT IPI, 使所有 processor 执行 INIT
         DELAY
@@ -181,7 +181,7 @@ next:
 ;============== 初始化设置完毕 ======================
 
 
-; 实验 18-13：通过 LINT0 屏蔽来自 8259 中断控制器的中断请求
+; 实验 18-13: 通过 LINT0 屏蔽来自 8259 中断控制器的中断请求
 
         ; 开启 8259 的 IRQ1 键盘中断请求许可
         call enable_keyboard
@@ -263,7 +263,7 @@ user_start:
 
 ;;************* 函数导入表  *****************
 
-; 这个 lib32 库导入表放在 common\ 目录下，
+; 这个 lib32 库导入表放在 common\ 目录下, 
 ; 供所有实验的 protected.asm 模块使用
 
 %include "..\common\lib32_import_table.imt"

@@ -53,7 +53,7 @@ entry:
 ;==============================================================
 
 
-; 实验 ex7-1：测试Fix64K区域的memory类型
+; 实验 ex7-1: 测试Fix64K区域的memory类型
         mov ecx, 250H
         rdmsr
         mov edi, edx
@@ -221,7 +221,7 @@ clear_TF:
         mov esi, db_msg2
         call puts
 do_DB_handler_done:        
-        bts DWORD [esp + 4 * 8 + 8], 16         ; 设置 eflags.RF 为 1，以便中断返回时，继续执行
+        bts DWORD [esp + 4 * 8 + 8], 16         ; 设置 eflags.RF 为 1, 以便中断返回时, 继续执行
         popad
         iret
 
@@ -245,7 +245,7 @@ do_GP_handler:
         mov eax, [esp]
         cmp BYTE [eax], 0xfb                    ; 检查是否因为 sti 指令而产生 #GP 异常
         jne fix
-        inc eax                                 ; 如果是的话，跳过产生 #GP 异常的 sti 指令，执行下一条指令
+        inc eax                                 ; 如果是的话, 跳过产生 #GP 异常的 sti 指令, 执行下一条指令
         mov [esp], eax
         mov esi, gp_msg3
         call puts
