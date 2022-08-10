@@ -6,7 +6,7 @@ https://www.cnblogs.com/woshiweige/p/4518431.html
 > gdb --args /usr/local/bin/qemu-system-x86_64 -m 1024 -drive file=test.qcow2 -cdrom ubuntu-14.04.2-server-amd64.sio --nographic -bios /usr/local/share/qemu/bios.bin -append console=ttyS0 -kernel /mnt/install/vmlinuz -initrd /mnt/install/initrd.gz
 
 
-用上述命令启动/usr/local/bin/qemu-system-x86_64, 然后来到GDB命令行输入界面, 如下图: 
+用上述命令启动 /usr/local/bin/qemu-system-x86_64, 然后来到GDB命令行输入界面, 如下图: 
 
 ![config](images/4.png)
 
