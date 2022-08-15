@@ -34,7 +34,16 @@
 
 Virtual Function I/O(VFIO) 就是内核针对 IOMMU 提供的软件框架, 支持 DMA Remapping 和 Interrupt Remapping.
 
-这里只讲 DMA Remapping. VFIO 利用 IOMMU 硬件特性, 可以**屏蔽物理地址对上层的可见性**, 可以用来**开发用户态驱动**, 也**可以实现设备透传**.
+VFIO 利用 IOMMU 硬件特性, 可以**屏蔽物理地址对上层的可见性**, 可以用来**开发用户态驱动**, 也**可以实现设备透传**.
+
+它是一套用户态驱动框架, 它提供了两个服务:
+
+* 向用户态提供**访问硬件设备的接口**;
+* 向用户态提供**配置 IOMMU 的接口**.
+
+VFIO 由平台无关的接口层与平台相关的实现层组成. 接口层将服务抽象为 IOCTL 命令, 规化操作流程, 定义通用数据结构, 与用户态交互. 实现层完成承诺的服务. 据此, 可在用户态实现支持 DMA 操作的高性能驱动. 在虚拟化场景中, 亦可借此完全在用户态实现 device passthrough.
+
+VFIO 实现层又分为设备实现层与 IOMMU 实现层. 当前 VFIO 仅支持 PCI 设备. IOMMU 实现层则有 x86 与 PowerPC 其它种类硬件及 IOMMU 的支持.
 
 ## 1.1. 设备透传
 
@@ -44,9 +53,10 @@ Virtual Function I/O(VFIO) 就是内核针对 IOMMU 提供的软件框架, 支�
 
 > 换句话说, **VFIO** 是一套完整的**用户态驱动**(userspace driver)**方案**, 因为它可以安全地把**设备 I/O**, **中断**, **DMA** 等能力呈现给用户空间.
 
-为了达到最高的 IO 性能, 虚拟机就需要 VFIO 这种设备直通方式, 因为它具有低延时, 高带宽的特点, 并且 guest 也能够直接使用设备的原生驱动. 这些优异的特点得益于 VFIO 对 `VT-d`/`AMD-Vi` 所提供的 DMA Remapping 和 Interrupt Remapping 机制的应用.
+为了达到最高的 IO 性能, 虚拟机就需要 VFIO 这种设备直通方式, 因为它具有低延时, 高带宽的特点, 并且 guest 也能够直接使用设备的原生驱动. 这些优异的特点得益于 VFIO 对 `VT-d`/`AMD-Vi` 所提供的 DMA Remapping 和 Interrupt Remapping 机制的应用:
 
-* VFIO 使用 **DMA Remapping** 为 **每个 Domain** 建立独立的 `IOMMU Page Table`, 将直通设备的 DMA 访问限制在 **Domain 的地址空间之内**, 从而保证了用户态 DMA 的安全性
+* 使用 **DMA Remapping** 为 **每个 Domain** 建立独立的 `IOMMU Page Table`, 将直通设备的 DMA 访问限制在 **Domain 的地址空间之内**, 从而保证了用户态 DMA 的安全性.
+
 * 使用 `Interrupt Remapping` 来完成**中断重映射**和 `Interrupt Posting` 来达到 **中断隔离** 和 **中断直接投递** 的目的.
 
 # 2. VFIO 框架简介
@@ -70,6 +80,60 @@ Virtual Function I/O(VFIO) 就是内核针对 IOMMU 提供的软件框架, 支�
 ```
 
 ## 2.1. vfio interface
+
+与 KVM 一样, 用户态通过 IOCTL 与 VFIO 交互. 可作为操作对象的几种文件描述符有:
+
+* Container 文件描述符
+    * 打开 `/dev/vfio` 字符设备可得
+* IOMMU group 文件描述符
+    * 打开 `/dev/vfio/N` 文件可得(详见后文)
+* Device文件描述符
+    * 向 IOMMU group 文件描述符发起相关 ioctl 可得
+
+逻辑上来说, IOMMU group 是 IOMMU 操作的最小对象. 某些 IOMMU 硬件支持将若干 IOMMU group 组成更大的单元. VFIO 据此做出 **container** 的概念, 可容纳**多个 IOMMU group**, 打开 `/dev/vfio` 文件即新建一个空的 container. 在 VFIO 中, container 是 IOMMU 操作的最小对象.
+
+要使用 VFIO, 需先将设备与原驱动拨离, 并与 VFIO 绑定.
+
+用 VFIO 访问硬件的步骤:
+
+* 打开设备所在 IOMMU group 在 /dev/vfio/ 目录下的文件
+* 使用 `VFIO_GROUP_GET_DEVICE_FD` 得到表示设备的文件描述(参数为设备名称,一个典型的PCI设备名形如 `0000:03.00.01`)
+* 对设备进行 `read`/`write`/`mmap` 等操作
+
+用 VFIO 配置 IOMMU 的步骤
+
+* 打开 `/dev/vfio`, 得到 container 文件描述符
+* 用 `VFIO_SET_IOMMU` 绑定一种 IOMMU 实现层
+* 打开 `/dev/vfio/N`, 得到 IOMMU group 文件描述符
+* 用 `VFIO_GROUP_SET_CONTAINER` 将 IOMMU group 加入 container
+* 用 `VFIO_IOMMU_MAP_DMA` 将此 IOMMU group 的 DMA 地址映射至进程虚拟地址空间
+
+逻辑:
+
+VFIO设备实现层与Linux设备模型紧密相连,当前,VFIO
+中仅有针对PCI的设备实现层(实现在vfio-pci模块中
+实现层的作用与普通设备驱动的作用类似.普通设备驱动
+向上穿过若干抽象层,最终以Linux里广为人知的抽象设备
+(网络设备,块设备等等
+在/dewvfio/目录下为设备所在IOMMU group生成相关文
+件,继而将设备暴露出来,两者起点相同,最终呈现给用
+户态不同的接口.欲使设备置于VFIO管辖之下,需将其与
+旧驱动解除绑定,由VFIO设备实现层接管.用户态能感知
+到的,是一个设备的消失如eth0
+生(其中N为设备所在IOMMU group的序号
+group内的设备相互影响,只有组内全部设备被VFIO管理
+时,方能经VFIO配置此IOMMU group.
+把设备归于IOMMU group的策略由平台决定,在PowerNV
+平台,一个IOMMU group与一个PE对应.PowerPC平台
+不支持将多个IOMMU group作为更大的IOMMU操作单
+元,故而container只是IOMMU group的简单包装而已.对
+container进行的IOMMU操作最终会被路由至底层的
+IOMMU实现层,这实际上将用户态与内核里的IOMMU驱
+动接连了起来,
+
+
+
+
 
 最上层的是 `VFIO Interface Layer`, 它负责**向用户态**提供**统一访问的接口**, 用户态通过约定的 **ioctl** (`/dev/vfio/vfio`) 来设置和调用 VFIO 的各种能力.
 
@@ -528,7 +592,9 @@ int container, group, device, i;
 除了 DMA Remapping 这一关键点之外, 在虚拟化场景下 VFIO 还需要解决下面一些关键问题, 需要进行探讨:
 
 1. VFIO 对完备的设备访问支持: 其中包括 MMIO, I/O Port, PCI 配置空间, PCI BAR 空间;
+
 2. VFIO 中高效的设备中断机制, 其中包括 MSI/MSI-X, Interrupt Remapping, 以及 Posted Interrupt 等;
+
 3. VFIO 对直通设备热插拔支持.
 
 # reference
