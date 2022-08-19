@@ -12,4 +12,4 @@ async(下面称为future)的原理就是, 当执行时候(即调用poll函数时
 
 注, future.poll函数的实现, 也是调用resume函数来执行真实代码, 根据真实代码是执行到了yield还是执行完全返回complete, future.poll函数从而返回pending或ready
 
-crosvm代码中, handle_queue这个future永不结束(Ready). 它里面调用了一个future.await, 从queue拿request, 这个 future 会执行完, 即Ready. 但是因为外层的handle_queue future一直loop, 所以每次也都会创建新的内部future. 而内部future.poll函数如果pending, 那因为.await, 从而会调用 yield, 进而说明handle_queue 这个future先不执行, 让其他代码可以执行
+crosvm代码中, handle_queue 这个 future永不结束(Ready). 它里面调用了一个future.await, 从queue拿request, 这个 future 会执行完, 即Ready. 但是因为外层的handle_queue future一直loop, 所以每次也都会创建新的内部future. 而内部future.poll函数如果pending, 那因为.await, 从而会调用 yield, 进而说明handle_queue 这个future先不执行, 让其他代码可以执行
