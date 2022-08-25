@@ -28,6 +28,8 @@ virtio-blk初始化: https://blog.csdn.net/LPSTC123/article/details/44961579
 
 VirtIO实现原理——PCI基础: https://blog.csdn.net/huang987246510/article/details/103379926
 
+浅析qemu iothread: https://blog.csdn.net/huang987246510/article/details/93912197
+
 
 
 
