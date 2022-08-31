@@ -25,6 +25,8 @@
 
 ![2022-08-16-21-57-30.png](./images/2022-08-16-21-57-30.png)
 
-在使能 vIOMMU 时, 在 Guest 中**设备**使用 **IOVA** 通过 **vIOMMU** 转化到 **GPA**, 此为 stage1 转换, 虽然由 vIOMMU 实现, 但其实还是在物理IOMMU中; GPA由VFIO转化为HPA, 此为stage2转换,这也是在物理IOMMU中.
+1. 在使能 vIOMMU 时, 在 Guest 中**设备**使用 **IOVA** 通过 **vIOMMU** 转化到 **GPA**, 此为 stage1 转换, 虽然由 vIOMMU 实现, 但其实还是在**物理 IOMMU** 中; 
 
-https://blog.csdn.net/flyingnosky/article/details/123831955
+2. GPA 由 VFIO 转化为 HPA, 此为 stage2 转换, 这也是在**物理 IOMMU** 中.
+
+https://blog.csdn.net/flyingnosky/article/details/123831955 (done)
