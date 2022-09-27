@@ -398,11 +398,11 @@ FLR复位只复位与PCIE链路相关的部分逻辑
 
 ![config](./images/2.png)
 
-**RC**在**x86**中由**MCH和ICH组成**, PCIe总线端口存储器控制器等接口集成在一起统称RC
+**RC**在**x86**中由 **MCH和ICH组成**, PCIe总线端口存储器控制器等接口集成在一起统称RC
 
 2) PCIE设备包括 EP(如显卡、网卡等)、switch、PCIE桥
 
-3) RC与HOST主桥不同的是还有RCRB,内置PCI设备event collector
+3) RC与HOST主桥不同的是还有RCRB, 内置PCI设备event collector
 
 深入理解RC对理解pcie体系结构非常重要
 

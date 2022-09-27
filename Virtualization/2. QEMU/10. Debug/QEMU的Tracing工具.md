@@ -58,7 +58,7 @@ https://blog.csdn.net/daxiatou/article/details/103450929
 qemu 编译选项
 
 ```
-./configure --enable-trace-backends=log --enable-debug --target-list=x86_64-softmmu
+./configure --enable-trace-backends=log --enable-debug --enable-kvm --target-list=x86_64-softmmu
 ```
 
 启动命令行
