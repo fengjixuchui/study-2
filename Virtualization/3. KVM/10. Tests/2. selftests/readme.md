@@ -31,3 +31,5 @@ cd tools/testing/selftests/kvm
 
 ./kvm_create_max_vcpus
 ```
+
+如果 ./usr/include 中没有一些定义, 那就执行 `make headers_install`: Exporting kernel headers for use by userspace
