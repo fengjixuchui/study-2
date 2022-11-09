@@ -1,4 +1,3 @@
-
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
@@ -6,7 +5,7 @@
 - [1. 查看NBD(Network Block Device)信息](#1-查看nbdnetwork-block-device信息)
 - [2. 将镜像映射为网络设备(NBD)](#2-将镜像映射为网络设备nbd)
 - [3. 挂载镜像中的分区](#3-挂载镜像中的分区)
-- [4. umount分区, 解除镜像与nbd设备的关联](#4-umount分区解除镜像与nbd设备的关联)
+- [4. umount分区, 解除镜像与nbd设备的关联](#4-umount分区-解除镜像与nbd设备的关联)
 - [5. 参考](#5-参考)
 
 <!-- /code_chunk_output -->
