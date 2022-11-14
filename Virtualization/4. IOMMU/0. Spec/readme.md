@@ -1,4 +1,2 @@
 
-
-https://www.cnblogs.com/shaohef/p/13111478.html
-
+Intel 官方 spec 的翻译
