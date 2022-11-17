@@ -1,6 +1,6 @@
 ;************************************************
 ;* VmxVmm.inc                                   *
-;* Copyright (c) 2009-2013 µÀ÷æ                 *
+;* Copyright (c) 2009-2013 ÈÇìÂøó                 *
 ;* All rights reserved.                         *
 ;************************************************
 
@@ -9,7 +9,7 @@
 
 
 ;;
-;; ∂®“Â guest ◊¥Ã¨
+;; ÂÆö‰πâ guest Áä∂ÊÄÅ
 ;;
 %define GUEST_INITIALIZED                       80h
 %define GUEST_READY                             81h
@@ -30,7 +30,7 @@
 
 
 ;;
-;; INVVPID ÷∏¡Óµƒ cache À¢–¬¿‡–Õ
+;; INVVPID Êåá‰ª§ÁöÑ cache Âà∑Êñ∞Á±ªÂûã
 ;;
 %define INDIVIDUAL_ADDRESS_INVALIDATION                 0
 %define SINGLE_CONTEXT_INVALIDATION                     1
@@ -46,7 +46,7 @@
 
 
 ;;
-;; #GP “Ï≥£¥¶¿Ì±Í÷æŒª
+;; #GP ÂºÇÂ∏∏Â§ÑÁêÜÊ†áÂøó‰Ωç
 ;;
 %define GPF_GUEST_LIMIT                         (1 << 0)
 %define GPF_HOST_LIMIT                          (0 << 0)
@@ -57,7 +57,7 @@
 
 
 ;;
-;; À¢–¬√Ë ˆ∑˚ INV_DESC£®invalidate descriptor£©
+;; Âà∑Êñ∞ÊèèËø∞Á¨¶ INV_DESCÔºàinvalidate descriptorÔºâ
 ;;
 struc INV_DESC
         .Eptp:
@@ -86,8 +86,8 @@ endstruc
 ;       %2 - VM-exit reason
 ; output:
 ;       none
-; √Ë ˆ£∫
-;       1) ◊¢≤·VM-exit¥¶¿Ì¿˝≥Ã
+; ÊèèËø∞Ôºö
+;       1) Ê≥®ÂÜåVM-exitÂ§ÑÁêÜ‰æãÁ®ã
 ;-------------------------------------------------------------------
 %macro REGISTER_VMEXIT_ROUTINE  2
         mov DWORD [DoVmExitRoutineTable + %2 * 4], %1
@@ -102,8 +102,8 @@ endstruc
 ;       %2 - exception vector
 ; output:
 ;       none
-; √Ë ˆ£∫
-;       1) ◊¢≤·“Ï≥£¥¶¿Ì¿˝≥Ã
+; ÊèèËø∞Ôºö
+;       1) Ê≥®ÂÜåÂºÇÂ∏∏Â§ÑÁêÜ‰æãÁ®ã
 ;-------------------------------------------------------------------
 %macro REGISTER_EXCEPTION_ROUTINE  2
         mov DWORD [DoExceptionTable + %2 * 4], %1
