@@ -63,13 +63,13 @@ git clone https://github.com/haiwei-li/vinux.git ~/.vim
 
 `let g:fuzzysearcher_plugin_name.cur_val='fzf'`, 启用悬浮窗口
 
-内嵌终端:
+**内嵌终端**:
 
-空格av, 悬浮
+- 空格av, 悬浮
 
-空格as, 下面
+- 空格as, 下面
 
-空格ns, 新buffer
+- 空格ns, 新buffer
 
 悬浮窗口有限制不能跳转, 非悬浮的可以用alt-k
 
@@ -244,7 +244,7 @@ ln -s  /usr/lib/x86_64-linux-gnu/libz3.so.4 /usr/lib/x86_64-linux-gnu/libz3.so.4
 
 ### 法一: compile_commands.json
 
-虽然 clangd 的文档里说 clangd 会在你所编辑的文件的父目录中查找 compile_commands.json,  但实际使用中老灯发现能自动加载 build/compile_commands.json 文件, 不知道是 neovim hack了还是 clangd 本身支持？
+虽然 clangd 的文档里说 clangd 会在你所编辑的文件的父目录中查找 compile_commands.json,  但实际使用中发现能自动加载 build/compile_commands.json 文件, 不知道是 neovim hack了还是 clangd 本身支持？
 
 #### 基于 CMake 的项目
 
