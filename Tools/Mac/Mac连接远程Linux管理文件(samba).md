@@ -107,7 +107,7 @@ systemctl restart smb.service
 ls -a /home/USER_NAME/shared_directory
 ```
 
-如何让Finder不在远程连接时产生.DS\_Store？
+如何让Finder不在远程连接时产生.DS\_Store?
 
 打开Mac的Terminal, 输入
 

@@ -44,7 +44,7 @@ var:  outer val
 >>>
 ```
 
-在func1内部, var的值为"inner val", 离开了函数, 其值又变成了"outer val", 为什么？看看输出的本地和全局变量列表答案就明显了, var既出现在本地变量列表, 又出现在全局变量列表, 但绑定的值不一样, 因为他们本就是两个不同的变量. 也就是说, **当你想在子代码块中对某个全局变量重新赋值时(不算使用), 实际上你只是定义了一个同名的本地变量, 这并不会改变全局变量的值**. 
+在func1内部, var的值为"inner val", 离开了函数, 其值又变成了"outer val", 为什么?看看输出的本地和全局变量列表答案就明显了, var既出现在本地变量列表, 又出现在全局变量列表, 但绑定的值不一样, 因为他们本就是两个不同的变量. 也就是说, **当你想在子代码块中对某个全局变量重新赋值时(不算使用), 实际上你只是定义了一个同名的本地变量, 这并不会改变全局变量的值**. 
 
 对于Python2而言, 对于一个全局变量, 你的函数里如果只使用到了它的值, 而没有对其赋值(指a = XXX这种写法)的话, 就不需要声明global. 相反, 如果你对其赋了值的话, 那么你就需要声明global. 声明global的话, 就表示你是在向一个全局变量赋值, 而不是在向一个局部变量赋值. 
 
@@ -67,7 +67,7 @@ This is because when you make an assignment to a variable in a scope, that varia
 
 **在一个作用域里面给一个变量赋值的时候, Python自动认为这个变量是这个作用域的本地变量, 并屏蔽作用域外的同名的变量. **
 
-如何修改全局变量的值？需要在函数中使用global statement. 先看一例: 
+如何修改全局变量的值?需要在函数中使用global statement. 先看一例: 
 
 ```
 >>> def func2():
@@ -118,7 +118,7 @@ When a name is used in a code block, it is resolved using the nearest enclosing 
 If a name is bound in a block, it is a local variable of that block. If a name is bound at the module level, it is a global variable. (The variables of the module code block are local and global.) If a variable is used in a code block but not defined there, it is a free variable.
 ```
 
-对于模块代码块来说, **模块级的变量**就是它的本地变量, 但对于模块中其他更小的代码块来说, 这些变量就是全局的. 那再进一步, 什么是模块级的变量, 是指那些在模块内部, 但在其所有子代码块之外定义的变量吗？用代码验证: 
+对于模块代码块来说, **模块级的变量**就是它的本地变量, 但对于模块中其他更小的代码块来说, 这些变量就是全局的. 那再进一步, 什么是模块级的变量, 是指那些在模块内部, 但在其所有子代码块之外定义的变量吗?用代码验证: 
 
 ```
 code 4
@@ -153,7 +153,7 @@ innerFunc.locals: {'local_var': 'local_val'}
 注意看, 全局变量中还有: ```__builtins__、__package__、__name__、__doc__```. 这些变量的含义可参考 [python模块的内置方法](http://segmentfault.com/blog/shibingwen/1190000000494023). 
 
 现在来看自由变量, local_var被innerFunc函数使用, 但是并未在其中定义, 所以对于innerFunc代码块来说, 它就是自由变量. 问题来了, 自由变量为什么出现在
-innerFunc.locals()的输出结果中？这就需要看看[locals()API文档](https://docs.python.org/2/library/functions.html#locals)了: 
+innerFunc.locals()的输出结果中?这就需要看看[locals()API文档](https://docs.python.org/2/library/functions.html#locals)了: 
 
 > 
 Update and return a dictionary representing the current local symbol table. Free variables are returned by locals() when it is called in function blocks, but not in class blocks.
@@ -192,12 +192,12 @@ bar
 >>>
 ```
 
-首先分析输出结果. 执行ex1()函数失败, 原因: UnboundLocalError: local variable 'global_var' referenced before assignment, 意思是global_var这个本地变量还未赋值就被引用了. 等等, global_var怎么是本地变量了？与ex2()函数做个对比, 发现因为有这行代码global_var = 'foo2', 解释器就认为global_var是一个本地变量, 而不是全局变量. 
-那最外面定义的global_var到底是本地还是全局变量？看看第二部分的输出, 可以很确定地知道最外面定义的global_var是一个全局变量. 
+首先分析输出结果. 执行ex1()函数失败, 原因: UnboundLocalError: local variable 'global_var' referenced before assignment, 意思是global_var这个本地变量还未赋值就被引用了. 等等, global_var怎么是本地变量了?与ex2()函数做个对比, 发现因为有这行代码global_var = 'foo2', 解释器就认为global_var是一个本地变量, 而不是全局变量. 
+那最外面定义的global_var到底是本地还是全局变量?看看第二部分的输出, 可以很确定地知道最外面定义的global_var是一个全局变量. 
 
 简单点说, 就是这里存在两个同名的变量, 一个是最外面定义的全局变量global_var, 另一个是函数ex1()中定义的本地变量global_var. 
 
-再等等, 矛盾出现了. 按照之前对自由变量的理解, 在一个代码块中被使用, 但是并未在那儿定义, 外部定义的global_var在函数块ex1()中被使用, 完全符合, 它为什么不是一个自由变量？还是我们对自由变量的理解有问题？
+再等等, 矛盾出现了. 按照之前对自由变量的理解, 在一个代码块中被使用, 但是并未在那儿定义, 外部定义的global_var在函数块ex1()中被使用, 完全符合, 它为什么不是一个自由变量?还是我们对自由变量的理解有问题?
 
 与code 4中确定是自由变量的local_var比较, 发现local_var是一个函数代码块的本地变量, 而code 5中的global_var是一个模块代码块的本地变量. 当local_var被定义它的函数内的嵌套函数使用时, 它就变成了一个自由变量, 此时函数的嵌套就形成了闭包(closure), 可见自由变量的应用场景就是闭包. 
 而global_var对模块本身来说它是一个本地变量, 但在模块中的其他代码块中也可以使用它, 所以它同时又是一个全局变量. 
@@ -206,7 +206,7 @@ bar
 
 ### 理解 free and local variable
 
-修改全局变量的值需要使用global, 那修改自由变量的值又会如何？先用自然思维方式试试: 
+修改全局变量的值需要使用global, 那修改自由变量的值又会如何?先用自然思维方式试试: 
 
 ```
 >>>
@@ -230,7 +230,7 @@ locals():  {'var': 'free', 'innerfunc': <function innerfunc at 0x102cf0410>}
 
 在innerfunc函数中我试图修改自由变量var的值, 结果却发现修改只在innerfunc函数内有效, 离开此函数后其值仍然是"free". 看看输出的outerfunc和innerfunc函数的本地变量列表就知道咋回事儿了. 当你想在闭包函数中对自由变量重新赋值时, 实际上你只是在这里定义了一个本地变量, 这并不会改变自由变量的值. 
 
-那怎样才能修改自由变量的值？在 [Notes on Python variable scope](http://www.saltycrane.com/blog/2008/01/python-variable-scope-notes/) 中找到了两种不错的方式: 
+那怎样才能修改自由变量的值?在 [Notes on Python variable scope](http://www.saltycrane.com/blog/2008/01/python-variable-scope-notes/) 中找到了两种不错的方式: 
 
 ```
 class Namespace: pass

@@ -517,10 +517,10 @@ func (g *genericScheduler) Preempt(pod *v1.Pod, nodeLister algorithm.NodeLister,
 
 上面涉及到一些子过程调用, 我们逐个来看～
 
-1. `podEligibleToPreemptOthers()` // 如何判断是否适合抢占？
-2. `nodesWherePreemptionMightHelp()` // 怎么寻找能够用于 preempt 的 nodes？
-3. `selectNodesForPreemption()` // 这个过程计算的是什么？
-4. `pickOneNodeForPreemption()` // 怎么从选择最合适被抢占的 node？
+1. `podEligibleToPreemptOthers()` // 如何判断是否适合抢占?
+2. `nodesWherePreemptionMightHelp()` // 怎么寻找能够用于 preempt 的 nodes?
+3. `selectNodesForPreemption()` // 这个过程计算的是什么?
+4. `pickOneNodeForPreemption()` // 怎么从选择最合适被抢占的 node?
 
 #### podEligibleToPreemptOthers
 

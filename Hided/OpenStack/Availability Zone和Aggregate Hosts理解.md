@@ -74,7 +74,7 @@ nova aggregate-create joesservers chicago
 
 Host aggregate可以用来进一步细分availability zone. 
 
-通过以上分析, 问题就来了: availability zone和host aggregate都能对host machine进行划分, 那么二者的区别是啥？
+通过以上分析, 问题就来了: availability zone和host aggregate都能对host machine进行划分, 那么二者的区别是啥?
 
 Availability zones are handy for allowing users to specify a particular group of servers on which they want their host to run, but beyond that they don’t do much more than serve as a bucket. In this example, using an availability zone, our users can specify that a VM should be started up in the Chicago data center.
 

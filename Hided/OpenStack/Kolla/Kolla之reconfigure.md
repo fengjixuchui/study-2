@@ -6,7 +6,7 @@
 * [1 概述](#1-概述)
 * [2 reconfigure使用](#2-reconfigure使用)
 * [3 reconfigure 代码流程](#3-reconfigure-代码流程)
-	* [3.1 ansible role是什么？](#31-ansible-role是什么)
+	* [3.1 ansible role是什么?](#31-ansible-role是什么)
 	* [3.2 reconfigure具体代码](#32-reconfigure具体代码)
 		* [3.2.1 config.yml](#321-configyml)
 * [参考](#参考)
@@ -44,7 +44,7 @@ kolla-ansible reconfigure
 
 kolla-ansible 的核心代码在ansible实现的
 
-先介绍下ansible role是什么？如何使用?
+先介绍下ansible role是什么?如何使用?
 
 先看看下面nova role的代码目录
 
@@ -67,7 +67,7 @@ kolla-ansible 的核心代码在ansible实现的
     .
 ```
 
-## 3.1 ansible role是什么？
+## 3.1 ansible role是什么?
 
 Ansible Role 是一种分类 & 重用的概念, 透过将 vars, tasks, files, templates, handler … 等等根据不同的目的(例如: nova、glance、cinder), 规划后至于独立目录中, 后续便可以利用 include 的概念來使用. 
 

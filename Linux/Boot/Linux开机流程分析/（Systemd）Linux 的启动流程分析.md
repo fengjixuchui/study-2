@@ -71,13 +71,13 @@ MBR: 分割表有传统的MBR以及新式GPT, 不过GPT也保留了一块相容M
 
 由于**不同OS的文件系统格式不同**, 所以必须要一个**启动管理程序来处理核心文件加载(load)的问题**, 这个启动管理程序就是Boot Loader. Boot Loader会安装在在启动装置的第一个扇区(sector)内, 也就是MBR(Mater Boot Record). 
 
-既然核心文件需要loader来读取, 每个OS的loader都不相同, BIOS是如何读取MBR内的loader呢？其实BIOS是通过硬件的INT 13中断来读取MBR内容的, 也就是说只要BIOS能检测你的磁盘, 那就有办法通过INT 13通道读取磁盘的第一sector的MBR. 
+既然核心文件需要loader来读取, 每个OS的loader都不相同, BIOS是如何读取MBR内的loader呢?其实BIOS是通过硬件的INT 13中断来读取MBR内容的, 也就是说只要BIOS能检测你的磁盘, 那就有办法通过INT 13通道读取磁盘的第一sector的MBR. 
 
-注: 每个磁盘的第一个sector内含有446 bytes的MBR区域, 那如果有两个磁盘呢？这个就看BIOS的配置. 
+注: 每个磁盘的第一个sector内含有446 bytes的MBR区域, 那如果有两个磁盘呢?这个就看BIOS的配置. 
 
 ### 1.2.2 Boot Loader的功能
 
-主要用来**认识OS的文件格式并加载kernel到memory**中, 不同OS的boot loader不同. 那多OS呢？
+主要用来**认识OS的文件格式并加载kernel到memory**中, 不同OS的boot loader不同. 那多OS呢?
 
 **每个文件系统(FileSystem)会保留一块启动扇区(boot sector)提供OS安装boot loader**, 而通常OS会默认安装一份loader到根目录所在的文件系统的boot loader上. 
 
@@ -85,7 +85,7 @@ MBR: 分割表有传统的MBR以及新式GPT, 不过GPT也保留了一块相容M
 
 每个OS会安装一套boot loader到自己的文件系统中(即每个filesystem左下角的方框). 而Linux在安装时候可以选择将boot loader安装到MBR, **也可不安装**. 若安装到MBR, 理论上在MBR和boot sector都会有一份boot loader程序. 而Windows会将MBR和boot sector都装一份boot loader！
 
-虽然各个OS都可以安装一份boot loader到boot sector中, 这样OS可以通过通过自己的boot loader来加载核心了. 问题是系统的MBR只有一个！怎么运行boot sector里面的loader？
+虽然各个OS都可以安装一份boot loader到boot sector中, 这样OS可以通过通过自己的boot loader来加载核心了. 问题是系统的MBR只有一个！怎么运行boot sector里面的loader?
 
 boot loader功能如下: 
 
@@ -103,7 +103,7 @@ boot loader功能如下:
 
 ### 1.2.3 加载核心检测硬件与 initrd 的功能
 
-boot loader 开始读取核心文件后, 接下来,  Linux 就会将核心解压缩到主内存当中, 并且利用核心的功能, 开始测试与驱动各个周边装置, 包括储存装置、CPU、网络卡、声卡等等. kernel不一定会使用 BIOS 侦测到的硬件信息！也就是说, 核心此时才开始接管 BIOS 后的工作了.  那么核心文件在哪里啊？一般来说, 是 /boot/vmlinuz ！
+boot loader 开始读取核心文件后, 接下来,  Linux 就会将核心解压缩到主内存当中, 并且利用核心的功能, 开始测试与驱动各个周边装置, 包括储存装置、CPU、网络卡、声卡等等. kernel不一定会使用 BIOS 侦测到的硬件信息！也就是说, 核心此时才开始接管 BIOS 后的工作了.  那么核心文件在哪里啊?一般来说, 是 /boot/vmlinuz ！
 
 ```
 [root@study ~]# ls --format=single-column -F /boot
@@ -122,7 +122,7 @@ vmlinuz-3.10.0-229.el7.x86_64*              <==核心文件
 
 U盘、SATA、SCSI等磁盘驱动程序通常被编译为模块存在. 假设Linux是安装在SATA磁盘上, 可以通过BIOS的INT 13取得boot loader与kernel文件来启动, 然后kernel会开始接管系统并检测硬件以及尝试挂载根目录来取得额外驱动程序. 
 
-但是, **核心根本不认识 SATA 磁盘, 所以需要加载 SATA 磁盘的驱动程序, 否则根本就无法挂载根目录**. 但是 SATA 的驱动程序在 /lib/modules 内, 你根本无法挂载根目录又怎么读取到 /lib/modules/ 内的驱动程序？通过虚拟文件系统来处理这个问题(如果不是模块, 而是编译进kernel就不用initramfs). 
+但是, **核心根本不认识 SATA 磁盘, 所以需要加载 SATA 磁盘的驱动程序, 否则根本就无法挂载根目录**. 但是 SATA 的驱动程序在 /lib/modules 内, 你根本无法挂载根目录又怎么读取到 /lib/modules/ 内的驱动程序?通过虚拟文件系统来处理这个问题(如果不是模块, 而是编译进kernel就不用initramfs). 
 
 虚拟文件系统 (Initial RAM Disk 或 Initial RAM Filesystem) 一般使用 /boot/initrd 或 /boot/initramfs, 这个文件的特色是, 也能够**通过 boot loader 来加载到内存中**,  然后这个文件会**被解压缩并且在内存当中模拟成一个根目录**, 且此**模拟在内存当中的文件系统能够提供一个可运行的程序, 通过该程序来加载启动过程中所最需要的核心模块,  通常这些模块就是 U盘, RAID, LVM, SCSI 等文件系统与磁盘的驱动程序**啦！等加载完成后, 会帮助核心重新调用 systemd 来开始后续的正常启动流程. 
 
@@ -133,7 +133,7 @@ U盘、SATA、SCSI等磁盘驱动程序通常被编译为模块存在. 假设Lin
 下面解释下CentOS 7.x的initramfs内容. 
 
 ```
-# 1. 先來直接看一下 initramfs 內容？lsinitrd是一个查看initramfs image内容的工具
+# 1. 先來直接看一下 initramfs 內容?lsinitrd是一个查看initramfs image内容的工具
 [root@study ~]# lsinitrd /boot/initramfs-3.10.0-229.el7.x86_64.img
 # 首先会呼叫出 initramfs 最前面文件头的资料介绍
 Image: /boot/initramfs-3.10.0-229.el7.x86_64.img: 18M
@@ -353,7 +353,7 @@ brandbot.path  plymouth-quit.service           systemd-logind.service
 dbus.service   plymouth-quit-wait.service      systemd-user-sessions.service
 getty.target   systemd-ask-password-wall.path
 
-# 使用者自己定义要载入的 unit 又有哪些呢？
+# 使用者自己定义要载入的 unit 又有哪些呢?
 [root@study ~]# ls /etc/systemd/system/multi-user.target.wants
 abrt-ccpp.service    crond.service           mdmonitor.service       sshd.service
 abrtd.service        hypervkvpd.service      ModemManager.service    sysstat.service
@@ -382,7 +382,7 @@ backup.timer         libvirtd.service        sshd2.service
 
 - 图形界面相关服务如 gdm.service 等其他服务的加载
 
-除了第一步驟 local-fs.target, swap.target 是通过 /etc/fstab 来加载, 那其他的 target 又做什么？
+除了第一步驟 local-fs.target, swap.target 是通过 /etc/fstab 来加载, 那其他的 target 又做什么?
 
 ## 1.4 systemd 执行sysinit.target 初始化系统、basic.target 准备系统
 
@@ -434,10 +434,10 @@ backup.timer         libvirtd.service        sshd2.service
 
 - /etc/systemd/system (管理员自己开发与设定的脚本设定)
 
-将服务放到 /etc/systemd/system/multi-user.target.wants/ 这个目录底下再做个链接 这样就可以在开机的时候去启动他. 这时回想一下, 你在第十七章使用 systemctl enable/disable 时, 系统的回应是什么呢？再次回想一下: 
+将服务放到 /etc/systemd/system/multi-user.target.wants/ 这个目录底下再做个链接 这样就可以在开机的时候去启动他. 这时回想一下, 你在第十七章使用 systemctl enable/disable 时, 系统的回应是什么呢?再次回想一下: 
 
 ```
-# 将 vsftpd.service 先 disable 再 enable 看看输出的信息？
+# 将 vsftpd.service 先 disable 再 enable 看看输出的信息?
 [root@study ~]# systemctl disable vsftpd.service
 rm '/etc/systemd/system/multi-user.target.wants/vsftpd.service'
 
@@ -453,7 +453,7 @@ ln -s '/usr/lib/systemd/system/vsftpd.service' '/etc/systemd/system/multi-user.t
 
 过去用 Linux 的朋友大概都知道, 当系统完成开机后, 还想要让系统额外执行某些程序的话, 可以将该指令或脚本的绝对路径名称写入到 /etc/rc.d/rc.local 文件！新的 systemd 机制中, 它建议直接写一个 systemd 的启动脚本设定档到 /etc/systemd/system 底下, 然后使用 systemctl enable 的方式来设定启用它, 而不要直接使用 rc.local 这个文件！
 
-那新版的 systemd 有没有支持rc.local呢？那就是 rc-local.service 这个服务的功能了！这个服务不需要启动, 它会自己判断 /etc/rc.d/rc.local 是否具有可执行的权限来判断要不要启动这个服务！ 你可以这样检查看看: 
+那新版的 systemd 有没有支持rc.local呢?那就是 rc-local.service 这个服务的功能了！这个服务不需要启动, 它会自己判断 /etc/rc.d/rc.local 是否具有可执行的权限来判断要不要启动这个服务！ 你可以这样检查看看: 
 
 ```
 # 1. 先看 /etc/rc.d/rc.local 的权限, 再检查 multi-user.target 有没有这个服务
@@ -513,7 +513,7 @@ graphical.target
 
 ### 1.7.1 关于模块:  /etc/modprobe.d/*.conf 及 /etc/modules-load.d/*.conf
 
-还记得我们在 sysinit.target 系统初始化当中谈到的载入使用者自定义程序的地方吗？其实有两个地方可以处理模块载入的问题, 包括: 
+还记得我们在 sysinit.target 系统初始化当中谈到的载入使用者自定义程序的地方吗?其实有两个地方可以处理模块载入的问题, 包括: 
 
 - /etc/modules-load.d/*.conf: 单纯要核心载入模块的位置; 
 
@@ -533,7 +533,7 @@ nf_conntrack_ftp
 options nf_conntrack_ftp ports=555
 ```
 
-之后重新开机就能够顺利的载入并且处理好这个程序了. 不过, 如果你不想要开机测试, 想现在处理呢？有个方式可以来进行看看: 
+之后重新开机就能够顺利的载入并且处理好这个程序了. 不过, 如果你不想要开机测试, 想现在处理呢?有个方式可以来进行看看: 
 
 ```
 [root@study ~]# lsmod | grep nf_conntrack_ftp
@@ -556,7 +556,7 @@ nf_conntrack          105702  1 nf_conntrack_ftp
 
 ### 1.7.2 /etc/sysconfig/*
 
-还有哪些常见的环境设置文件呢？我们找几个比较重要的来谈谈: 
+还有哪些常见的环境设置文件呢?我们找几个比较重要的来谈谈: 
 
 - **authconfig**:   
 

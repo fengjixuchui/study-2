@@ -4,7 +4,7 @@ GitHub的markdown语法在标准的markdown语法基础上做了扩充, 称之�
 
 ----------
 
-**1.markdown段落中如何产生缩进？**  
+**1.markdown段落中如何产生缩进?**  
 方式一  
 &ensp;&ensp;&ensp;&ensp;直接写
 

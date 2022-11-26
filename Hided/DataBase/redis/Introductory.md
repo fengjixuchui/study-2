@@ -23,7 +23,7 @@
 
 单线程结构, 使得代码不用处理平时最让人头疼的并发而大量简化, 也不用担心作者的并发没有写对, 但也带来CPU的瓶颈, 而且单线程被慢操作所阻塞时, 其他请求的延时变的不确定. 
 
-Redis不是什么？
+Redis不是什么?
 - Redis不是Big data, 数据都在内存中, 无法以T为单位. 
 - 在Redis3.0的Redis-Cluster发布并被稳定使用之前, Redis没有真正的平滑水平扩展能力. 
 - Redis不支持Ad-Hoc Query, 提供的只是数据结构的API, 没有SQL一样的查询能力. 
@@ -53,14 +53,14 @@ Redis不是什么？
 #### 2.1 Key
 - Key 不能太长, 比如1024字节, 但antirez也不喜欢太短如"u:1000:pwd", 要表达清楚意思才好. 他私人建议用":"分隔域, 用"."作为单词间的连接, 如"comment:12345:reply.to". 
 - [Keys](http://redis.readthedocs.org/en/latest/key/keys.html), 返回匹配的key, 支持通配符如 "keys a*" 、 "keys a?c", 但不建议在生产环境大数据量下使用. 
-- [SCAN](http://redis.readthedocs.org/en/latest/key/scan.html)命令, 针对Keys的改进, 支持分页查询Key. 在迭代过程中, Keys有增删怎么办？要锁定写操作么？--不会, 不做任何保证, 撞大运, 甚至同一条key可能会被返回多次. 
+- [SCAN](http://redis.readthedocs.org/en/latest/key/scan.html)命令, 针对Keys的改进, 支持分页查询Key. 在迭代过程中, Keys有增删怎么办?要锁定写操作么?--不会, 不做任何保证, 撞大运, 甚至同一条key可能会被返回多次. 
 - [Sort](http://redis.readthedocs.org/en/latest/key/sort.html), 对集合按数字或字母顺序排序后返回或另存为list, 还可以关联到外部key等. 因为复杂度是最高的O(N+M*log(M))(N是集合大小, M 为返回元素的数量), 有时会安排到slave上执行. 
 - [Expire/ExpireAt/Persist/TTL](http://redis.readthedocs.org/en/latest/key/expire.html), 关于Key超时的操作. 默认以秒为单位, 也有p字头的以毫秒为单位的版本,  Redis的内部实现见2.9 过期数据清除. 
 
 #### 2.2 String
 最普通的key-value类型, 说是String, 其实是任意的byte[], 比如图片, 最大512M. 所有常用命令的复杂度都是O(1), 普通的Get/Set方法, 可以用来做Cache, 存Session, 为了简化架构甚至可以替换掉Memcached. 
 
-[Incr/IncrBy/IncrByFloat/Decr/DecrBy](http://redis.readthedocs.org/en/latest/string/decr.html), 可以用来做计数器, 做自增序列. key不存在时会创建并贴心的设原值为0. IncrByFloat专门针对float, 没有对应的decrByFloat版本？用负数啊. 
+[Incr/IncrBy/IncrByFloat/Decr/DecrBy](http://redis.readthedocs.org/en/latest/string/decr.html), 可以用来做计数器, 做自增序列. key不存在时会创建并贴心的设原值为0. IncrByFloat专门针对float, 没有对应的decrByFloat版本?用负数啊. 
 
 [SetNx](http://redis.readthedocs.org/en/latest/string/setnx.html),  仅当key不存在时才Set. 可以用来选举Master或做分布式锁: 所有Client不断尝试使用SetNx master myName抢注Master, 成功的那位不断使用Expire刷新它的过期时间. 如果Master倒掉了key就会失效, 剩下的节点又会发生新一轮抢夺. 
 

@@ -580,9 +580,9 @@ not_early:
 #define ___GFP_DMA32            0x04u
 #define ___GFP_MOVABLE          0x08u	    /* 页是可移动的 */
 #define ___GFP_RECLAIMABLE      0x10u	    /* 页是可回收的 */
-#define ___GFP_HIGH             0x20u		/* 应该访问紧急分配池？ */
-#define ___GFP_IO               0x40u		/* 可以启动物理IO？ */
-#define ___GFP_FS               0x80u		/* 可以调用底层文件系统？ */
+#define ___GFP_HIGH             0x20u		/* 应该访问紧急分配池? */
+#define ___GFP_IO               0x40u		/* 可以启动物理IO? */
+#define ___GFP_FS               0x80u		/* 可以调用底层文件系统? */
 #define ___GFP_COLD             0x100u	   /* 需要非缓存的冷页 */
 #define ___GFP_NOWARN           0x200u	   /* 禁止分配失败警告 */
 #define ___GFP_REPEAT           0x400u	   /* 重试分配, 可能失败 */

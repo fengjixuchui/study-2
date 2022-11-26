@@ -44,7 +44,7 @@ func (sched *Scheduler) Run() {
 }
 ```
 
-注释说这个函数开始watching and scheduling, 也就是调度器主要逻辑了！注释后半段说到Run()方法起了一个goroutine后马上返回了, 这个怎么理解呢？我们先看一下调用Run的地方: 
+注释说这个函数开始watching and scheduling, 也就是调度器主要逻辑了！注释后半段说到Run()方法起了一个goroutine后马上返回了, 这个怎么理解呢?我们先看一下调用Run的地方: 
 
 !FILENAME cmd/kube-scheduler/app/server.go:240
 

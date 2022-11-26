@@ -59,7 +59,7 @@ type HostPriority struct {
 type HostPriorityList []HostPriority
 ```
 
-着重分析一下这2个type, 虽然很简单, 还是有必要啰嗦一下, 必须记在心里. **HostPriority**这个struct的属性是*Host*和*Score*, 一个是string一个是int, 所以很明显**HostPriority**所能够保存的信息是一个节点的名字和分值, 再仔细一点说就是这个结构保存的是一个node在一个priority算法计算后所得到的结果; 然后看**HostPriorityList**类型, 这个类型是上一个类型的"集合", 集合表达的是一个node多个算法还是多个node一个算法呢？稍微思考一下可以知道**HostPriorityList**中存的是多个Host和Score的组合, 所以**HostPriorityList**这个结构是要保存一个算法作用于所有node之后, 得到的所有node的Score信息的. (这里我们先理解成一个算法的结果, 作为函数返回值这里肯定是要保留所有算法作用后的最终node的Score, 所以函数后半部分肯定有combine分值的步骤. )
+着重分析一下这2个type, 虽然很简单, 还是有必要啰嗦一下, 必须记在心里. **HostPriority**这个struct的属性是*Host*和*Score*, 一个是string一个是int, 所以很明显**HostPriority**所能够保存的信息是一个节点的名字和分值, 再仔细一点说就是这个结构保存的是一个node在一个priority算法计算后所得到的结果; 然后看**HostPriorityList**类型, 这个类型是上一个类型的"集合", 集合表达的是一个node多个算法还是多个node一个算法呢?稍微思考一下可以知道**HostPriorityList**中存的是多个Host和Score的组合, 所以**HostPriorityList**这个结构是要保存一个算法作用于所有node之后, 得到的所有node的Score信息的. (这里我们先理解成一个算法的结果, 作为函数返回值这里肯定是要保留所有算法作用后的最终node的Score, 所以函数后半部分肯定有combine分值的步骤. )
 
 ## PrioritizeNodes整体流程
 
@@ -232,7 +232,7 @@ if len(errs) != 0 {
 }
 ```
 
-看到这里我们可以发现老Fun和Map的区别不大, 都是优选函数的执行过程. 那为什么会存在两种形式呢？我们看完**PrioritizeNodes**整体流程后通过具体的Fun和Map-Reduce实现来看二者的区别. 
+看到这里我们可以发现老Fun和Map的区别不大, 都是优选函数的执行过程. 那为什么会存在两种形式呢?我们看完**PrioritizeNodes**整体流程后通过具体的Fun和Map-Reduce实现来看二者的区别. 
 
 ### Combine Scores
 

@@ -729,7 +729,7 @@ Linux内核还提供一个**workqueue机制**和**timer机制**结合的**延时
 
 ![config](./images/5.png)
 
-**BOUND类型的work**是在**哪个CPU**上运行的呢？有几个API接口可以把**一个work**添加到**workqueue**上运行, 其中**schedule\_work**()函数**倾向于使用本地CPU**, 这样有利于利用**CPU的局部性原理**提高效率, 而**queue\_work\_on**()函数可以**指定CPU**的. 
+**BOUND类型的work**是在**哪个CPU**上运行的呢?有几个API接口可以把**一个work**添加到**workqueue**上运行, 其中**schedule\_work**()函数**倾向于使用本地CPU**, 这样有利于利用**CPU的局部性原理**提高效率, 而**queue\_work\_on**()函数可以**指定CPU**的. 
 
 对于**UNBOUND类型的workqueue**来说, 其**工作线程没有绑定到某个固定的CPU**上. 对于**UMA**机器, 它可以在**全系统的CPU**内运行; 对于**NUMA**机器, **每一个node**节点**创建一个worker\_pool**. 
 

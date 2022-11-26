@@ -79,6 +79,6 @@ Rust 实战 - 使用套接字联网API: https://segmentfault.com/a/1190000018864
 Rust 学习之 Some、Option、Result: https://blog.vgot.net/archives/rust-some.html
 
 
-为什么Rust 标准库的 TreeMap 采用B+树实现, 而不是常用的红黑树？ - NecoKeine的回答 - 知乎
+为什么Rust 标准库的 TreeMap 采用B+树实现, 而不是常用的红黑树? - NecoKeine的回答 - 知乎
 https://www.zhihu.com/question/516912481/answer/2350931515
 

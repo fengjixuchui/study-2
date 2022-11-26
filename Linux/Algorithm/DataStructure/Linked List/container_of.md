@@ -2,7 +2,7 @@
 
 https://blog.csdn.net/wjlkoorey/article/details/52012996
 
-container\_of()这个宏, 还包括一个叫做offsetof()的家伙. 在这两个宏定义里都出现将"零"地址强转成目标结构体类型, 然后再访问其成员属性的情形. 0地址不可以访问(参见Linux/Debug/Segmentation fault文章), 那container\_of()和offsetof()宏定义里用0时怎么没报错呢？到底该如何理解"零"地址？结构体被编译时有没有什么猫腻呢？程序到底是如何访问结构体里的每个成员属性的？
+container\_of()这个宏, 还包括一个叫做offsetof()的家伙. 在这两个宏定义里都出现将"零"地址强转成目标结构体类型, 然后再访问其成员属性的情形. 0地址不可以访问(参见Linux/Debug/Segmentation fault文章), 那container\_of()和offsetof()宏定义里用0时怎么没报错呢?到底该如何理解"零"地址?结构体被编译时有没有什么猫腻呢?程序到底是如何访问结构体里的每个成员属性的?
 
 内核宏定义container\_of(): 
 
@@ -28,7 +28,7 @@ container\_of()这个宏, 还包括一个叫做offsetof()的家伙. 在这两个
 
 offsetof: 将零地址强制转换成目标结构体类型TYPE, 然后访问其成员属性MEMBER, 就得到了该成员在其宿主结构体里的偏移量(按字节计算). 
 
-可为什么0地址能被这样用呢？编译器就不报错？
+可为什么0地址能被这样用呢?编译器就不报错?
 
 看一个简单的例子: 
 

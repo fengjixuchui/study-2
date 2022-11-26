@@ -1166,7 +1166,7 @@
 
 316 /* is there a page-directory at from? */
 
-    /* 在from处是否存在页目录项？*/
+    /* 在from处是否存在页目录项?*/
 
 317         from = *(unsigned long *) from_page;           // p进程目录项内容. 
 
@@ -1190,7 +1190,7 @@
 
 323 /* is the page clean and present? */
 
-    /* 物理页面干净并且存在吗？*/
+    /* 物理页面干净并且存在吗?*/
 
 324         if ((phys_addr & 0x41) != 0x01)
 

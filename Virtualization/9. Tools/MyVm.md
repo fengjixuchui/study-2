@@ -8,26 +8,26 @@
   - [2.1. guestfish工具](#21-guestfish工具)
   - [2.2. qemu-nbd方式](#22-qemu-nbd方式)
 - [3. 开启root的ssh登录](#3-开启root的ssh登录)
-- [5. 暂时启动guest](#5-暂时启动guest)
-- [修改default.target](#修改defaulttarget)
-- [4. 基本设置](#4-基本设置)
-- [6. 扩大根分区](#6-扩大根分区)
-  - [6.1. 磁盘整体扩容](#61-磁盘整体扩容)
-  - [6.2. 查看磁盘扩容后状态](#62-查看磁盘扩容后状态)
-  - [6.3. 进行分区扩展磁盘](#63-进行分区扩展磁盘)
-  - [6.4. 删除根分区](#64-删除根分区)
-  - [6.5. 创建分区](#65-创建分区)
-  - [6.6. 保存退出并刷新分区](#66-保存退出并刷新分区)
-  - [6.7. 查看磁盘分区和文件系统状态](#67-查看磁盘分区和文件系统状态)
-  - [6.8. 刷新根分区](#68-刷新根分区)
-- [7. 创建数据盘并使用](#7-创建数据盘并使用)
-- [8. 修改镜像内容](#8-修改镜像内容)
-- [9. 键盘输入设置](#9-键盘输入设置)
-- [10. 虚拟机最终启动命令](#10-虚拟机最终启动命令)
-- [11. 修改 grub](#11-修改-grub)
-- [12. 防火墙](#12-防火墙)
-- [selinux](#selinux)
-- [13. vncserver](#13-vncserver)
+- [4. 暂时启动guest](#4-暂时启动guest)
+- [5. 修改default.target](#5-修改defaulttarget)
+- [6. 基本设置](#6-基本设置)
+- [7. 扩大根分区](#7-扩大根分区)
+  - [7.1. 磁盘整体扩容](#71-磁盘整体扩容)
+  - [7.2. 查看磁盘扩容后状态](#72-查看磁盘扩容后状态)
+  - [7.3. 进行分区扩展磁盘](#73-进行分区扩展磁盘)
+  - [7.4. 删除根分区](#74-删除根分区)
+  - [7.5. 创建分区](#75-创建分区)
+  - [7.6. 保存退出并刷新分区](#76-保存退出并刷新分区)
+  - [7.7. 查看磁盘分区和文件系统状态](#77-查看磁盘分区和文件系统状态)
+  - [7.8. 刷新根分区](#78-刷新根分区)
+- [8. 创建数据盘并使用](#8-创建数据盘并使用)
+- [9. 修改镜像内容](#9-修改镜像内容)
+- [10. 键盘输入设置](#10-键盘输入设置)
+- [11. 虚拟机最终启动命令](#11-虚拟机最终启动命令)
+- [12. 修改 grub](#12-修改-grub)
+- [13. 防火墙](#13-防火墙)
+- [14. selinux](#14-selinux)
+- [15. vncserver](#15-vncserver)
 
 <!-- /code_chunk_output -->
 
@@ -39,7 +39,7 @@
 
 https://cloud-images.ubuntu.com/
 
-或者 
+或者
 
 https://cdimage.debian.org/images/cloud/
 
@@ -149,7 +149,7 @@ PermitRootLogin yes
 PasswordAuthentication yes
 ```
 
-# 5. 暂时启动guest
+# 4. 暂时启动guest
 
 如果没有enable virtio 的话, 可以使用下面命令:
 
@@ -161,7 +161,7 @@ PasswordAuthentication yes
 
 sudo /usr/local/bin/qemu-system-x86_64 -name ubuntu -accel kvm -cpu host -m 32G -smp 48,sockets=1,cores=24,threads=2 -kernel /boot/vmlinuz-5.15.0 -initrd /boot/initrd.img-5.15.0 -append "root=/dev/sda1 ro console=tty1 console=ttyS0" ./ubuntu-22.04.qcow2 -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -nographic -full-screen
 
-> use custom kernel with -drive 
+> use custom kernel with -drive
 
 sudo /usr/local/bin/qemu-system-x86_64 -name ubuntu -accel kvm -cpu host -m 32G -smp 48,sockets=1,cores=24,threads=2 -kernel /boot/vmlinuz-5.15.0 -initrd /boot/initrd.img-5.15.0 -append "root=/dev/sda1 ro console=tty1 console=ttyS0" -drive file=/home/test/workspace/ubuntu-22.04.qcow2,if=ide -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -nographic -full-screen
 
@@ -174,13 +174,13 @@ sudo /usr/local/bin/qemu-system-x86_64 -name ubuntu -accel kvm -cpu host,-xsave,
 > /usr/local/bin/qemu-system-x86_64 -name ubuntu-hirsute --enable-kvm -cpu host -smp 4,sockets=1,cores=2,threads=2 -m 3G -device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 -drive file=./debian-10.12.2-20220419-openstack-amd64.qcow2,if=none,id=drive-virtio-disk1,format=qcow2,cache=none -device virtio-blk-pci,scsi=off,bus=pci.0,addr=0x3,drive=drive-virtio-disk1,id=virtio-disk1,bootindex=1 -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -nographic -full-screen
 
 
-# 修改default.target
+# 5. 修改default.target
 
 systemctl set-default multi-user
 
 Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi-user.target
 
-# 4. 基本设置
+# 6. 基本设置
 
 开启ssh语法高亮以及内置命令别名
 
@@ -230,13 +230,13 @@ alias cp='cp -i'
 alias mv='mv -i'
 ```
 
-# 6. 扩大根分区
+# 7. 扩大根分区
 
 Linux 扩容 / 根分区(LVM+非LVM)参照: https://zhuanlan.zhihu.com/p/83340525
 
 磁盘空间扩容: https://blog.csdn.net/byn12345/article/details/88829984
 
-## 6.1. 磁盘整体扩容
+## 7.1. 磁盘整体扩容
 
 先将原有镜像备份
 
@@ -257,7 +257,7 @@ Format specific information:
 
 建议直接扩大到50G
 
-## 6.2. 查看磁盘扩容后状态
+## 7.2. 查看磁盘扩容后状态
 
 进入虚拟机命令如下
 
@@ -299,7 +299,7 @@ tmpfs          tmpfs  299M  4.0K  299M   1% /run/user/0
 
 docbook-xml dosfstools cheese-common cheese aisleriot shotwell shotwell-common sudo transmission-gtk transmission-common
 
-## 6.3. 进行分区扩展磁盘
+## 7.3. 进行分区扩展磁盘
 
 记住根分区起始位置和结束位置
 
@@ -309,7 +309,7 @@ fdisk /dev/vda
 
 ![images](./images/2021-08-24_10-23-27.png)
 
-## 6.4. 删除根分区
+## 7.4. 删除根分区
 
 切记一定不要保存！！！
 
@@ -320,7 +320,7 @@ Partition number (1,14,15, default 15): 1
 Partition 1 has been deleted.
 ```
 
-## 6.5. 创建分区
+## 7.5. 创建分区
 
 创建分区, 分区号还是1, 注意分区起始位置, 不要删除ext4的签名
 
@@ -350,7 +350,7 @@ Device      Start      End  Sectors  Size Type
 /dev/vda15  10240   227327   217088  106M EFI System
 ```
 
-## 6.6. 保存退出并刷新分区
+## 7.6. 保存退出并刷新分区
 
 ```
 Command (m for help): w
@@ -361,7 +361,7 @@ Syncing disks.
 root@ubuntu-vm:~# partprobe /dev/vda
 ```
 
-## 6.7. 查看磁盘分区和文件系统状态
+## 7.7. 查看磁盘分区和文件系统状态
 
 ```
 root@ubuntu-vm:~# lsblk
@@ -391,9 +391,9 @@ tmpfs          tmpfs  299M  4.0K  299M   1% /run/user/0
 
 * df没变化, 文件系统还没有变化
 
-## 6.8. 刷新根分区
+## 7.8. 刷新根分区
 
-使用 resize2fs或xfs_growfs 对挂载目录在线扩容 
+使用 resize2fs或xfs_growfs 对挂载目录在线扩容
 
 * resize2fs 针对文件系统ext2 ext3 ext4
 * xfs_growfs 针对文件系统xfs
@@ -416,18 +416,18 @@ tmpfs          tmpfs  4.0M     0  4.0M   0% /sys/fs/cgroup
 tmpfs          tmpfs  299M  4.0K  299M   1% /run/user/0
 ```
 
-# 7. 创建数据盘并使用
+# 8. 创建数据盘并使用
 
 数据盘格式化并挂载: https://www.cnblogs.com/jyzhao/p/4778657.html
 
 qemu-img create -f qcow2 data.qcow2 50G
 
 
-# 8. 修改镜像内容
+# 9. 修改镜像内容
 
 通过 `qmeu-nbd` 工具
 
-# 9. 键盘输入设置
+# 10. 键盘输入设置
 
 ubuntu中启用page up/down进行补全功能: https://blog.csdn.net/jingtaohuang/article/details/109628105
 
@@ -439,17 +439,17 @@ ubuntu中启用page up/down进行补全功能: https://blog.csdn.net/jingtaohuan
 "\e[6~": history-search-forward
 ```
 
-# 10. 虚拟机最终启动命令
+# 11. 虚拟机最终启动命令
 
 > ubuntu hirsute image -- quick start
-> 
+>
 > /usr/bin/qemu-system-x86_64 -name ubuntu-hirsute --enable-kvm -cpu host -smp 4,sockets=1,cores=2,threads=2 -m 3G -device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 -drive file=/images/ubuntu_hirsute.qcow2,if=none,id=drive-virtio-disk0,format=qcow2,cache=none -device virtio-blk-pci,scsi=off,bus=pci.0,addr=0x3,drive=drive-virtio-disk0,id=virtio-disk0,bootindex=1 -drive file=/images/data.qcow2,format=qcow2,if=none,id=drive-virtio-disk1,cache=none,aio=native -object iothread,id=iothread1 -device virtio-blk-pci,iothread=iothread1,scsi=off,bus=pci.0,addr=0x4,drive=drive-virtio-disk1,id=virtio-disk1 -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -nographic -full-screen
 
 > ubuntu hirsute image -- daemonize start
 >
 >/usr/bin/qemu-system-x86_64  -name ubuntu-hirsute -machine pc-i440fx-hirsute,accel=kvm,usb=off,dump-guest-core=off -cpu host -m 4G -smp 4,sockets=1,cores=2,threads=2 -uuid 982ab310-b608-49f9-8e0f-afdf7fa3fdda -smbios type=1,serial=982ab310-b608-49f9-8e0f-afdf7fa3fdda,uuid=982ab310-b608-49f9-8e0f-afdf7fa3fdda -no-user-config -nodefaults -chardev socket,id=montest,server=on,wait=off,path=/tmp/mon_test -mon chardev=montest,mode=readline -rtc base=utc,clock=vm -global kvm-pit.lost_tick_policy=discard -no-hpet -no-shutdown -boot strict=on -device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 -drive file=/images/ubuntu_hirsute.qcow2,format=qcow2,if=none,id=drive-virtio-disk0,cache=none,aio=native -object iothread,id=iothread0 -device virtio-blk-pci,iothread=iothread0,scsi=off,bus=pci.0,addr=0x3,drive=drive-virtio-disk0,id=virtio-disk0,bootindex=1 -drive file=/images/data.qcow2,format=qcow2,if=none,id=drive-virtio-disk1,cache=none,aio=native -object iothread,id=iothread1 -device virtio-blk-pci,iothread=iothread1,scsi=off,bus=pci.0,addr=0x4,drive=drive-virtio-disk1,id=virtio-disk1 -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=serial0 -vnc 0.0.0.0:1 -k en-us -device cirrus-vga,id=video0,bus=pci.0,addr=0x6 -device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x7 -msg timestamp=on -daemonize
 
-# 11. 修改 grub
+# 12. 修改 grub
 
 ```
 # vim /etc/default/grub
@@ -469,7 +469,7 @@ GRUB_CMDLINE_LINUX=""
 
 ubuntu修改默认启动内核: https://cdmana.com/2021/03/20210328153654881n.html
 
-# 12. 防火墙
+# 13. 防火墙
 
 sudo apt-get install ufw
 
@@ -477,7 +477,7 @@ ufw disable
 
 ufw status
 
-# selinux
+# 14. selinux
 
 apt install selinux-utils
 
@@ -485,7 +485,7 @@ getenforce
 
 ll /etc/sysconfig/selinux
 
-# 13. vncserver
+# 15. vncserver
 
 https://www.linode.com/docs/guides/install-vnc-on-ubuntu-21-04/
 

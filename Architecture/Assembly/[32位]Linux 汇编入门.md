@@ -327,7 +327,7 @@ ssize_t write(int fd, const void *buf, size_t count);
 
 该函数功能最终是通过SYS\_write这一系统调用来实现的. 根据上面约定参数fb、buf和count分别存在寄存器ebx、ecx和edx中而系统调用号`SYS_write`则放在寄存器eax中当int 0x80指令执行完毕后返回值可以从寄存器eax中获得. 
 
-进行系统调用时至少只有5个寄存器能够用来保存参数难道所有系统调用的参数个数都不超过5吗？当然不是例如mmap函数就有6个参数这些参数最后都需要传递给系统调用SYS_mmap: 
+进行系统调用时至少只有5个寄存器能够用来保存参数难道所有系统调用的参数个数都不超过5吗?当然不是例如mmap函数就有6个参数这些参数最后都需要传递给系统调用SYS_mmap: 
 
 ```cpp
 void  *  mmap(void *start, size_t length, int prot , int flags, int fd, off_t offset);

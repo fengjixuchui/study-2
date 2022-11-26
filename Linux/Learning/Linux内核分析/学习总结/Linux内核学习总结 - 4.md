@@ -1,6 +1,6 @@
 历次实验目录
 
-linux实验一,计算机是如何工作的？
+linux实验一,计算机是如何工作的?
 
 http://blog.sina.com.cn/s/blog_c068e9970102xrec.html
 
@@ -8,7 +8,7 @@ http://blog.sina.com.cn/s/blog_c068e9970102xrec.html
 从程序员的角度: 可以抽象为一个for循环, CPU总是解释执行next instruction(). 
 CPU在实际取指令时根据cs: eip来准确定位一个指令. 
 
-linux实验二,操作系统是如何工作的？
+linux实验二,操作系统是如何工作的?
 
 http://blog.sina.com.cn/s/blog_c068e9970102xro1.html
 
@@ -28,7 +28,7 @@ linux实验四,扒开系统调用的三层皮(上)
 http://www.jianshu.com/p/63dbd7986617
 
 本次实验主要讲了系统调用的三层皮: xyz、system_call和sys_xyz,以及用户态、内核态和中断处理过程.
-以及为什么会有这种级别划分？因为没有访问权限划分容易使得系统混乱(毕竟普通程序员写的函数可能会有明显的疏漏). 
+以及为什么会有这种级别划分?因为没有访问权限划分容易使得系统混乱(毕竟普通程序员写的函数可能会有明显的疏漏). 
 
 linux实验五,扒开系统调用的三层皮(下)
 

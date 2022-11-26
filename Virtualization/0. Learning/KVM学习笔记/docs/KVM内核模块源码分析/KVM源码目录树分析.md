@@ -212,7 +212,7 @@ root@ubuntu16x64:~/kernel/linux-4.4.124# find ./ -name "*kvm*"
 
 ## KVM模块入口点搜索
 
-每个内核模块都有入口. 那么kvm如果是个单独内核模块, 它的入口在哪里？
+每个内核模块都有入口. 那么kvm如果是个单独内核模块, 它的入口在哪里?
 ```
 root@ubuntu16x64:~/kernel/linux-4.4.124# find ./ -type f -name "*.c"|xargs grep "module_init" |grep kvm
 ./arch/s390/kvm/kvm-s390.c:module_init(kvm_s390_init);

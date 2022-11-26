@@ -65,7 +65,7 @@ static int my_proc_open(struct inode *inode, struct file *file)
         if (!res)
          ((struct seq_file *)file->private_data)->private = data;
       data是seq_file结构体的private成员. 
-      那么data如何真正被使用的呢？
+      那么data如何真正被使用的呢?
       发现show函数的第一个参数为seq_file类型, 在show函数中, 
       可以将seq_file的private成员转换成对应的类型进行使用. 
       也就是说, 可以通过seq_file的private成员将data参数传递到show函数中*/

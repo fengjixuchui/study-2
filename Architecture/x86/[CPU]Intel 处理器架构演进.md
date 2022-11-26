@@ -246,13 +246,13 @@ Kaby Lake 继续优化到了 Coffee Lake八代 Core i 系列. 这个系列的 i3
 
 话说 Kaby Lake 和 Coffee Lake 这个时代Intel 又推出了新的 Core i 系列命名为 Core i9第一代的桌面版 Core i9 是 Skylake 架构(Skylake-X)第一代笔记本版 i9 是 Coffee Lake 架构. 
 
-那么本该在这个时候推出的第五代 Xeon也就是 E3/E5/E7 的 xxxx v5 版呢？
+那么本该在这个时候推出的第五代 Xeon也就是 E3/E5/E7 的 xxxx v5 版呢?
 
 Skylake 的第五代 Xeon 摆脱了原本的系列名而是重新改成了 Bronze、Silver、Gold、Platinum 4 个系列(一股浓浓的网络游戏装备风说不定再下次改名就可能改名叫稀有、史诗、传说什么的→_→). 青铜和白银系列支持双路(原本的 E5-24xx、E7-28xx 系列)黄金系列支持四路(原本的 E5-46xx、E7-48xx 系列)白金系列支持八路(原本的 E7-88xx 系列). 
 
 这里还有个重要变动Intel 沿用了很多年的 Ring Bus 片内总线从 Skylake-X 开始改掉了！前面说 Sandy Bridge 开始微架构设计上已经全面采用了 Ring Bus其实最早到 Nehalem 时代的 Xeon 系列就已经开始用上 Ring Bus了主要用于解决多核(非常非常多的核)之间的共享、扩展等等的问题. 
 
-然而随着 CPU 的发展核越来越多所以一个 CPU 片内还可能有多个 Ring Bus就像下面这样. 这会有什么问题呢？
+然而随着 CPU 的发展核越来越多所以一个 CPU 片内还可能有多个 Ring Bus就像下面这样. 这会有什么问题呢?
 
 以前我们考虑多路服务器里面的 CPU 亲和性的时候只考虑过 socket 之间的 NUMA 关系两片 CPU 核之间会有亲和性问题. . . . . . 谁想过在下面这种结构的单片 CPU 里面其实也已经是个 NUMA 结构了！！！
 

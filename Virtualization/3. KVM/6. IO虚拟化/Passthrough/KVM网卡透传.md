@@ -303,7 +303,7 @@ bash: echo: write error: File exists
 bash: echo: write error: No such device
 ```
 
-出现上面这些错误, 当前还不知道怎么回事, 可能是因为我关闭kvm都是直接在宿主机里kill掉进程的, 导致bus信息未释放？待进一步分析. 
+出现上面这些错误, 当前还不知道怎么回事, 可能是因为我关闭kvm都是直接在宿主机里kill掉进程的, 导致bus信息未释放?待进一步分析. 
 
 ```
 # echo igb > /sys/bus/pci/devices/0000\:08\:00.0/driver_override

@@ -4,6 +4,6 @@
 
 不放置例如vim或者git等特性以及专业性太强的工具
 
-如何做源码剖析？: https://zhuanlan.zhihu.com/p/98143228
+如何做源码剖析?: https://zhuanlan.zhihu.com/p/98143228
 
 各种规范: https://github.com/thoughtbot/guides/

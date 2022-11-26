@@ -244,7 +244,7 @@ ln -s  /usr/lib/x86_64-linux-gnu/libz3.so.4 /usr/lib/x86_64-linux-gnu/libz3.so.4
 
 ### 法一: compile_commands.json
 
-虽然 clangd 的文档里说 clangd 会在你所编辑的文件的父目录中查找 compile_commands.json,  但实际使用中发现能自动加载 build/compile_commands.json 文件, 不知道是 neovim hack了还是 clangd 本身支持？
+虽然 clangd 的文档里说 clangd 会在你所编辑的文件的父目录中查找 compile_commands.json,  但实际使用中发现能自动加载 build/compile_commands.json 文件, 不知道是 neovim hack了还是 clangd 本身支持?
 
 #### 基于 CMake 的项目
 

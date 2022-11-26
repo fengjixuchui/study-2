@@ -4,7 +4,7 @@
 
 ## 概述
 
-今天我们要做一些琐碎的知识点分析, 比如调度器启动的时候默认配置是怎么来的？默认生效了哪些调度算法？自定义的算法是如何注入的？诸如这些问题, 我们顺带会看一下调度器相关的一些数据结构的含义. 看完前面这些节的分析后再看完本篇文章你可能会有一种醍醐灌顶的感觉哦～
+今天我们要做一些琐碎的知识点分析, 比如调度器启动的时候默认配置是怎么来的?默认生效了哪些调度算法?自定义的算法是如何注入的?诸如这些问题, 我们顺带会看一下调度器相关的一些数据结构的含义. 看完前面这些节的分析后再看完本篇文章你可能会有一种醍醐灌顶的感觉哦～
 
 ## 从 --config 开始
 
@@ -69,7 +69,7 @@ type Options struct {
 }
 ```
 
-前面的 flag 相关代码中写到配置文件的内容给了`o.ConfigFile`, 也就是`Options.ConfigFile`, 那这个属性怎么使用呢？
+前面的 flag 相关代码中写到配置文件的内容给了`o.ConfigFile`, 也就是`Options.ConfigFile`, 那这个属性怎么使用呢?
 
 我们来看下面这个 **ApplyTo()** 函数, 这个函数要做的事情是把 options 配置 apply 给 scheduler app configuration(这个对象后面会讲到): 
 
@@ -108,7 +108,7 @@ func (o *Options) ApplyTo(c *schedulerappconfig.Config) error {
 }
 ```
 
-这个函数中可以看到用 **--config** 和不用 **--config** 两种情况下 **options** 是如何应用到`schedulerappconfig.Config`中的. 那么这里提到的 **Config** 对象又是什么呢？
+这个函数中可以看到用 **--config** 和不用 **--config** 两种情况下 **options** 是如何应用到`schedulerappconfig.Config`中的. 那么这里提到的 **Config** 对象又是什么呢?
 
 ### config.Config对象
 
@@ -137,7 +137,7 @@ type Config struct {
 }
 ```
 
-所以前面的`c.ComponentConfig = o.ComponentConfig`这行代码也就是把 **Options** 中的 **ComponentConfig** 赋值给了 **Config** 中的 **ComponentConfig**; 是哪里的逻辑让 **Options** 和 **Config** 对象产生了关联呢？(也就是说前面提到的 `ApplyTo()` 方法是再哪里被调用的？)
+所以前面的`c.ComponentConfig = o.ComponentConfig`这行代码也就是把 **Options** 中的 **ComponentConfig** 赋值给了 **Config** 中的 **ComponentConfig**; 是哪里的逻辑让 **Options** 和 **Config** 对象产生了关联呢?(也就是说前面提到的 `ApplyTo()` 方法是再哪里被调用的?)
 
 继续跟下去可以找到`Config()`函数, 从这个函数的返回值`*schedulerappconfig.Config`可以看到它的目的, 是需要得到一个 **schedulerappconfig.Config**, 代码不长: 
 
@@ -175,7 +175,7 @@ func (o *Options) Config() (*schedulerappconfig.Config, error) {
 }
 ```
 
-那调用这个`Config()`函数的地方又在哪里呢？继续跟就到 **runCommand** 里面了～
+那调用这个`Config()`函数的地方又在哪里呢?继续跟就到 **runCommand** 里面了～
 
 ### runCommand
 
@@ -270,7 +270,7 @@ func init() {
 }
 ```
 
-`init()`函数中我们先关注 **registerAlgorithmProvider() **函数, 这里从字面上可以得到不少信息, 大胆猜一下: 是不是注册了默认的预选算法和优选算法？
+`init()`函数中我们先关注 **registerAlgorithmProvider() **函数, 这里从字面上可以得到不少信息, 大胆猜一下: 是不是注册了默认的预选算法和优选算法?
 
 !FILENAME pkg/scheduler/algorithmprovider/defaults/defaults.go:222
 
@@ -581,7 +581,7 @@ func WithName(schedulerName string) Option {
 
 我们继续往后面看`New()`函数的其他逻辑: 
 
-`source := schedulerAlgorithmSource` 这行代码里的 **schedulerAlgorithmSource** 代表了什么？
+`source := schedulerAlgorithmSource` 这行代码里的 **schedulerAlgorithmSource** 代表了什么?
 
 形参中有这个变量的定义: `schedulerAlgorithmSource kubeschedulerconfig.SchedulerAlgorithmSource`, 跟进去可以看到: 
 
@@ -626,7 +626,7 @@ type SchedulerPolicyConfigMapSource struct {
 }
 ```
 
-大家还记得我们在讲调度器设计的时候提到的 Policy 文件不？大概长这个样子: 
+大家还记得我们在讲调度器设计的时候提到的 Policy 文件不?大概长这个样子: 
 
 ```yaml
 {
@@ -805,6 +805,6 @@ func (c *configFactory) CreateFromKeys(predicateKeys, priorityKeys sets.String, 
 - predicates --> map[string]algorithm.FitPredicate
 - prioritizers --> []algorithm.PriorityConfig
 
-是不是很熟悉呢？
+是不是很熟悉呢?
 
 行, 今天就讲到这里～

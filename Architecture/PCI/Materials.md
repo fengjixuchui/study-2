@@ -50,7 +50,7 @@ PowerPC的PCI总线的dts配置【转】
 
 http://blog.163.com/liuqiang_mail@126/blog/static/10996887520126192504668/
 
-IOMMU是如何划分PCI device group的？: https://zhuanlan.zhihu.com/p/341895948
+IOMMU是如何划分PCI device group的?: https://zhuanlan.zhihu.com/p/341895948
 
 PCIe初始化枚举和资源分配流程分析: `Linux\Device Driver\PCIe\pcie初始化枚举和资源分配流程代码分析`
 

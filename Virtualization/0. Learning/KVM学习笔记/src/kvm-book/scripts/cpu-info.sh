@@ -20,7 +20,7 @@ echo -n "logical CPU number in a physical CPU: "
 logical_cpu_per_phy_cpu=$(cat /proc/cpuinfo | grep "siblings" | sort | uniq | awk -F: '{print $2}')
 echo $logical_cpu_per_phy_cpu
 
-#是否打开有超线程？
+#是否打开有超线程?
 #如果在同一个物理CPU上两个逻辑CPU具有相同的"core id", 那么超线程是打开的. 
 #此处根据前面计算的core_per_phy_cpu和logical_core_per_phy_cpu的比较来查看超线程. 
 #当然, cat /proc/cpuinfo | grep ht     也可以检查超线程. 

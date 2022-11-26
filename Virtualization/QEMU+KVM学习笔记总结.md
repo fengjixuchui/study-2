@@ -93,7 +93,7 @@ kvm驱动解析此种请求的函数是**kvm\_dev\_ioctl**(kvm\_main.c), 如**KV
 
 kvm驱动解析此种请求的函数是**kvm\_vm\_ioctl**. 
 
-此外, 与OS线程类似, **每个VM**在kvm驱动中会对应一个VM控制块结构**struct kvm**, **每个对VM的内核操作**都基本要访问这个**结构**, 那么**kvm驱动**是如何找到**请求这次命令的VM的控制块**的呢？
+此外, 与OS线程类似, **每个VM**在kvm驱动中会对应一个VM控制块结构**struct kvm**, **每个对VM的内核操作**都基本要访问这个**结构**, 那么**kvm驱动**是如何找到**请求这次命令的VM的控制块**的呢?
 
 回答这个问题首先要知道, **linux内核**用一个**struct file结构**来表示**每个打开的文件**, 其中有一个**void \*private\_data**字段, kvm驱动将**VM控制块的地址**保存到**对应struct file**的**private\_data**中. 用户程序**发送ioctl**时, 指定**具体的fd**, 内核根据**fd**可以找到**相应的struct file**, 传递给**kvm\_vm\_ioctl**, 再通过**private\_data**就可以找到了. 
 

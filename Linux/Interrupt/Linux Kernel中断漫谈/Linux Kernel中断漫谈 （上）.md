@@ -187,7 +187,7 @@ GICv2指定ID0 - ID31为PPI, ID32往上时SPI, 根据芯片类型, 甚至支持�
 
 ARM没有向前兼容的需求, 所以很多时候可以设计的更加激进一些. 
 
-另外ARM Core的state要比x86多很多(多达7个), 其中有两个专门给interrupt提供的state(知乎表格的功能什么时候能提供呢？！): 
+另外ARM Core的state要比x86多很多(多达7个), 其中有两个专门给interrupt提供的state(知乎表格的功能什么时候能提供呢?！): 
 
 ![config](./images/3.jpg)
 

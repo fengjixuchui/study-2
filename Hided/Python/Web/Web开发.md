@@ -39,7 +39,7 @@ HTTP是在网络上传输HTML的协议, 用于浏览器和服务器的通信.
 
 在举例子之前, 我们需要安装Google的Chrome浏览器. 
 
-为什么要使用Chrome浏览器而不是IE呢？因为IE实在是太慢了, 并且, IE对于开发和调试Web应用程序完全是一点用也没有. 
+为什么要使用Chrome浏览器而不是IE呢?因为IE实在是太慢了, 并且, IE对于开发和调试Web应用程序完全是一点用也没有. 
 
 我们需要在浏览器很方便地调试我们的Web应用, 而Chrome提供了一套完整地调试工具, 非常适合Web开发. 
 
@@ -49,7 +49,7 @@ Elements显示网页的结构, Network显示浏览器和服务器的通信. 我�
 
 ![network](images/web1.jpg)
 
-当我们在地址栏输入www.sina.com.cn时, 浏览器将显示新浪的首页. 在这个过程中, 浏览器都干了哪些事情呢？通过Network的记录, 我们就可以知道. 在Network中, 定位到第一条记录, 点击, 右侧将显示Request Headers, 点击右侧的view source, 我们就可以看到浏览器发给新浪服务器的请求: 
+当我们在地址栏输入www.sina.com.cn时, 浏览器将显示新浪的首页. 在这个过程中, 浏览器都干了哪些事情呢?通过Network的记录, 我们就可以知道. 在Network中, 定位到第一条记录, 点击, 右侧将显示Request Headers, 点击右侧的view source, 我们就可以看到浏览器发给新浪服务器的请求: 
 
 ![新浪首页](images/web2.jpg)
 
@@ -221,7 +221,7 @@ start_response('200 OK', [('Content-Type', 'text/html')])
 
 整个application()函数本身没有涉及到任何解析HTTP的部分, 也就是说, 底层代码不需要我们自己编写, 我们只负责在更高层次上考虑如何响应请求就可以了. 
 
-不过, 等等, 这个application()函数怎么调用？如果我们自己调用, 两个参数environ和start_response我们没法提供, 返回的str也没法发给浏览器. 
+不过, 等等, 这个application()函数怎么调用?如果我们自己调用, 两个参数environ和start_response我们没法提供, 返回的str也没法发给浏览器. 
 
 所以application()函数必须由WSGI服务器来调用. 有很多符合WSGI规范的服务器, 我们可以挑选一个来用. 但是现在, 我们只想尽快测试一下我们编写的application()函数真的可以把HTML输出到浏览器, 所以, 要赶紧找一个最简单的WSGI服务器, 把我们的Web应用程序跑起来. 
 
@@ -284,7 +284,7 @@ def application(environ, start_response):
 
 ![WSGI服务器](images/web7.jpg)
 
-是不是有点Web App的感觉了？
+是不是有点Web App的感觉了?
 
 无论多么复杂的Web应用程序, 入口都是一个WSGI处理函数. HTTP请求的所有输入信息都可以通过environ获得, HTTP响应的输出都可以通过start_response()加上函数返回值作为Body. 
 
@@ -317,7 +317,7 @@ def application(environ, start_response):
 
 由于用Python开发一个Web框架十分容易, 所以Python有上百个开源的Web框架. 这里我们先不讨论各种Web框架的优缺点, 直接选择一个比较流行的Web框架——Flask来使用. 
 
-用Flask编写Web App比WSGI接口简单(这不是废话么, 要是比WSGI还复杂, 用框架干嘛？), 我们先用easy_install或者pip安装Flask: 
+用Flask编写Web App比WSGI接口简单(这不是废话么, 要是比WSGI还复杂, 用框架干嘛?), 我们先用easy_install或者pip安装Flask: 
 
 ```
 $ easy_install flask

@@ -223,7 +223,7 @@ put_char:                                ;显示一个字符
          in al,dx                        ;低8位 
          mov bx,ax                       ;BX=代表光标位置的16位数
 
-         cmp cl,0x0d                     ;回车符？
+         cmp cl,0x0d                     ;回车符?
          jnz .put_0a                     ;不是. 看看是不是换行等字符 
          mov ax,bx                       ; 
          mov bl,80                       
@@ -233,7 +233,7 @@ put_char:                                ;显示一个字符
          jmp .set_cursor
 
  .put_0a:
-         cmp cl,0x0a                     ;换行符？
+         cmp cl,0x0a                     ;换行符?
          jnz .put_other                  ;不是, 那就正常显示字符 
          add bx,80
          jmp .roll_screen
@@ -249,7 +249,7 @@ put_char:                                ;显示一个字符
          add bx,1
 
  .roll_screen:
-         cmp bx,2000                     ;光标超出屏幕？滚屏
+         cmp bx,2000                     ;光标超出屏幕?滚屏
          jl .set_cursor
 
          mov ax,0xb800

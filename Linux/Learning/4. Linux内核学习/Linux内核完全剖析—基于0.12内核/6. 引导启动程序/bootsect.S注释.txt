@@ -761,7 +761,7 @@
 
 218         mov ax,es
 
-219         cmp ax,#ENDSEG          ! have we loaded all yet?    ! 是否已经加载了全部数据？
+219         cmp ax,#ENDSEG          ! have we loaded all yet?    ! 是否已经加载了全部数据?
 
 220         jb ok1_read
 

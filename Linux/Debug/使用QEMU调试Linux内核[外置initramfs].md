@@ -118,7 +118,7 @@ qemu 是一款虚拟机, 可以模拟x86 & arm 等等硬件平台<似乎可模�
 - `-s`: `-gdb tcp::1234` 的缩写, 监听1234端口, 在GDB中可以通过`target remote localhost:1234`连接; 
 - `-S`: 表示 QEMU 虚拟机会冻结 CPU 直到远程的 GDB 输入相应控制命令, 所以运行后看不到任何输出; 
 - `-kernel`: 指定编译好的调试版内核; 
-- `-initrd`: 指定制作的initramfs, 这个文件可以从 /boot/initrd.img\-3.13.0\-43\-generic  拷贝而来, 关于它是什么东西呢？ 可以参考这个:  http://www.linuxfly.org/post/94/ , 或者是这个 http://blog.csdn.net/chrisniu1984/article/details/3907874;
+- `-initrd`: 指定制作的initramfs, 这个文件可以从 /boot/initrd.img\-3.13.0\-43\-generic  拷贝而来, 关于它是什么东西呢? 可以参考这个:  http://www.linuxfly.org/post/94/ , 或者是这个 http://blog.csdn.net/chrisniu1984/article/details/3907874;
 - `-nographic`: 取消图形输出窗口, 使QEMU成简单的命令行程序; 
 - `-append "console=ttyS0"`: 将输出重定向到console, 将会显示在标准输出stdio. \-append 后面跟的是**虚拟机的cmdline**
 

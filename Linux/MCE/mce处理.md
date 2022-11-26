@@ -1,5 +1,5 @@
 
-# machine check 是什么？
+# machine check 是什么?
 
 machine check 是一种用来报告内部错误的一种硬件的方式. 它包括 `machine check exceptions` 和 `silent machine check`. 
 

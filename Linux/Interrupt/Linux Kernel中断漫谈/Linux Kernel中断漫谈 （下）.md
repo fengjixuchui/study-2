@@ -310,7 +310,7 @@ PCI-MSI-edge      eth0-TxRx-6
 PCI-MSI-edge      eth0-TxRx-7
 ```
 
-如上, 可以看到会有8个发送接受合并中断. 所以, 理论上而言, 开**同时开8个链接可以最大化的提升网络性能**？While, it is another story.
+如上, 可以看到会有8个发送接受合并中断. 所以, 理论上而言, 开**同时开8个链接可以最大化的提升网络性能**?While, it is another story.
 
 **每个rx和tx**也可以**单独的分配一个中断**: 
 

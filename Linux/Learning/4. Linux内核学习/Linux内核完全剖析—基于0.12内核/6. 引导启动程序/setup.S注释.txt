@@ -284,7 +284,7 @@
 
 100         jc      no_disk1
 
-101         cmp     ah,#3              ! 是硬盘吗？(类型 = 3 ？). 
+101         cmp     ah,#3              ! 是硬盘吗?(类型 = 3 ?). 
 
 102         je      is_disk1
 
@@ -344,7 +344,7 @@
 
 123         add     ax,#0x1000
 
-124         cmp     ax,#0x9000      ! 已经把最后一段(从0x8000段开始的64KB)代码移动完？
+124         cmp     ax,#0x9000      ! 已经把最后一段(从0x8000段开始的64KB)代码移动完?
 
 125         jz      end_move        ! 是, 则跳转. 
 
@@ -654,7 +654,7 @@
 
 206         in      al,#0x64        ! 8042 status port         ! 读AT键盘控制器状态寄存器. 
 
-207         test    al,#2           ! is input buffer full?    ! 测试位1, 输入缓冲器满？
+207         test    al,#2           ! is input buffer full?    ! 测试位1, 输入缓冲器满?
 
 208         jnz     empty_8042      ! yes - loop
 

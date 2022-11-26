@@ -459,7 +459,7 @@ CPUShares=2000
 运行等级:
 
 - Runlevel 0 : 关闭系统
-- Runlevel 1 : 救援？维护模式
+- Runlevel 1 : 救援?维护模式
 - Runlevel 3 : 多用户, 无图形系统
 - Runlevel 4 : 多用户, 无图形系统
 - Runlevel 5 : 多用户, 图形化系统

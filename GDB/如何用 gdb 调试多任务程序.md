@@ -55,7 +55,7 @@ libvirt 的基本操作和大概结构是这样的:
 
 * 子线程会将 cmd 通过 pipe 传递给 libvirtd, libvirtd 会 fork 出一个子进程, 并 exec cmd
 
-但如果我们想弄清楚 virsh 启动 qemu 的全过程的细节, 即在 virsh 里敲入 start xxx_domain, 到 exec qemu bin, 这中间究竟发生了什么细节呢？这就必须要 gdb 调试了. 可以想象, 这过程中必定有大量的进程间通信(socket、pipe), 这时就出现了文章开头说明的问题: **当前 thread** 将**数据流**发给了**另外的 thread**, 而另外的 thread 却没法跟踪并停止. 
+但如果我们想弄清楚 virsh 启动 qemu 的全过程的细节, 即在 virsh 里敲入 start xxx_domain, 到 exec qemu bin, 这中间究竟发生了什么细节呢?这就必须要 gdb 调试了. 可以想象, 这过程中必定有大量的进程间通信(socket、pipe), 这时就出现了文章开头说明的问题: **当前 thread** 将**数据流**发给了**另外的 thread**, 而另外的 thread 却没法跟踪并停止. 
 
 1. 我们通过 log 大概知道了 qemuProcessStart 是启动的必经之路, 因此在这个函数里添加代码: 
 
@@ -169,7 +169,7 @@ Id   Target Id         Frame
 
 # 5. 抛砖引玉
 
-在 Windows 调试工具 windbg 上, 用户可以选择子进程在创建后, wait 并等待用户调试, 从而省去了上述麻烦. gdb 是不是可以引入这个特性呢？
+在 Windows 调试工具 windbg 上, 用户可以选择子进程在创建后, wait 并等待用户调试, 从而省去了上述麻烦. gdb 是不是可以引入这个特性呢?
 
 # 6. 附录
 

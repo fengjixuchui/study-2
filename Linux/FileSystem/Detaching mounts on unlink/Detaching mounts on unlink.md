@@ -7,7 +7,7 @@ https://lore.kernel.org/linux-fsdevel/CAJfpegsxgnSRUW-E5HM3uT5QfGyUtn_v=i4Ppkkku
 
 在**任何命名空间**中的**任何 mount 实例**中. 有一种简单有效的方法, 可以通过简单地在文件或目录上 mount 某些东西来**防止** unlink(2)和 rename(2)在任何文件或目录上运行. 
 
-在非特权 mount 设计中是否考虑了这一点？
+在非特权 mount 设计中是否考虑了这一点?
 
 > Eric W. Biederman
 > 重点是不要欺骗特权应用程序, 而实际上应该更深入地考虑的一些次要效果却被忽略了. 
@@ -32,7 +32,7 @@ https://lore.kernel.org/linux-fsdevel/CAJfpegsxgnSRUW-E5HM3uT5QfGyUtn_v=i4Ppkkku
 
 当然, 我们在网络文件系统中通过伪装 rename/unlink 方式实现, 实际上没有发生此操作. VFS坚持认为这是谎言, 而不是反映实际发生的情况. (Of course we do this in network filesystems by pretending the rename/unlink did not actually happen.  The vfs insists that it be lied to instead of mirroring what actually happened.)
 
-同样, 所有这些都是关于有效数据结构的问题, 而不是真正的语义问题.  可以以不减慢vfs的方式实现任一语义吗？
+同样, 所有这些都是关于有效数据结构的问题, 而不是真正的语义问题.  可以以不减慢vfs的方式实现任一语义吗?
 
 > 鉴于 vfs_unlink 具有: 
 ```

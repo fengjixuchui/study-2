@@ -1,5 +1,5 @@
 
-[前面的文章](https://zhuanlan.zhihu.com/p/72998605)提到"什么情况下触发direct reclaim, 什么情况下又会触发kswapd, 是由内存的watermark决定的", 那这个"watermark"到底是如何发挥作用的呢？
+[前面的文章](https://zhuanlan.zhihu.com/p/72998605)提到"什么情况下触发direct reclaim, 什么情况下又会触发kswapd, 是由内存的watermark决定的", 那这个"watermark"到底是如何发挥作用的呢?
 
 # kswapd 与 watermark
 
@@ -7,7 +7,7 @@ Linux中物理内存的每个zone都有自己独立的min, low和high三个档�
 
 在进行内存分配的时候, 如果**分配器**(比如buddy allocator)发现当前**空余内存的值低于**"`low`"但**高于**"`min`", 说明现在内存面临一定的压力, 那么在此次内存分配完成后, kswapd将被唤醒, 以执行内存回收操作. 在这种情况下, 内存分配虽然会触发内存回收, 但**不存在被内存回收所阻塞**的问题, 两者的执行关系是异步的. 
 
-这里所说的"空余内存"其实是一个zone总的空余内存减去其 [lowmem_reserve](https://zhuanlan.zhihu.com/p/81961211) 的值. 对于kswapd来说, 要回收多少内存才算完成任务呢？只要把**空余内存的大小**恢复到"`high`"对应的**watermark值**就可以了, 当然, 这取决于当前空余内存和"high"值之间的差距, 差距越大, 需要回收的内存也就越多. "`low`"可以被认为是一个**警戒水位线**, 而"high"则是一个安全的水位线. 
+这里所说的"空余内存"其实是一个zone总的空余内存减去其 [lowmem_reserve](https://zhuanlan.zhihu.com/p/81961211) 的值. 对于kswapd来说, 要回收多少内存才算完成任务呢?只要把**空余内存的大小**恢复到"`high`"对应的**watermark值**就可以了, 当然, 这取决于当前空余内存和"high"值之间的差距, 差距越大, 需要回收的内存也就越多. "`low`"可以被认为是一个**警戒水位线**, 而"high"则是一个安全的水位线. 
 
 ![2021-01-18-17-05-16.png](./images/2021-01-18-17-05-16.png)
 
@@ -23,13 +23,13 @@ if (alloc_flags & ALLOC_NO_WATERMARKS)
         set_page_pfmemalloc(page);
 ```
 
-那谁有这样的权利, 可以在**内存严重短缺**的时候, 不等待回收而强行分配内存呢？其中的一个人物就是kswapd啦, 因为kswapd本身就是负责回收内存的, 它只需要占用一小部分内存支撑其正常运行(就像启动资金一样), 就可以去回收更多的内存(赚更多的钱回来). 
+那谁有这样的权利, 可以在**内存严重短缺**的时候, 不等待回收而强行分配内存呢?其中的一个人物就是kswapd啦, 因为kswapd本身就是负责回收内存的, 它只需要占用一小部分内存支撑其正常运行(就像启动资金一样), 就可以去回收更多的内存(赚更多的钱回来). 
 
 虽然kswapd是在"`low`"到"`min`"的这段**区间**被唤醒加入调度队列的, 但当它**真正执行**的时候, 空余内存的值**可能**已经掉到"`min`"以下了. 可见, "min"值存在的一个意义是保证像kswapd这样的特殊任务能够在需要的时候立刻获得所需内存. 
 
 # watermark的取值
 
-那么这三个watermark值的大小又是如何确定的呢？`ZONE_HIGHMEM`的watermark值比较特殊, 但因为现在**64位系统**已经不再使用ZONE_HIGHMEM了, 为了简化讨论, 以下将以不含ZONE_HIGHMEM, 且只有一个[node](https://zhuanlan.zhihu.com/p/68473428)的64位系统为例进行讲解. 
+那么这三个watermark值的大小又是如何确定的呢?`ZONE_HIGHMEM`的watermark值比较特殊, 但因为现在**64位系统**已经不再使用ZONE_HIGHMEM了, 为了简化讨论, 以下将以不含ZONE_HIGHMEM, 且只有一个[node](https://zhuanlan.zhihu.com/p/68473428)的64位系统为例进行讲解. 
 
 在这种系统中, **总的 "min_free" 值**约等于**所有zones可用内存的总和乘以16再开平方的大小**, 可通过`"/proc/sys/vm/min_free_kbytes"`**查看**和**修改**. 
 

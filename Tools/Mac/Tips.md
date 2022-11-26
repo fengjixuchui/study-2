@@ -45,7 +45,7 @@ defaults write com.apple.finder AppleShowAllFiles -bool false
 
 第二种: 快捷键组合
 
-上面的鼠标操作你有没有觉得有那么一丁点繁琐？那么来吧. 我们可以使用快捷键组合来达到相同的目的. 
+上面的鼠标操作你有没有觉得有那么一丁点繁琐?那么来吧. 我们可以使用快捷键组合来达到相同的目的. 
 
 你只需选中目标文件, 然后使用 Command+C 复制, 然后用 Command +Option+V 将其移动到目标目录. 
 

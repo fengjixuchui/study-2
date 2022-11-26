@@ -19,5 +19,5 @@ Linux启动时如何定位BIOS提供的ACPI表 - 河马的文章 - https://zhuan
 
 Linux如何定位BIOS提供的SMBIOS表 - 河马的文章 - https://zhuanlan.zhihu.com/p/49714322
 
-Linux的启动过程中, 满足什么条件可以不用initramfs而直接挂载/？ - https://www.zhihu.com/question/30599860
+Linux的启动过程中, 满足什么条件可以不用initramfs而直接挂载/? - https://www.zhihu.com/question/30599860
 

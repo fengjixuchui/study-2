@@ -23,9 +23,9 @@ IBM PC架构规定了一些固定的I/O端口, ISA设备通常也有固定的I/O
 
 # qemu-kvm中的MMIO
 
-我们知道X86体系结构上对设备进行访问可以通过PIO方式和MMIO(Memory Mapped I/O)两种方式进行,  那么`QEMU-KVM`具体是如何实现设备MMIO访问的呢？
+我们知道X86体系结构上对设备进行访问可以通过PIO方式和MMIO(Memory Mapped I/O)两种方式进行,  那么`QEMU-KVM`具体是如何实现设备MMIO访问的呢?
 
-MMIO是直接将设备I/O映射到物理地址空间内, 虚拟机物理内存的虚拟化又是通过EPT机制来完成的,  那么模拟设备的MMIO实现也需要利用EPT机制．虚拟机的EPT页表是在`EPT_VIOLATION`异常处理的时候建立起来的,  对于模拟设备而言访问MMIO肯定要触发`VM_EXIT`然后交给QEMU/KVM去处理, 那么怎样去标志MMIO访问异常呢？ 查看Intel SDM知道这是通过利用`EPT_MISCONFIG`来实现的．那么`EPT_VIOLATION`与`EPT_MISCONFIG`的区别是什么?
+MMIO是直接将设备I/O映射到物理地址空间内, 虚拟机物理内存的虚拟化又是通过EPT机制来完成的,  那么模拟设备的MMIO实现也需要利用EPT机制．虚拟机的EPT页表是在`EPT_VIOLATION`异常处理的时候建立起来的,  对于模拟设备而言访问MMIO肯定要触发`VM_EXIT`然后交给QEMU/KVM去处理, 那么怎样去标志MMIO访问异常呢? 查看Intel SDM知道这是通过利用`EPT_MISCONFIG`来实现的．那么`EPT_VIOLATION`与`EPT_MISCONFIG`的区别是什么?
 
 EXIT_REASON_EPT_VIOLATION is similar to a "page not present" pagefault.
 

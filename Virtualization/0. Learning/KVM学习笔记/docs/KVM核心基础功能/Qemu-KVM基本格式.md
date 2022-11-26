@@ -254,7 +254,7 @@ cat /proc/cpuinfo | grep "cpu cores" | uniq | awk -F: '{print $2}'
  #查看每个physical cpu上core id的数量,即为每个物理CPU上的core的个数
 cat /proc/cpuinfo | grep "core id"
 
- #是否为超线程？
+ #是否为超线程?
  #如果有两个逻辑CPU具有相同的"core id", 那么超线程是打开的. 
  #每个物理CPU中逻辑CPU(可能是core, threads或both)的个数: 
 cat /proc/cpuinfo | grep "siblings"
@@ -451,7 +451,7 @@ once=
 
 menu=on/off
 
-* 要不要显示进入BIOS菜单？就是让你按F12进入菜单
+* 要不要显示进入BIOS菜单?就是让你按F12进入菜单
 
 ![1532420073841.png](image/1532420073841.png)
 

@@ -480,7 +480,7 @@ extern const struct sched_class idle_sched_class;
 
 >实际上, 对于**RT进程**, **put和pick并不操作运行队列**
 >
->对于FIFO和RR的区别, 在scheduler\_tick中通过curr->sched\_class->task\_tick进入到task\_tick\_rt的处理,如果是**非RR的进程则直接返回**, 否则**递减时间片, 如果时间片耗完, 则需要将当前进程放到运行队列的末尾**,这个时候才**操作运行队列**(**FIFO和RR进程, 是否位于同一个plist队列**？), 时间片到点, 会**重新移动当前进程requeue\_task\_rt**, 进程会被**加到队列尾**, 接下来**set\_tsk\_need\_resched触发调度**, 进程被抢占进入schedule
+>对于FIFO和RR的区别, 在scheduler\_tick中通过curr->sched\_class->task\_tick进入到task\_tick\_rt的处理,如果是**非RR的进程则直接返回**, 否则**递减时间片, 如果时间片耗完, 则需要将当前进程放到运行队列的末尾**,这个时候才**操作运行队列**(**FIFO和RR进程, 是否位于同一个plist队列**?), 时间片到点, 会**重新移动当前进程requeue\_task\_rt**, 进程会被**加到队列尾**, 接下来**set\_tsk\_need\_resched触发调度**, 进程被抢占进入schedule
 
 **问题1 : 为什么要多此一举判断所有的进程是否全是cfs调度的普通非实时进程?**
 
