@@ -75,7 +75,7 @@ git clone https://github.com/haiwei-li/vinux.git ~/.vim
 
 easy motion:
 
-normal模式按下大写W, 然后按对应的字母就能跳过去. 按下空格jw 是整个文件
+normal 模式按下大写W, 然后按对应的字母就能跳过去. 按下空格jw 是整个文件
 
 ```
 let g:vinux_coding_style.cur_val='linux'

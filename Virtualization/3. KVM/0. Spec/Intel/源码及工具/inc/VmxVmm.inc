@@ -57,7 +57,7 @@
 
 
 ;;
-;; 刷新描述符 INV_DESC（invalidate descriptor）
+;; 刷新描述符 INV_DESC(invalidate descriptor)
 ;;
 struc INV_DESC
         .Eptp:
