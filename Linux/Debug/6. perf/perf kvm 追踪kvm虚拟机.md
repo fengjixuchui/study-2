@@ -187,6 +187,8 @@ tools/perf/Documentation/
 
 ./perf kvm stat report --pid 39941
 
+perf kvm stat report --vcpu 4
+
 或单独 event
 
 ./perf kvm stat report --event=vmexit
