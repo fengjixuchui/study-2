@@ -496,7 +496,18 @@ https://blog.csdn.net/chen462488588/article/details/112237950
 
 窗口太小: https://blog.csdn.net/teng_wu/article/details/103260703
 
+
+```
+# vncpasswd
+Password:
+Verify:
+Would you like to enter a view-only password (y/n)? n
+A view-only password is not used
+```
+
 tigervncserver -geometry 1280x1024 -localhost no -xstartup /usr/bin/xterm
 
 tigervncserver -xstartup /usr/bin/mate-session -geometry 800x600 -localhost no
+
+
 
