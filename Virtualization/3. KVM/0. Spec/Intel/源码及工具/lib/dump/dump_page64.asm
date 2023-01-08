@@ -1,6 +1,6 @@
 ;*************************************************
 ;* dump_page64.asm                                *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
@@ -15,12 +15,12 @@ dump_long_page:
         push r12
         push rbx
         push rdx
-; Ê¹ÓÃ r10À´±£´æ virtual address£¬ÒÔ·ÀÔÚµ÷ÓÃ 32Î» lib32 ¿âÀï³åµô¼Ä´æÆ÷Öµ        
+; ä½¿ç”¨ r10æ¥ä¿å­˜ virtual addressï¼Œä»¥é˜²åœ¨è°ƒç”¨ 32ä½ lib32 åº“é‡Œå†²æ‰å¯„å­˜å™¨å€¼        
         mov r10, rsi                                
         
         call get_maxphyaddr_select_mask
 
-; ´òÓ¡ PML4E        
+; æ‰“å° PML4E        
         mov esi, pml4e_msg
         LIB32_PUTS_CALL
         
@@ -29,10 +29,10 @@ dump_long_page:
         shr rax, 39                                
         and rax, 1FFh                       ; PML4E index
         
-; Ê¹ÓÃ r12 À´±£´æ table entry£¬ÒÔ·ÀÔÚµ÷ÓÃ 32Î» lib32 ¿âÀï³åµô64Î»µÄ¼Ä´æÆ÷
-        mov r12, [rbx + rax * 8]            ; ¶Á pml4e
+; ä½¿ç”¨ r12 æ¥ä¿å­˜ table entryï¼Œä»¥é˜²åœ¨è°ƒç”¨ 32ä½ lib32 åº“é‡Œå†²æ‰64ä½çš„å¯„å­˜å™¨
+        mov r12, [rbx + rax * 8]            ; è¯» pml4e
         
-; ÅĞ¶Ï P ±êÖ¾        
+; åˆ¤æ–­ P æ ‡å¿—        
         bt r12, 0
         jc pml4e_next
         mov esi, not_available
@@ -53,25 +53,25 @@ pml4e_next:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12
-        bt rsi, 63                              ; XD±êÖ¾Î»
+        bt rsi, 63                              ; XDæ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0FFFh        
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pml4e_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
-        bt r12, 7                               ; ¼ì²â±£ÁôÎ»ÊÇ·ñÎª 0
+        bt r12, 7                               ; æ£€æµ‹ä¿ç•™ä½æ˜¯å¦ä¸º 0
         mov edi, 0
         mov esi, reserved_error
         cmovnc esi, edi
         LIB32_PUTS_CALL
 
-; ´òÓ¡ pdpte
+; æ‰“å° pdpte
         mov esi, pdpte_msg
         LIB32_PUTS_CALL        
         mov rax, r10        
@@ -88,7 +88,7 @@ pml4e_next:
 pdpte_next:
         bt r12, 7                               ; PS = 1 ?
         jnc dump_pdpte_4k_2m
-; 1G page µÄ pdpte ½á¹¹
+; 1G page çš„ pdpte ç»“æ„
         ;mov rax, 0x000fffffc0000000
         mov rax, 0FFFFFFFFFFFFE000h
         and rax, [maxphyaddr_select_mask]
@@ -101,25 +101,25 @@ pdpte_next:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12         
-        bt rsi, 63                               ; XD±êÖ¾Î»
+        bt rsi, 63                               ; XDæ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff        
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pdpte_long_1g_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
-        test r12, 3FFFE000h                     ; ¼ì²â±£ÁôÎ»ÊÇ·ñÎª 0
+        test r12, 3FFFE000h                     ; æ£€æµ‹ä¿ç•™ä½æ˜¯å¦ä¸º 0
         mov edi, 0
         mov esi, reserved_error
         cmovz esi, edi
         LIB32_PUTS_CALL
         jmp dump_long_page_done                
-;;¡¡4K, 2M Ò³µÄ pdpte ½á¹¹                         
+;;ã€€4K, 2M é¡µçš„ pdpte ç»“æ„                         
 dump_pdpte_4k_2m:
         mov rax, 0FFFFFFFFFFFFF000h
         and rax, [maxphyaddr_select_mask]
@@ -133,20 +133,20 @@ dump_pdpte_4k_2m:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12
-        bt rsi, 63                                 ; XD±êÖ¾Î»
+        bt rsi, 63                                 ; XDæ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pdpte_long_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
 
-; ´òÓ¡ PDE                 
+; æ‰“å° PDE                 
         mov esi, pde_msg
         LIB32_PUTS_CALL        
         mov rax, r10
@@ -163,7 +163,7 @@ dump_pdpte_4k_2m:
 pde_next:        
         bt r12, 7                                  ; PS = 1 ?
         jnc dump_pde_4k
-; 2m page µÄ pde ½á¹¹
+; 2m page çš„ pde ç»“æ„
 ;        mov rax, 0x000ffffffff00000
         mov rax, 0FFFFFFFFFFFFE000h
         and rax, [maxphyaddr_select_mask]
@@ -176,25 +176,25 @@ pde_next:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12
-        bt rsi, 63                                 ; XD±êÖ¾Î»
+        bt rsi, 63                                 ; XDæ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pde_long_2m_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
-        test r12, 01FE000h                      ; ¼ì²â±£ÁôÎ»ÊÇ·ñÎª 0
+        test r12, 01FE000h                      ; æ£€æµ‹ä¿ç•™ä½æ˜¯å¦ä¸º 0
         mov edi, 0
         mov esi, reserved_error
         cmovz esi, edi
         LIB32_PUTS_CALL
         jmp dump_long_page_done        
-; ´òÓ¡ 4K page µÄ¡¡pde
+; æ‰“å° 4K page çš„ã€€pde
 dump_pde_4k:
         mov rax, 0FFFFFFFFFFFFF000h
         and rax, [maxphyaddr_select_mask]
@@ -208,20 +208,20 @@ dump_pde_4k:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12 
-        bt rsi, 63                                 ; XD±êÖ¾Î»
+        bt rsi, 63                                 ; XDæ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pde_long_4k_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
                 
-; ´òÓ¡ pte
+; æ‰“å° pte
         mov esi, pte_msg
         LIB32_PUTS_CALL        
         mov rax, r10
@@ -248,14 +248,14 @@ pte_next:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12         
-        bt rsi, 63                                 ; XD±êÖ¾Î»
+        bt rsi, 63                                 ; XDæ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pte_long_4k_flags
         LIB32_DUMP_FLAGS_CALL

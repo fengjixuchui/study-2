@@ -1,4 +1,6 @@
 
+所有的 pv features: https://www.qemu.org/docs/master/system/i386/kvm-pv.html
+
 头文件:
 
 arch/x86/include/uapi/asm/kvm_para.h

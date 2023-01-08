@@ -1,6 +1,6 @@
 ;*************************************************
 ; stage2.asm                                     *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
    
@@ -9,29 +9,29 @@
 
 
 ;----------------------------------------------------------------------------------------------
-; init_global_page(): ³õÊ¼»¯ÉèÖÃ PAE-paging Ä£Ê½µÄÒ³×ª»»±í½á¹¹
+; init_global_page(): åˆå§‹åŒ–è®¾ç½® PAE-paging æ¨¡å¼çš„é¡µè½¬æ¢è¡¨ç»“æ„
 ; input:
 ;       none
 ; output:
 ;       none
 ; 
-; ÏµÍ³Ò³±í½á¹¹:
-;       * 0xc0000000-0xc07fffff£¨¹²8M£©Ó³Éäµ½ÎïÀíÒ³Ãæ 0x200000-0x9fffff ÉÏ£¬Ê¹ÓÃ 4K Ò³Ãæ
+; ç³»ç»Ÿé¡µè¡¨ç»“æ„:
+;       * 0xc0000000-0xc07fffffï¼ˆå…±8Mï¼‰æ˜ å°„åˆ°ç‰©ç†é¡µé¢ 0x200000-0x9fffff ä¸Šï¼Œä½¿ç”¨ 4K é¡µé¢
 ;
-; ³õÊ¼»¯ÇøÓòÃèÊö:
-;       1) 0x7000-0x1ffff ·Ö±ğÓ³Éäµ½ 0x8000-0x1ffff ÎïÀíÒ³Ãæ£¬ÓÃÓÚÒ»°ãµÄÔË×÷
-;       2) 0xb8000 - 0xb9fff ·ÖÓ³Éäµ½¡¡0xb8000-0xb9fff ÎïÀíµØÖ·£¬Ê¹ÓÃ 4K Ò³Ãæ£¬ÓÃÓÚ VGA ÏÔÊ¾ÇøÓò
-;       3) 0x80000000-0x8000ffff£¨¹²64K£©Ó³Éäµ½ÎïÀíµØÖ· 0x100000-0x10ffff ÉÏ£¬ÓÃÓÚÏµÍ³Êı¾İ½á¹¹        
-;       4) 0x400000-0x400fff Ó³Éäµ½ 1000000h page frame Ê¹ÓÃ 4K Ò³Ãæ£¬ÓÃÓÚ DS store ÇøÓò
-;       5) 0x600000-0x7fffff Ó³Éäµ½ 0FEC00000h ÎïÀíÒ³ÃæÉÏ£¬Ê¹ÓÃ 2M Ò³Ãæ£¬ÓÃÓÚ LPC ¿ØÖÆÆ÷ÇøÓò£¨I/O APIC£©
-;       6) 0x800000-0x9fffff Ó³Éäµ½ 0FEE00000h ÎïÀíµØÖ·ÉÏ£¬Ê¹ÓÃ 2M Ò³Ãæ£¬ÓÃÓÚ local APIC ÇøÓò
-;       7) 0xb0000000 ¿ªÊ¼Ó³Éäµ½ÎïÀíµØÖ· 0x1100000 ¿ªÊ¼£¬Ê¹ÓÃ 4K Ò³Ãæ£¬ÓÃÓÚ VMX Êı¾İ¿Õ¼ä
+; åˆå§‹åŒ–åŒºåŸŸæè¿°:
+;       1) 0x7000-0x1ffff åˆ†åˆ«æ˜ å°„åˆ° 0x8000-0x1ffff ç‰©ç†é¡µé¢ï¼Œç”¨äºä¸€èˆ¬çš„è¿ä½œ
+;       2) 0xb8000 - 0xb9fff åˆ†æ˜ å°„åˆ°ã€€0xb8000-0xb9fff ç‰©ç†åœ°å€ï¼Œä½¿ç”¨ 4K é¡µé¢ï¼Œç”¨äº VGA æ˜¾ç¤ºåŒºåŸŸ
+;       3) 0x80000000-0x8000ffffï¼ˆå…±64Kï¼‰æ˜ å°„åˆ°ç‰©ç†åœ°å€ 0x100000-0x10ffff ä¸Šï¼Œç”¨äºç³»ç»Ÿæ•°æ®ç»“æ„        
+;       4) 0x400000-0x400fff æ˜ å°„åˆ° 1000000h page frame ä½¿ç”¨ 4K é¡µé¢ï¼Œç”¨äº DS store åŒºåŸŸ
+;       5) 0x600000-0x7fffff æ˜ å°„åˆ° 0FEC00000h ç‰©ç†é¡µé¢ä¸Šï¼Œä½¿ç”¨ 2M é¡µé¢ï¼Œç”¨äº LPC æ§åˆ¶å™¨åŒºåŸŸï¼ˆI/O APICï¼‰
+;       6) 0x800000-0x9fffff æ˜ å°„åˆ° 0FEE00000h ç‰©ç†åœ°å€ä¸Šï¼Œä½¿ç”¨ 2M é¡µé¢ï¼Œç”¨äº local APIC åŒºåŸŸ
+;       7) 0xb0000000 å¼€å§‹æ˜ å°„åˆ°ç‰©ç†åœ°å€ 0x1100000 å¼€å§‹ï¼Œä½¿ç”¨ 4K é¡µé¢ï¼Œç”¨äº VMX æ•°æ®ç©ºé—´
 ;---------------------------------------------------------------------------------------------
 init_global_page:
         push ecx
 
         ;;
-        ;; 0x7000-0x9000 ·Ö±ğÓ³Éäµ½ 0x7000-0x9000 ÎïÀíÒ³Ãæ, Ê¹ÓÃ 4K Ò³Ãæ               
+        ;; 0x7000-0x9000 åˆ†åˆ«æ˜ å°„åˆ° 0x7000-0x9000 ç‰©ç†é¡µé¢, ä½¿ç”¨ 4K é¡µé¢               
         ;;
         mov esi, 7000h
         mov edi, 7000h
@@ -56,7 +56,7 @@ init_global_page:
 %endif        
         
         ;;
-        ;; Ó³Éä protected Ä£¿éÇøÓò£¬Ê¹ÓÃ 4K Ò³
+        ;; æ˜ å°„ protected æ¨¡å—åŒºåŸŸï¼Œä½¿ç”¨ 4K é¡µ
         ;;
         mov esi, PROTECTED_SEGMENT
         mov edi, PROTECTED_SEGMENT
@@ -68,7 +68,7 @@ init_global_page:
         call do_virtual_address_mapping_n
         
         ;;
-        ;; 0xb8000 - 0xb9fff ·ÖÓ³Éäµ½¡¡0xb8000-0xb9fff ÎïÀíµØÖ·£¬Ê¹ÓÃ 4K Ò³Ãæ
+        ;; 0xb8000 - 0xb9fff åˆ†æ˜ å°„åˆ°ã€€0xb8000-0xb9fff ç‰©ç†åœ°å€ï¼Œä½¿ç”¨ 4K é¡µé¢
         ;;
         mov esi, 0B8000h
         mov edi, 0B8000h
@@ -80,7 +80,7 @@ init_global_page:
         call do_virtual_address_mapping
 
         ;;
-        ;; Ó³ÉäËùÓĞ PCB ¿é
+        ;; æ˜ å°„æ‰€æœ‰ PCB å—
         ;;
         mov esi, PCB_BASE
         mov edi, PCB_PHYSICAL_POOL
@@ -89,7 +89,7 @@ init_global_page:
         call do_virtual_address_mapping_n
 
         ;;
-        ;; Ó³Éä System Data Area ÇøÓò
+        ;; æ˜ å°„ System Data Area åŒºåŸŸ
         ;;
         mov esi, [fs: SDA.Base]                                 ; SDA virtual address
         mov edi, [fs: SDA.PhysicalBase]                         ; SDA physical address
@@ -101,7 +101,7 @@ init_global_page:
 
        
         ;;
-        ;; Ó³Éä System service routine table ÇøÓò£¨4K£©
+        ;; æ˜ å°„ System service routine table åŒºåŸŸï¼ˆ4Kï¼‰
         ;;
         mov esi, [fs: SRT.Base]
         mov edi, [fs: SRT.PhysicalBase]
@@ -110,7 +110,7 @@ init_global_page:
         
         
         ;;
-        ;; Ó³Éä stack
+        ;; æ˜ å°„ stack
         ;;
         mov esi, KERNEL_STACK_BASE
         mov edi, KERNEL_STACK_PHYSICAL_BASE
@@ -124,7 +124,7 @@ init_global_page:
         call do_virtual_address_mapping_n
 
         ;;
-        ;; Ó³Éä pool
+        ;; æ˜ å°„ pool
         ;;
         mov esi, KERNEL_POOL_BASE
         mov edi, KERNEL_POOL_PHYSICAL_BASE
@@ -139,7 +139,7 @@ init_global_page:
 
         
         ;;
-        ;; Ó³Éä VM domain pool
+        ;; æ˜ å°„ VM domain pool
         ;;
         mov esi, DOMAIN_BASE
         mov edi, DOMAIN_PHYSICAL_BASE
@@ -149,7 +149,7 @@ init_global_page:
 
        
         ;;
-        ;; 0x400000-0x400fff Ó³Éäµ½ 1000000h page frame Ê¹ÓÃ 4K Ò³Ãæ
+        ;; 0x400000-0x400fff æ˜ å°„åˆ° 1000000h page frame ä½¿ç”¨ 4K é¡µé¢
         ;;
         mov esi, 400000h
         mov edi, 1000000h
@@ -157,7 +157,7 @@ init_global_page:
         call do_virtual_address_mapping
         
         ;;              
-        ;; 0x600000-0x600fff Ó³Éäµ½ 0FEC00000h ÎïÀíµØÖ·ÉÏ£¬Ê¹ÓÃ 4K Ò³Ãæ
+        ;; 0x600000-0x600fff æ˜ å°„åˆ° 0FEC00000h ç‰©ç†åœ°å€ä¸Šï¼Œä½¿ç”¨ 4K é¡µé¢
         ;;
         mov esi, IOAPIC_BASE
         mov edi, 0FEC00000h
@@ -165,7 +165,7 @@ init_global_page:
         call do_virtual_address_mapping
         
         ;;
-        ;; 0x800000-0x800fff Ó³Éäµ½ 0FEE00000h ÎïÀíµØÖ·ÉÏ£¬Ê¹ÓÃ 4k Ò³Ãæ
+        ;; 0x800000-0x800fff æ˜ å°„åˆ° 0FEE00000h ç‰©ç†åœ°å€ä¸Šï¼Œä½¿ç”¨ 4k é¡µé¢
         ;;
         mov esi, LAPIC_BASE
         mov edi, 0FEE00000h
@@ -174,7 +174,7 @@ init_global_page:
            
         
         ;;
-        ;; 0xb0000000 ¿ªÊ¼Ó³Éäµ½ÎïÀíµØÖ· 0x1100000 ¿ªÊ¼£¬Ê¹ÓÃ 4K Ò³Ãæ
+        ;; 0xb0000000 å¼€å§‹æ˜ å°„åˆ°ç‰©ç†åœ°å€ 0x1100000 å¼€å§‹ï¼Œä½¿ç”¨ 4K é¡µé¢
         ;;
         mov esi, VMX_REGION_VIRTUAL_BASE                        ; VMXON region virtual address
         mov edi, VMX_REGION_PHYSICAL_BASE                       ; VMXON region physical address
@@ -192,14 +192,14 @@ init_global_page:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ³õÊ¼»· stage2 »·¾³
+; æè¿°ï¼š
+;       1) åˆå§‹ç¯ stage2 ç¯å¢ƒ
 ;-----------------------------------------------------------------------
 init_global_environment:
         call init_pae_page
         call init_global_page
 
-        ;; ¸üĞÂ IDT pointer
+        ;; æ›´æ–° IDT pointer
         mov DWORD [fs: SDA.IdtBase], SDA_BASE+SDA.Idt
         mov DWORD [fs: SDA.IdtBase+4], 0FFFFF800h
         mov WORD [fs: SDA.IdtLimit], 256*16-1
@@ -214,8 +214,8 @@ init_global_environment:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ÇĞÈë stage2 ½×¶ÎÔËĞĞ»·¾³
+; æè¿°ï¼š
+;       1) åˆ‡å…¥ stage2 é˜¶æ®µè¿è¡Œç¯å¢ƒ
 ;-----------------------------------------------------------------------
 enter_stage2:
         pop edi
@@ -244,28 +244,28 @@ enter_stage2:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ·¢ËÍ INIT-SIPI-SIPI ÏûÏ¢Ğò¸ø AP
-;       2) µÈ´ı AP Íê³ÉµÚ2½×¶Î¹¤×÷
+; æè¿°ï¼š
+;       1) å‘é€ INIT-SIPI-SIPI æ¶ˆæ¯åºç»™ AP
+;       2) ç­‰å¾… AP å®Œæˆç¬¬2é˜¶æ®µå·¥ä½œ
 ;-----------------------------------------------------
 wait_for_ap_stage2_done:             
         ;;
-        ;; ¿ª·ÅµÚ2½×¶Î AP Lock
+        ;; å¼€æ”¾ç¬¬2é˜¶æ®µ AP Lock
         ;;
         xor eax, eax
         mov ebx, [fs: SDA.Stage2LockPointer]
         xchg [ebx], eax
         
         ;;
-        ;; BSP ÒÑÍê³É¹¤×÷, ¼ÆÊıÖµÎª 1 
+        ;; BSP å·²å®Œæˆå·¥ä½œ, è®¡æ•°å€¼ä¸º 1 
         ;;
         mov DWORD [fs: SDA.ApInitDoneCount], 1
 
         ;;
-        ;; µÈ´ı AP Íê³É stage2 ¹¤×÷:
-        ;; ¼ì²é´¦ÀíÆ÷¼ÆÊı ApInitDoneCount ÊÇ·ñµÈÓÚ LocalProcessorCount Öµ
-        ;; 1)ÊÇ£¬ËùÓĞ AP Íê³É stage2 ¹¤×÷
-        ;; 2)·ñ£¬¼ÌĞøµÈ´ı
+        ;; ç­‰å¾… AP å®Œæˆ stage2 å·¥ä½œ:
+        ;; æ£€æŸ¥å¤„ç†å™¨è®¡æ•° ApInitDoneCount æ˜¯å¦ç­‰äº LocalProcessorCount å€¼
+        ;; 1)æ˜¯ï¼Œæ‰€æœ‰ AP å®Œæˆ stage2 å·¥ä½œ
+        ;; 2)å¦ï¼Œç»§ç»­ç­‰å¾…
         ;;
 wait_for_ap_stage2_done.@0:        
         xor eax, eax
@@ -279,7 +279,7 @@ wait_for_ap_stage2_done.@0:
 
 wait_for_ap_stage2_done.ok:
         ;;
-        ;;  AP ´¦ÓÚ stage2 ×´Ì¬
+        ;;  AP å¤„äº stage2 çŠ¶æ€
         ;;
         mov DWORD [fs: SDA.ApStage], 2
         ret
@@ -293,19 +293,19 @@ wait_for_ap_stage2_done.ok:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ½«ËùÓĞ´¦ÀíÆ÷·ÅÈë VMX root ×´Ì¬
+; æè¿°ï¼š
+;       1) å°†æ‰€æœ‰å¤„ç†å™¨æ”¾å…¥ VMX root çŠ¶æ€
 ;-----------------------------------------------------                
 put_processor_to_vmx:
         push ecx
 
         ;;
-        ;; BSP ½øÈë VMX »·¾³
+        ;; BSP è¿›å…¥ VMX ç¯å¢ƒ
         ;;
         call vmx_operation_enter
         
         ;;
-        ;; Ê£ÓàµÄ APs ½øÈë VMX »·¾³
+        ;; å‰©ä½™çš„ APs è¿›å…¥ VMX ç¯å¢ƒ
         ;;
         mov ecx, 1
 put_processor_to_vmx.@0:
@@ -313,7 +313,7 @@ put_processor_to_vmx.@0:
         mov edi, vmx_operation_enter
         call dispatch_to_processor_with_waitting
         ;;
-        ;; ¶Á Status Code ¼ì²éÊÇ·ñ³É¹¦
+        ;; è¯» Status Code æ£€æŸ¥æ˜¯å¦æˆåŠŸ
         ;;
         mov eax, [fs: SDA.LastStatusCode]
         cmp eax, STATUS_SUCCESS

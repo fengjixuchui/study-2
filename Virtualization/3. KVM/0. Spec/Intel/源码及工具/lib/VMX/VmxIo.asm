@@ -1,12 +1,12 @@
 ;*************************************************
 ;* VmxIo.asm                                     *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
 
 ;;
-;; ´¦Àí·ÃÎÊ IO ¶Ë¿ÚµÄÀı³Ì
+;; å¤„ç†è®¿é—® IO ç«¯å£çš„ä¾‹ç¨‹
 ;;
 
 
@@ -16,10 +16,10 @@
 ; input:
 ;       esi - IO port
 ; output:
-;       eax - IO VTE£¨value table entry£©µØÖ·
-; ÃèÊö£º
-;       1) ·µ»Ø IO ¶Ë¿Ú¶ÔÓ¦µÄ VTE ±íÏîµØÖ·
-;       2) ²»´æÔÚÏàÓ¦µÄ IO Vte Ê±£¬·µ»Ø 0 Öµ¡¡
+;       eax - IO VTEï¼ˆvalue table entryï¼‰åœ°å€
+; æè¿°ï¼š
+;       1) è¿”å› IO ç«¯å£å¯¹åº”çš„ VTE è¡¨é¡¹åœ°å€
+;       2) ä¸å­˜åœ¨ç›¸åº”çš„ IO Vte æ—¶ï¼Œè¿”å› 0 å€¼ã€€
 ;-----------------------------------------------------------------------
 GetIoVte:
         push ebp
@@ -40,10 +40,10 @@ GetIoVte:
         mov eax, [ebx + VMB.IoVteBuffer]               
         
 GetIoVte.@1:                
-        cmp esi, [eax]                                  ; ¼ì²é IO ¶Ë¿ÚÖµ
+        cmp esi, [eax]                                  ; æ£€æŸ¥ IO ç«¯å£å€¼
         je GetIoVte.Done
         REX.Wrxb
-        add eax, IO_VTE_SIZE                            ; Ö¸ÏòÏÂÒ»Ìõ entry
+        add eax, IO_VTE_SIZE                            ; æŒ‡å‘ä¸‹ä¸€æ¡ entry
         REX.Wrxb
         cmp eax, [ebx + VMB.IoVteIndex]
         jb GetIoVte.@1
@@ -62,9 +62,9 @@ GetIoVte.Done:
 ;       esi - IO port
 ;       edi - value
 ; output:
-;       eax - VTE µØÖ·
-; ÃèÊö£º
-;       1) ¸ù¾İ IO ¶Ë¿ÚÖµÏò IoVteBuffer ÀïĞ´Èë IO VTE
+;       eax - VTE åœ°å€
+; æè¿°ï¼š
+;       1) æ ¹æ® IO ç«¯å£å€¼å‘ IoVteBuffer é‡Œå†™å…¥ IO VTE
 ;-----------------------------------------------------------------------
 AppendIoVte:
         push ebp
@@ -91,7 +91,7 @@ AppendIoVte:
                 
 AppendIoVte.WriteVte:
         ;;
-        ;; Ğ´Èë IO VTE ÄÚÈİ
+        ;; å†™å…¥ IO VTE å†…å®¹
         ;;
         mov [eax + IO_VTE.IoPort], esi
         mov [eax + IO_VTE.Value], ebx
@@ -106,10 +106,10 @@ AppendIoVte.WriteVte:
 ; input:
 ;       esi - Processor index
 ; output:
-;       eax - ExtInt RTE£¨route table entry£©µØÖ·
-; ÃèÊö£º
-;       1) ·µ»Ø processor index ¶ÔÓ¦µÄ EXTINT_RTE ±íÏîµØÖ·
-;       2) ²»´æÔÚÏàÓ¦µÄ EXTINT_RTE ±íÏîÊ±£¬·µ»Ø 0 Öµ¡¡
+;       eax - ExtInt RTEï¼ˆroute table entryï¼‰åœ°å€
+; æè¿°ï¼š
+;       1) è¿”å› processor index å¯¹åº”çš„ EXTINT_RTE è¡¨é¡¹åœ°å€
+;       2) ä¸å­˜åœ¨ç›¸åº”çš„ EXTINT_RTE è¡¨é¡¹æ—¶ï¼Œè¿”å› 0 å€¼ã€€
 ;-----------------------------------------------------------------------
 GetExtIntRte:
         push ebp
@@ -127,10 +127,10 @@ GetExtIntRte:
                    
         
 GetExtIntRte.@1:                
-        cmp esi, [eax]                                   ; ¼ì²é processor index Öµ
+        cmp esi, [eax]                                   ; æ£€æŸ¥ processor index å€¼
         je GetExtIntRte.Done
         REX.Wrxb
-        add eax, EXTINT_RTE_SIZE                        ; Ö¸ÏòÏÂÒ»Ìõ entry
+        add eax, EXTINT_RTE_SIZE                        ; æŒ‡å‘ä¸‹ä¸€æ¡ entry
         REX.Wrxb
         cmp eax, [ebp + SDA.ExtIntRteIndex]
         jb GetExtIntRte.@1
@@ -147,10 +147,10 @@ GetExtIntRte.Done:
 ; input:
 ;       esi - vector
 ; output:
-;       eax - ExtInt RTE£¨route table entry£©µØÖ·
-; ÃèÊö£º
-;       1) ·µ»Ø vector ¶ÔÓ¦µÄ EXTINT_RTE ±íÏîµØÖ·
-;       2) ²»´æÔÚÏàÓ¦µÄ EXTINT_RTE ±íÏîÊ±£¬·µ»Ø 0 Öµ¡¡
+;       eax - ExtInt RTEï¼ˆroute table entryï¼‰åœ°å€
+; æè¿°ï¼š
+;       1) è¿”å› vector å¯¹åº”çš„ EXTINT_RTE è¡¨é¡¹åœ°å€
+;       2) ä¸å­˜åœ¨ç›¸åº”çš„ EXTINT_RTE è¡¨é¡¹æ—¶ï¼Œè¿”å› 0 å€¼ã€€
 ;-----------------------------------------------------------------------
 GetExtIntRteWithVector:
         push ebp
@@ -167,10 +167,10 @@ GetExtIntRteWithVector:
         je GetExtIntRteWithVector.NotFound
                            
 GetExtIntRteWithVector.@1:                
-        cmp esi, [eax + EXTINT_RTE.Vector]              ; ¼ì²é vecotr Öµ
+        cmp esi, [eax + EXTINT_RTE.Vector]              ; æ£€æŸ¥ vecotr å€¼
         je GetExtIntRteWithVector.Done
         REX.Wrxb
-        add eax, EXTINT_RTE_SIZE                        ; Ö¸ÏòÏÂÒ»Ìõ entry
+        add eax, EXTINT_RTE_SIZE                        ; æŒ‡å‘ä¸‹ä¸€æ¡ entry
         REX.Wrxb
         cmp eax, [ebp + SDA.ExtIntRteIndex]
         jb GetExtIntRteWithVector.@1
@@ -188,9 +188,9 @@ GetExtIntRteWithVector.Done:
 ; input:
 ;       esi - vector
 ; output:
-;       eax - EXTINT_RTE µØÖ·
-; ÃèÊö£º
-;       1) ¸ù¾İ processor ID Ïò ExtIntRteBuffer Ğ´Èë ITE 
+;       eax - EXTINT_RTE åœ°å€
+; æè¿°ï¼š
+;       1) æ ¹æ® processor ID å‘ ExtIntRteBuffer å†™å…¥ ITE 
 ;-----------------------------------------------------------------------
 AppendExtIntRte:
         push ebp
@@ -219,7 +219,7 @@ AppendExtIntRte:
                 
 AppendExtIntRte.WriteRte:
         ;;
-        ;; Ğ´Èë IO VTE ÄÚÈİ
+        ;; å†™å…¥ IO VTE å†…å®¹
         ;;
         mov esi, [ebp + PCB.ProcessorIndex]
         mov [eax + EXTINT_RTE.ProcessorIndex], esi
@@ -240,8 +240,8 @@ AppendExtIntRte.WriteRte:
 ;       none
 ; output:
 ;       eax - status code
-; ÃèÊö£º
-;       1) ½øĞĞ guest IO Ö¸ÁîµÄÏàÓ¦´¦Àí
+; æè¿°ï¼š
+;       1) è¿›è¡Œ guest IO æŒ‡ä»¤çš„ç›¸åº”å¤„ç†
 ;-----------------------------------------------------------------------
 do_guest_io_process:
         push ebp
@@ -266,19 +266,19 @@ do_guest_io_process:
         jnz do_guest_io_process.In
         
         ;;
-        ;; ´¦Àí OUT/OUTS
+        ;; å¤„ç† OUT/OUTS
         ;;
 do_guest_io_process.Out:
         DEBUG_RECORD    "processing OUT instruciton ..."
 
         ;;
-        ;; #### ×÷ÎªÊ¾Àı£¬±£ÁôÊµÏÖ´®Ö¸ÁîµÄ´¦Àí ####
+        ;; #### ä½œä¸ºç¤ºä¾‹ï¼Œä¿ç•™å®ç°ä¸²æŒ‡ä»¤çš„å¤„ç† ####
         ;;
         test edx, IO_FLAGS_STRING
         jnz do_guest_io_process.Done
 
         ;;
-        ;; ½« guest ³¢ÊÔĞ´ IO ¼Ä´æÆ÷µÄÖµ±£´æÔÚ IO-VTE Àï
+        ;; å°† guest å°è¯•å†™ IO å¯„å­˜å™¨çš„å€¼ä¿å­˜åœ¨ IO-VTE é‡Œ
         ;;        
         mov ecx, [ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.IoPort]
         mov esi, ecx
@@ -286,24 +286,24 @@ do_guest_io_process.Out:
         call AppendIoVte
  
         ;;
-        ;; ¼ì²é guest ÊÇ·ñ´¦ÓÚ 8259 ³õÊ¼»¯¹¤×÷Á÷³Ì!
-        ;; 1) ¼ì²éÊÇ·ñĞ´ MASTER_ICW1_PORT ¶Ë¿Ú
-        ;;    a) ÊÇ£¬Ôò¼ì²éÏÂÒ»¸öÊÇ·ñÎª MASTER_ICW2_PORT ¶Ë¿Ú
-        ;;    b) ·ñ£¬ÔòºöÂÔ
+        ;; æ£€æŸ¥ guest æ˜¯å¦å¤„äº 8259 åˆå§‹åŒ–å·¥ä½œæµç¨‹!
+        ;; 1) æ£€æŸ¥æ˜¯å¦å†™ MASTER_ICW1_PORT ç«¯å£
+        ;;    a) æ˜¯ï¼Œåˆ™æ£€æŸ¥ä¸‹ä¸€ä¸ªæ˜¯å¦ä¸º MASTER_ICW2_PORT ç«¯å£
+        ;;    b) å¦ï¼Œåˆ™å¿½ç•¥
         ;;
 
        
         ;;
-        ;; ¼ì²éÊÇ·ñÎª 20h ¶Ë¿Ú
+        ;; æ£€æŸ¥æ˜¯å¦ä¸º 20h ç«¯å£
         ;;
         cmp ecx, 20h
         jne do_guest_io_process.Out.@1
 
         movzx eax, BYTE [ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.Value]       
         ;;
-        ;; ¼ì²éĞ´ÈëÖµ£º
-        ;; 1) bit 4 = 1 Ê±£ºĞ´Èë ICW ×Ö
-        ;; 2) bit 5 = 1 Ê±£¬Ğ´Èë EOI ×Ö
+        ;; æ£€æŸ¥å†™å…¥å€¼ï¼š
+        ;; 1) bit 4 = 1 æ—¶ï¼šå†™å…¥ ICW å­—
+        ;; 2) bit 5 = 1 æ—¶ï¼Œå†™å…¥ EOI å­—
         ;;
         test eax, (1 << 4)
         jnz do_guest_io_process.Out.20h.ICW1
@@ -311,21 +311,21 @@ do_guest_io_process.Out:
         jz do_guest_io_process.Done
         
         ;;
-        ;; ÊôÓÚ EOI ÃüÁî£¬ÔòÓÉ VMM Ïò local APIC Ğ´Èë EOI
+        ;; å±äº EOI å‘½ä»¤ï¼Œåˆ™ç”± VMM å‘ local APIC å†™å…¥ EOI
         ;;
         LAPIC_EOI_COMMAND
         jmp do_guest_io_process.Done        
 
 do_guest_io_process.Out.20h.ICW1:        
         ;;
-        ;; ÉèÖÃ 8259 MASTER ³õÊ¼»¯±êÖ¾Î»
+        ;; è®¾ç½® 8259 MASTER åˆå§‹åŒ–æ ‡å¿—ä½
         ;;        
         or DWORD [ebx + VMB.IoOperationFlags], IOP_FLAGS_8259_MASTER_INIT
         jmp do_guest_io_process.Done
 
 do_guest_io_process.Out.@1:
         ;;
-        ;; ¼ì²é½ÓÏÂÀ´ÊÇ·ñĞ´ MASTER_ICW2_PORT ¶Ë¿Ú
+        ;; æ£€æŸ¥æ¥ä¸‹æ¥æ˜¯å¦å†™ MASTER_ICW2_PORT ç«¯å£
         ;;
         cmp ecx, MASTER_ICW2_PORT
         jne do_guest_io_process.Done
@@ -333,12 +333,12 @@ do_guest_io_process.Out.@1:
         jz do_guest_io_process.Done
 
         ;;
-        ;; Çå 8259 MASTER ³õÊ¼»¯±êÖ¾Î»
+        ;; æ¸… 8259 MASTER åˆå§‹åŒ–æ ‡å¿—ä½
         ;;
         and DWORD [ebx + VMB.IoOperationFlags], ~IOP_FLAGS_8259_MASTER_INIT
         
         ;;
-        ;; ½« vector Ìí¼Óµ½ ExtIntRte ±íÏîÀï
+        ;; å°† vector æ·»åŠ åˆ° ExtIntRte è¡¨é¡¹é‡Œ
         ;;
         mov esi, [ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.Value]
         call AppendExtIntRte
@@ -349,7 +349,7 @@ do_guest_io_process.In:
         DEBUG_RECORD    "processing IN instruction ..."
         
         ;;
-        ;; ´¦Àí IN/INS
+        ;; å¤„ç† IN/INS
         ;;
         mov esi, [ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.IoPort]
         call GetIoVte
@@ -357,18 +357,18 @@ do_guest_io_process.In:
         test eax, eax
         jz do_guest_io_process.Done
         
-        mov ecx, [eax + IO_VTE.Value]                           ; IO port Ô­Öµ        
+        mov ecx, [eax + IO_VTE.Value]                           ; IO port åŸå€¼        
         REX.Wrxb
-        mov ebx, [ebx + VMB.VsbBase]                            ; VSB ÇøÓò
+        mov ebx, [ebx + VMB.VsbBase]                            ; VSB åŒºåŸŸ
         
         ;;
-        ;; ¼ì²éÊÇ·ñÊôÓÚ´®Ö¸Áî
+        ;; æ£€æŸ¥æ˜¯å¦å±äºä¸²æŒ‡ä»¤
         ;;
         test edx, IO_FLAGS_STRING
         jnz do_guest_io_process.In.String
         
         ;;
-        ;; ´¦Àí IN al/ax/eax, IoPort 
+        ;; å¤„ç† IN al/ax/eax, IoPort 
         ;;
         mov esi, [ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.OperandSize]
         cmp esi, IO_OPS_BYTE
@@ -377,7 +377,7 @@ do_guest_io_process.In:
         je do_guest_io_process.In.Word
         
         ;;
-        ;; Ğ´Èë dwrod Öµ
+        ;; å†™å…¥ dwrod å€¼
         ;;
         REX.Wrxb
         mov [ebx + VSB.Rax], ecx
@@ -385,14 +385,14 @@ do_guest_io_process.In:
         
 do_guest_io_process.In.Byte:
         ;;
-        ;; Ğ´Èë byte Öµ
+        ;; å†™å…¥ byte å€¼
         ;;
         mov [ebx + VSB.Rax], cl
         jmp do_guest_io_process.Done
         
 do_guest_io_process.In.Word:
         ;;
-        ;; Ğ´Èë word Öµ
+        ;; å†™å…¥ word å€¼
         ;;
         mov [ebx + VSB.Rax], cx
         jmp do_guest_io_process.Done
@@ -401,13 +401,13 @@ do_guest_io_process.In.Word:
         
 do_guest_io_process.In.String:
         ;;
-        ;; #### ×÷ÎªÊ¾Àı£¬±£ÁôÊµÏÖ¶Ô´®Ö¸ÁîµÄ´¦Àí ####
+        ;; #### ä½œä¸ºç¤ºä¾‹ï¼Œä¿ç•™å®ç°å¯¹ä¸²æŒ‡ä»¤çš„å¤„ç† ####
         ;; 
         jmp do_guest_io_process.Done
         
 %if 0
         ;;
-        ;; ´¦Àí INS Ö¸Áî
+        ;; å¤„ç† INS æŒ‡ä»¤
         ;;
         REX.Wrxb
         mov edi, [[ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.LinearAddress]
@@ -448,8 +448,8 @@ do_guest_io_process.Done:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ÉèÖÃ 8259 Ïà¹ØµÄ IO bitmap
+; æè¿°ï¼š
+;       1) è®¾ç½® 8259 ç›¸å…³çš„ IO bitmap
 ;-----------------------------------------------------------------------
 set_io_bitmap_for_8259:
         mov esi, 20h                    ;; MASTER ICW1, OCW2, OCW3

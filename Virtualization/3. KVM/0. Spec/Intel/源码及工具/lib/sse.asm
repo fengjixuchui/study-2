@@ -1,12 +1,12 @@
 ;*************************************************
 ; sse.asm                                        *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
 
 
 ;
-; SSE ÏµÁĞÖ¸Áî»·¾³¿â
+; SSE ç³»åˆ—æŒ‡ä»¤ç¯å¢ƒåº“
 
 init_sse:
         
@@ -14,7 +14,7 @@ init_sse:
 
 
 ;--------------------------------
-; store_xmm(image): ±£´æ xmm ¼Ä´æÆ÷
+; store_xmm(image): ä¿å­˜ xmm å¯„å­˜å™¨
 ; input:
 ;       esi: address of image
 ;-------------------------------
@@ -30,7 +30,7 @@ store_xmm:
         ret
 
 ;-----------------------------------
-; restore_xmm(image): »Ö¸´ xmm ¼Ä´æÆ÷
+; restore_xmm(image): æ¢å¤ xmm å¯„å­˜å™¨
 ; input:
 ;       esi: address of image
 ;----------------------------------
@@ -46,7 +46,7 @@ restore_xmm:
         ret
 
 ;---------------------------------------
-; store_sse(image)£º ±£´æ SSEx »·¾³ state
+; store_sse(image)ï¼š ä¿å­˜ SSEx ç¯å¢ƒ state
 ; input:
 ;       esi: image
 ;---------------------------------------
@@ -56,7 +56,7 @@ store_sse:
         ret
 
 ;----------------------------------------
-; restore_sse(image): »Ö¸´ SSEx »·¾³ state
+; restore_sse(image): æ¢å¤ SSEx ç¯å¢ƒ state
 ; input:
 ;       esi: image
 ;----------------------------------------
@@ -66,7 +66,7 @@ restore_sse:
         ret
 
 ;-----------------------------
-; sse4_strlen(): µÃµ½×Ö·û´®³¤¶È
+; sse4_strlen(): å¾—åˆ°å­—ç¬¦ä¸²é•¿åº¦
 ; input:
 ;       esi: string
 ; output:
@@ -74,7 +74,7 @@ restore_sse:
 ;-----------------------------
 sse4_strlen:
         push ecx
-        pxor xmm0, xmm0                 ; Çå XMM0 ¼Ä´æÆ÷
+        pxor xmm0, xmm0                 ; æ¸… XMM0 å¯„å­˜å™¨
         mov eax, esi
         sub eax, 16
 sse4_strlen_loop:        
@@ -88,28 +88,28 @@ sse4_strlen_loop:
 
 
 ;----------------------------------------------------------
-; substr_search(str1, str2): ²éÕÒ´®str2 ÔÚ str1´®³öÏÖµÄÎ»ÖÃ
+; substr_search(str1, str2): æŸ¥æ‰¾ä¸²str2 åœ¨ str1ä¸²å‡ºç°çš„ä½ç½®
 ; input:
 ;       esi: str1, edi: str2
 ; outpu:
-;       -1: ÕÒ²»µ½£¬·ñÔò eax = ·µ»Ø str2 ÔÚ str1 µÄÎ»ÖÃ
+;       -1: æ‰¾ä¸åˆ°ï¼Œå¦åˆ™ eax = è¿”å› str2 åœ¨ str1 çš„ä½ç½®
 ;----------------------------------------------------------
 substr_search:
         push ecx
         push ebx
         lea eax, [esi - 16]
-        movdqu xmm0, [edi]              ; str2 ´®
+        movdqu xmm0, [edi]              ; str2 ä¸²
 	mov ecx, 16
         mov ebx, -1
 substr_search_loop:
-	add eax, ecx                     ; str1 ´®
+	add eax, ecx                     ; str1 ä¸²
         test ecx, ecx
         jz found
 	pcmpistri xmm0, [eax], 0x0c     ; unsigned byte, substring search, LSB index
 	jnz substr_search_loop   
 found:        
         add eax, ecx
-	sub eax, esi                    ; eax = Î»ÖÃ
+	sub eax, esi                    ; eax = ä½ç½®
         cmp ecx, 16
         cmovz eax, ebx
         pop ebx

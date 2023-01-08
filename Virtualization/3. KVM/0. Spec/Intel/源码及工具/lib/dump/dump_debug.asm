@@ -1,6 +1,6 @@
 ;*************************************************
 ;* dump_debug.asm                                *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
@@ -12,8 +12,8 @@
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´òÓ¡ LBR stack ÄÚËùÓĞ LBR ¼ÇÂ¼
+; æè¿°ï¼š
+;       1) æ‰“å° LBR stack å†…æ‰€æœ‰ LBR è®°å½•
 ;-----------------------------------------------------------
 dump_lbr_stack:
 	push ecx
@@ -27,7 +27,7 @@ dump_lbr_stack:
 	mov esi, Lbr.Msg0
 	call puts
 
-; ´òÓ¡ĞÅÏ¢
+; æ‰“å°ä¿¡æ¯
 dump_lbr_stack.loop:
 
 	mov esi, Lbr.FromIp
@@ -40,7 +40,7 @@ dump_lbr_stack.loop:
 	mov esi, Lbr.Msg1
 	call puts
 
-; ´òÓ¡ from ip
+; æ‰“å° from ip
 	lea ecx, [ebx + MSR_LASTBRANCH_0_FROM_IP]
 	rdmsr
         
@@ -66,7 +66,7 @@ dump_lbr_from_stack.next:
 	mov esi, Lbr.Msg2
 	call puts
 
-;; ´òÓ¡ to ip
+;; æ‰“å° to ip
 dump_lbr_stack.ToIp:
 	mov esi, Lbr.ToIp
 	call puts

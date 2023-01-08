@@ -1,6 +1,6 @@
 ;*************************************************
 ;* Decode.asm                                    *
-;* Copyright (c) 2009-2013 µÀ÷æ                  *
+;* Copyright (c) 2009-2013 ÈÇìÂøó                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
@@ -32,20 +32,20 @@ Decode:
         jz Decode.done
 
 Decode.loop:        
-        movzx ebx, BYTE [edx]                                   ; ∂¡ opcode
-        mov ebx, [DoOpcodeFuncTable + ebx * 4]                  ; ∂¡ OpcodeInfo
+        movzx ebx, BYTE [edx]                                   ; ËØª opcode
+        mov ebx, [DoOpcodeFuncTable + ebx * 4]                  ; ËØª OpcodeInfo
         test ebx, ebx
         jz Decode.done        
-        mov ebx, [ebx]                                          ; ∂¡ DoOpcodeXX ∫Ø ˝
+        mov ebx, [ebx]                                          ; ËØª DoOpcodeXX ÂáΩÊï∞
         test ebx, ebx
         jz Decode.done
         
         REX.Wrxb
         mov esi, edx
-        call ebx                                                ; µ˜”√ DoOpcodeXX(...)
+        call ebx                                                ; Ë∞ÉÁî® DoOpcodeXX(...)
         
         ;;
-        ;;  «∑Ò–Ë“™ºÃ–¯
+        ;; ÊòØÂê¶ÈúÄË¶ÅÁªßÁª≠
         ;;
         test eax, DECODE_STATUS_CONTINUE
         jz Decode.done       

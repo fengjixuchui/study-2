@@ -1,6 +1,6 @@
 ;*************************************************
 ; page32.asm                                     *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
 
@@ -17,7 +17,7 @@
 
 
 ;-------------------------------------------------------------
-; clear_8m_for_pae(): Çå 8M ÇøÓò£¨PAE Ä£Ê½Ê¹ÓÃµÄÒ³×ª»»±í£©
+; clear_8m_for_pae(): æ¸… 8M åŒºåŸŸï¼ˆPAE æ¨¡å¼ä½¿ç”¨çš„é¡µè½¬æ¢è¡¨ï¼‰
 ; input:
 ;       esi - address
 ;-------------------------------------------------------------
@@ -91,15 +91,15 @@ load_pdpt:
         xor ecx, ecx
 
         ;;
-        ;; ½« PDPT µØÖ·µ÷Õûµ½ 32 bytes ¶ÔÆë
+        ;; å°† PDPT åœ°å€è°ƒæ•´åˆ° 32 bytes å¯¹é½
         ;;
         add ebx, 31
         and ebx, 0FFFFFFE0h
 
         ;;
-        ;; ±£´æÔÚ PDPT ±íÀï
+        ;; ä¿å­˜åœ¨ PDPT è¡¨é‡Œ
         ;;
-        mov eax, [fs: SDA.PdtPhysicalBase]                      ; PDT ±íÎïÀíµØÖ·
+        mov eax, [fs: SDA.PdtPhysicalBase]                      ; PDT è¡¨ç‰©ç†åœ°å€
         and eax, 0FFFFF000h
         or eax, P                                               ; PDPTE0
         mov [ebx], eax
@@ -126,8 +126,8 @@ load_pdpt:
 ;       none
 ; output:
 ;       none
-; ÃèÊö:
-;       1) ³õÊ¼»¯´¦ÀíÆ÷µÄ PPT ±í
+; æè¿°:
+;       1) åˆå§‹åŒ–å¤„ç†å™¨çš„ PPT è¡¨
 ;-----------------------------------------------------------------
 init_pae_ppt:
         mov DWORD [gs: PCB.Ppt], PDT0_PHYSICAL_BASE | P
@@ -147,21 +147,21 @@ init_pae_ppt:
 ;       none
 ; output:
 ;       none
-; ÃèÊö:
-;       1) Ó³ÉäÒ³×ª»»±í½á¹¹ÇøÓò
-;       2) Ê¹ÓÃ 4K Ò³Ãæ
+; æè¿°:
+;       1) æ˜ å°„é¡µè½¬æ¢è¡¨ç»“æ„åŒºåŸŸ
+;       2) ä½¿ç”¨ 4K é¡µé¢
 ;-----------------------------------------------------------------
 init_pae_page:
         push ecx
 
         ;;
-        ;; ÇåÒ³×ª»»±íÇøÓò(8M)
+        ;; æ¸…é¡µè½¬æ¢è¡¨åŒºåŸŸ(8M)
         ;;
         mov esi, [fs: SDA.PtPhysicalBase]
         call clear_8m_for_pae
 
         ;;
-        ;; Ó³ÉäPAEÒ³×ª»»±í½á¹¹
+        ;; æ˜ å°„PAEé¡µè½¬æ¢è¡¨ç»“æ„
         ;;
         mov esi, PT_PHYSICAL_BASE | P
         mov edi, PDT_PHYSICAL_BASE
@@ -183,16 +183,16 @@ map_pae_page_transition_table.loop:
 
         
 ;-----------------------------------------------------------
-; do_virtual_address_mapping32(): Ö´ĞĞĞéÄâµØÖ·Ó³Éä
+; do_virtual_address_mapping32(): æ‰§è¡Œè™šæ‹Ÿåœ°å€æ˜ å°„
 ; input:
 ;       esi - virtual address
 ;       edi - physical address
 ;       eax - attribute
 ; output:
-;       0 - succssful, ·ñÔò·µ»Ø´íÎóÂë
+;       0 - succssful, å¦åˆ™è¿”å›é”™è¯¯ç 
 ;
 ; desciption:
-;       eax ´«µİ¹ıÀ´µÄ attribute ÓÉÏÂÃæ±êÖ¾Î»×é³É£º
+;       eax ä¼ é€’è¿‡æ¥çš„ attribute ç”±ä¸‹é¢æ ‡å¿—ä½ç»„æˆï¼š
 ;       [0] - P
 ;       [1] - R/W
 ;       [2] - U/S
@@ -204,8 +204,8 @@ map_pae_page_transition_table.loop:
 ;       [8] - G
 ;       [12] - ingore
 ;       [28] - ingore
-;       [29] - FORCE£¬ÖÃÎ»Ê±£¬Ç¿ÖÆ½øĞĞÓ³Éä
-;       [30] - PHYSICAL£¬ÖÃÎ»Ê±£¬±íÊ¾»ùÓÚÎïÀíµØÖ·½øĞĞÓ³Éä£¨ÓÃÓÚ³õÊ¼»¯Ê±£©
+;       [29] - FORCEï¼Œç½®ä½æ—¶ï¼Œå¼ºåˆ¶è¿›è¡Œæ˜ å°„
+;       [30] - PHYSICALï¼Œç½®ä½æ—¶ï¼Œè¡¨ç¤ºåŸºäºç‰©ç†åœ°å€è¿›è¡Œæ˜ å°„ï¼ˆç”¨äºåˆå§‹åŒ–æ—¶ï¼‰
 ;       [31] - XD
 ;----------------------------------------------------------
 do_virtual_address_mapping32:
@@ -221,8 +221,8 @@ do_virtual_address_mapping32:
         
                 
         ;;
-        ;; PT_BASE - PT_TOP ÇøÓòÒÑ¾­³õÊ¼»¯Ó³Éä£¬²»ÄÜÔÙ½øĞĞÓ³Éä
-        ;; ¼ÙÈçÓ³Éäµ½ PT_BASE - PT_TOP ÇøÓòÄÚ¾ÍÊ§°Ü·µ»Ø
+        ;; PT_BASE - PT_TOP åŒºåŸŸå·²ç»åˆå§‹åŒ–æ˜ å°„ï¼Œä¸èƒ½å†è¿›è¡Œæ˜ å°„
+        ;; å‡å¦‚æ˜ å°„åˆ° PT_BASE - PT_TOP åŒºåŸŸå†…å°±å¤±è´¥è¿”å›
         ;;
         cmp esi, [fs: SDA.PtBase]
         jb do_virtual_address_mapping32.next
@@ -235,9 +235,9 @@ do_virtual_address_mapping32:
 
 do_virtual_address_mapping32.next:
         ;;
-        ;; ¶ÁÈ¡ PTE µØÖ·
+        ;; è¯»å– PTE åœ°å€
         ;;
-        test ecx, PHY_ADDR                              ; physical address ±êÖ¾Î»
+        test ecx, PHY_ADDR                              ; physical address æ ‡å¿—ä½
         mov eax, get_pte_virtual_address
         mov edx, get_pte_physical_address
         cmovnz eax, edx
@@ -245,7 +245,7 @@ do_virtual_address_mapping32.next:
         mov ebx, eax
 
         ;;
-        ;; ¼ì²é present ±êÖ¾Î»
+        ;; æ£€æŸ¥ present æ ‡å¿—ä½
         ;;
         test DWORD [ebx], P
         jz do_virtual_address_mapping32.set_pte
@@ -253,14 +253,14 @@ do_virtual_address_mapping32.next:
         jnz do_virtual_address_mapping32.set_pte
         
         ;;
-        ;; ÒÑ¾­ÔÚÊ¹ÓÃ, ·µ»Ø³ö´í×´Ì¬
+        ;; å·²ç»åœ¨ä½¿ç”¨, è¿”å›å‡ºé”™çŠ¶æ€
         ;;
         mov eax, MAPPING_USED
         jmp do_virtual_address_mapping32.done
 
 
         ;;
-        ;; ÉèÖÃ PTE
+        ;; è®¾ç½® PTE
         ;; 
 do_virtual_address_mapping32.set_pte:
         mov edx, [fs: SDA.XdValue]
@@ -269,7 +269,7 @@ do_virtual_address_mapping32.set_pte:
         and eax, 1FFh
         or eax, edi
 
-        ;; Ğ´Èë PTE Öµ
+        ;; å†™å…¥ PTE å€¼
         mov [ebx], eax
         mov [ebx+4], edx
 
@@ -290,11 +290,11 @@ do_virtual_address_mapping32.done:
 ;       esi - virtual address
 ;       edi - physical address
 ;       eax - attribute
-;       ecx - n ¸öÒ³Ãæ
+;       ecx - n ä¸ªé¡µé¢
 ; output:
-;       0 - succssful, ·ñÔò·µ»Ø´íÎóÂë
-; ÃèÊö£º
-;       1) Ó³Éä n ¸ö Ò³Ãæ
+;       0 - succssful, å¦åˆ™è¿”å›é”™è¯¯ç 
+; æè¿°ï¼š
+;       1) æ˜ å°„ n ä¸ª é¡µé¢
 ;-----------------------------------------------------------
 do_virtual_address_mapping32_n:
         push ecx
@@ -322,17 +322,17 @@ do_virtual_address_mapping32_n.loop:
 ; input:
 ;       esi - va
 ; output:
-;       edx:eax - ÎïÀíÒ³Ãæ£¬Ê§°ÜÊ±£¬·µ»Ø -1
-; ÃèÊö£º
-;       1) ²éÑ¯ĞéÄâµØÖ·Ó³ÉäµÄÎïÀíÒ³Ãæ
-;       2) µ±ĞéÄâµØÖ·ÎŞÓ³ÉäÒ³ÃæÊ±£¬·µ»Ø -1 Öµ
+;       edx:eax - ç‰©ç†é¡µé¢ï¼Œå¤±è´¥æ—¶ï¼Œè¿”å› -1
+; æè¿°ï¼š
+;       1) æŸ¥è¯¢è™šæ‹Ÿåœ°å€æ˜ å°„çš„ç‰©ç†é¡µé¢
+;       2) å½“è™šæ‹Ÿåœ°å€æ— æ˜ å°„é¡µé¢æ—¶ï¼Œè¿”å› -1 å€¼
 ;-----------------------------------------------------------
 query_physical_page:
         push ebx
         
         
         ;;
-        ;; ¶Á PTE Öµ
+        ;; è¯» PTE å€¼
         ;;
         call get_pte_virtual_address
         mov edx, [eax + 4]
@@ -341,7 +341,7 @@ query_physical_page:
         and edx, [gs: PCB.MaxPhyAddrSelectMask + 4]
         
         ;;
-        ;; ¼ì²é PTE ÊÇ·ñÓĞĞ§
+        ;; æ£€æŸ¥ PTE æ˜¯å¦æœ‰æ•ˆ
         ;;
         test eax, P
         cmovz edx, esi
@@ -359,7 +359,7 @@ query_physical_page.done:
 
 
 ;-----------------------------------------------------------
-; do_virtual_address_unmapped(): ½â³ıĞéÄâµØÖ·Ó³Éä
+; do_virtual_address_unmapped(): è§£é™¤è™šæ‹Ÿåœ°å€æ˜ å°„
 ; input:
 ;       esi - virtual address
 ; output:
@@ -369,8 +369,8 @@ do_virtual_address_unmapped:
         push ecx
 
         ;;
-        ;; PT_BASE - PT_TOP ÇøÓò²»ÄÜ±»½â³ıÓ³Éä
-        ;; ¼ÙÈçÓ³Éäµ½ PT_BASE - PT_TOP ÇøÓòÄÚ¾ÍÊ§°Ü·µ»Ø
+        ;; PT_BASE - PT_TOP åŒºåŸŸä¸èƒ½è¢«è§£é™¤æ˜ å°„
+        ;; å‡å¦‚æ˜ å°„åˆ° PT_BASE - PT_TOP åŒºåŸŸå†…å°±å¤±è´¥è¿”å›
         ;;
         cmp esi, [fs: SDA.PtBase]
         jb do_virtual_address_unmapped.next
@@ -387,7 +387,7 @@ do_virtual_address_unmapped.next:
 
         xor ecx, ecx
         xchg [eax], ecx
-        invlpg [esi]                                    ; Ë¢ĞÂ TLB
+        invlpg [esi]                                    ; åˆ·æ–° TLB
 
 do_virtual_address_unmapped.ok:
         mov eax, UNMAPPED_SUCCESS        

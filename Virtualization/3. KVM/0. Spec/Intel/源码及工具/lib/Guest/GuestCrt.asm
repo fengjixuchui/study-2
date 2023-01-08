@@ -1,6 +1,6 @@
 ;*************************************************
 ; GuestCrt.asm                                   *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
 
@@ -51,7 +51,7 @@ GetCurrentCol:
 ;-------------------------------------------
 ; WriteChar()
 ; input:
-;       esi - ×Ö·û
+;       esi - å­—ç¬¦
 ; output:
 ;       none
 ;-------------------------------------------
@@ -83,7 +83,7 @@ WriteChar.Done:
 ;--------------------------------
 ; PutChar()
 ; input: 
-;       esi - ×Ö·û
+;       esi - å­—ç¬¦
 ; output:
 ;       none
 ;--------------------------------
@@ -181,9 +181,9 @@ HexConvertChar.Start:
 DumpHex:
         push ecx
         push esi
-        mov ecx, 8                                        ; 8 ¸ö half-byte
+        mov ecx, 8                                        ; 8 ä¸ª half-byte
 DumpHex.@0:
-        rol esi, 4                                        ; ¸ß4Î» --> µÍ 4Î»
+        rol esi, 4                                        ; é«˜4ä½ --> ä½ 4ä½
         mov edi, esi
         call HexConvertChar
         mov esi, eax
@@ -262,21 +262,21 @@ PrintDecimal.Start:
         push ecx
         push ebx
         mov ebx, Quotient
-        mov eax, esi                        ; ³õÊ¼ÉÌÖµ
+        mov eax, esi                        ; åˆå§‹å•†å€¼
         mov [ebx], eax        
         mov ecx, 10
         mov esi, ValueBuffer + 19
         mov BYTE [esi], 0
         
 PrintDecimal.@0:
-        DECv esi                             ; Ö¸Ïò ValueBuffer
+        DECv esi                             ; æŒ‡å‘ ValueBuffer
         xor edx, edx
-        div ecx                              ; ÉÌ/10
-        test eax, eax                        ; ÉÌ == 0 ?
+        div ecx                              ; å•†/10
+        test eax, eax                        ; å•† == 0 ?
         cmovz edx, [ebx]
         mov [ebx], eax
         lea edx, [edx + '0']        
-        mov [esi], dl                        ; Ğ´ÈëÓàÊıÖµ
+        mov [esi], dl                        ; å†™å…¥ä½™æ•°å€¼
         jnz PrintDecimal.@0
         
 PrintDecimal.Done:
@@ -293,31 +293,31 @@ PrintDecimal.Done:
 ; input:
 ;       none
 ; output:
-;       eax - É¨ÃèÂë
-; ÃèÊö£º
-;       1) µÈ´ı°´¼ü£¬·µ»ØÒ»¸öÉ¨ÃèÂë
-;       2) wait_a_key()ÊÇÒÑ¾­´ò¿ª¼üÅÌÊ±Ê¹ÓÃ
-;       3£©read_keyboard() ÄÚ²¿´ò¿ª¼üÅÌ£¬ÎŞĞèÒÑ¾­¿ªÆô¼üÅÌ
+;       eax - æ‰«æç 
+; æè¿°ï¼š
+;       1) ç­‰å¾…æŒ‰é”®ï¼Œè¿”å›ä¸€ä¸ªæ‰«æç 
+;       2) wait_a_key()æ˜¯å·²ç»æ‰“å¼€é”®ç›˜æ—¶ä½¿ç”¨
+;       3ï¼‰read_keyboard() å†…éƒ¨æ‰“å¼€é”®ç›˜ï¼Œæ— éœ€å·²ç»å¼€å¯é”®ç›˜
 ;----------------------------------------------
 WaitKey:
         push ebp
 
         ;;
-        ;; ¶ÁÔ­ KeyBufferPtr Öµ
+        ;; è¯»åŸ KeyBufferPtr å€¼
         ;;
         mov ebp, KeyBufferPtr
         mov eax, [ebp]
 
         ;;
-        ;; µÈ´ı...
-        ;; Ö±µ½ KeyBufferPtr ·¢Éú¸Ä±äÊ±ÍË³ö!
+        ;; ç­‰å¾…...
+        ;; ç›´åˆ° KeyBufferPtr å‘ç”Ÿæ”¹å˜æ—¶é€€å‡º!
         ;;       
                 
         WAIT_UNTIL_NEQ32         [ebp], eax
         
 
         ;;
-        ;; ¶Á¼üÅÌÉ¨ÃèÂë
+        ;; è¯»é”®ç›˜æ‰«æç 
         ;;
         mov esi, [ebp]
         movzx eax, BYTE [esi]

@@ -1,6 +1,6 @@
 ;*************************************************
 ;* DeubgRecord.asm                               *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
@@ -13,8 +13,8 @@
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ¸üĞÂµ±Ç° debug reocrd Á´±íÎ²²¿µÄ context ĞÅÏ¢
+; æè¿°ï¼š
+;       1) æ›´æ–°å½“å‰ debug reocrd é“¾è¡¨å°¾éƒ¨çš„ context ä¿¡æ¯
 ;-------------------------------------------------
 update_guest_context:
 
@@ -32,14 +32,14 @@ update_guest_context:
         REX.Wrxb
         mov eax, [ebp + PCB.SdaBase]        
         REX.Wrxb
-        mov ebx, [eax + SDA.DrsTailPtr]                 ; ¶Á Tail pointer
+        mov ebx, [eax + SDA.DrsTailPtr]                 ; è¯» Tail pointer
         REX.Wrxb
         mov edx, [ebp + PCB.CurrentVmbPointer]
         REX.Wrxb
         mov edx, [edx + VMB.VsbBase]
         
         ;;
-        ;; ¸üĞÂ debug record ÖĞµÄ¼Ä´æÆ÷Öµ
+        ;; æ›´æ–° debug record ä¸­çš„å¯„å­˜å™¨å€¼
         ;;
         REX.Wrxb
         mov eax, [edx + VSB.Rax]
@@ -110,7 +110,7 @@ update_guest_context:
 %endif             
                         
         ;;
-        ;; ¸üĞÂ guest CS:RIP ¼° RFLAGS
+        ;; æ›´æ–° guest CS:RIP åŠ RFLAGS
         ;;
         mov eax, GUEST_CS_SELECTOR
         vmread [ebx + DRS.Cs], eax        
@@ -124,7 +124,7 @@ update_guest_context:
         mov [ebx + DRS.Rflags], eax  
         
         ;;
-        ;; ¸üĞÂ append msg
+        ;; æ›´æ–° append msg
         ;;
         GetVmcsField    EXIT_REASON
         movzx esi, ax
@@ -152,8 +152,8 @@ update_guest_context.done:
 ;       eax - address
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ¸üĞÂµ±Ç° debug reocrd Á´±íÎ²²¿µÄ¸½¼ÓĞÅÏ¢
+; æè¿°ï¼š
+;       1) æ›´æ–°å½“å‰ debug reocrd é“¾è¡¨å°¾éƒ¨çš„é™„åŠ ä¿¡æ¯
 ;-------------------------------------------------
 update_append_msg:
 
@@ -168,11 +168,11 @@ update_append_msg:
 %endif
 
         REX.Wrxb
-        mov ebx, [ebp + SDA.DrsTailPtr]                 ; ¶Á Tail pointer
+        mov ebx, [ebp + SDA.DrsTailPtr]                 ; è¯» Tail pointer
         REX.Wrxb
-        mov [ebx + DRS.AppendMsg], esi                  ; Ìæ´úµôÔ­ Append Msg Ö¸Õë        
+        mov [ebx + DRS.AppendMsg], esi                  ; æ›¿ä»£æ‰åŸ Append Msg æŒ‡é’ˆ        
         REX.Wrxb
-        mov [ebx + DRS.PrefixMsg], edi                  ; Ìæ´úµôÔ­ prefix Msg Ö¸Õë 
+        mov [ebx + DRS.PrefixMsg], edi                  ; æ›¿ä»£æ‰åŸ prefix Msg æŒ‡é’ˆ 
         mov [ebx + DRS.Address], eax                   
                         
         pop ebx
@@ -186,11 +186,11 @@ update_append_msg:
 ;-------------------------------------------------
 ; print_debug_record()
 ; input:
-;       esi - DRS Ö¸Õë
+;       esi - DRS æŒ‡é’ˆ
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´òÓ¡ debug ¼ÇÂ¼
+; æè¿°ï¼š
+;       1) æ‰“å° debug è®°å½•
 ;-------------------------------------------------
 print_debug_record:
 
@@ -236,7 +236,7 @@ print_debug_record:
         add ebp, DRS.Rax 
         
         ;;
-        ;; ´òÓ¡¼Ä´æÆ÷Öµ
+        ;; æ‰“å°å¯„å­˜å™¨å€¼
         ;; 
         xor ecx, ecx
 print_debug_record.loop:         
@@ -270,7 +270,7 @@ print_debug_record.loop:
         jb print_debug_record.loop        
         
         ;;
-        ;; ´òÓ¡ÎÄ¼şÃûºÍĞĞÊı
+        ;; æ‰“å°æ–‡ä»¶åå’Œè¡Œæ•°
         ;;
         call println
         mov esi, '['
@@ -287,7 +287,7 @@ print_debug_record.loop:
         
         
         ;;
-        ;; ´òÓ¡¸½¼ÓĞÅÏ¢
+        ;; æ‰“å°é™„åŠ ä¿¡æ¯
         ;;
         REX.Wrxb
         mov ebx, [ebp + DRS.AppendMsg - DRS.Rax]
@@ -325,14 +325,14 @@ print_debug_record.done:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´òÓ¡¸½×¢ĞÅÏ¢ÁĞ±í
+; æè¿°ï¼š
+;       1) æ‰“å°é™„æ³¨ä¿¡æ¯åˆ—è¡¨
 ;-------------------------------------------------
 dump_append_msg_list:
 
 %ifndef DEBUG_RECORD_ENABLE
         ;;
-        ;; Èç¹ûÃ»ÓĞ¶¨Òå DEBUG_RECORD_ENABLE ·ûºÅ£¬ÔòÏÔÊ¾£º *** NO RECORD ***
+        ;; å¦‚æœæ²¡æœ‰å®šä¹‰ DEBUG_RECORD_ENABLE ç¬¦å·ï¼Œåˆ™æ˜¾ç¤ºï¼š *** NO RECORD ***
         ;;
         mov esi, 2
         mov edi, 0
@@ -368,19 +368,19 @@ dump_append_msg_list:
 %endif 
         
         REX.Wrxb
-        mov edx, [ebp + SDA.DrsHeadPtr]                         ; edx = ¼ÇÂ¼¶¥²¿        
+        mov edx, [ebp + SDA.DrsHeadPtr]                         ; edx = è®°å½•é¡¶éƒ¨        
 
         
 dump_append_msg_list.start:
         ;;
-        ;; ebx Ö¸Ïò DRS Á´
+        ;; ebx æŒ‡å‘ DRS é“¾
         ;;
         REX.Wrxb
         mov ebx, edx
-        mov ecx, 20                                             ; Ã¿´Î´òÓ¡ 20 ĞĞ
+        mov ecx, 20                                             ; æ¯æ¬¡æ‰“å° 20 è¡Œ
         
         ;;
-        ;; ÔÚ(2:0)ÉÏ´òÓ¡ÁĞ±í
+        ;; åœ¨(2:0)ä¸Šæ‰“å°åˆ—è¡¨
         ;;        
         mov esi, 2
         mov edi, 0
@@ -430,7 +430,7 @@ dump_append_msg_list.loop:
 
 dump_append_msg_list.loop.@0:
         ;;
-        ;; Èç¹ûÓĞÇ°×ºĞÅÏ¢£¬Ôò´òÓ¡
+        ;; å¦‚æœæœ‰å‰ç¼€ä¿¡æ¯ï¼Œåˆ™æ‰“å°
         ;;
         REX.Wrxb
         mov esi, [ebx + DRS.PrefixMsg]
@@ -442,14 +442,14 @@ dump_append_msg_list.loop.@0:
         
 dump_append_msg_list.loop.@1:
         ;;
-        ;; ´òÓ¡¸½¼ÓĞÅÏ¢
+        ;; æ‰“å°é™„åŠ ä¿¡æ¯
         ;;
         REX.Wrxb
         mov esi, [ebx + DRS.AppendMsg]                          ; AppendMsg
         call puts
         
         ;;
-        ;; Èç¹ûÓĞºó×ºĞÅÏ¢£¬Ôò´òÓ¡
+        ;; å¦‚æœæœ‰åç¼€ä¿¡æ¯ï¼Œåˆ™æ‰“å°
         ;;
         REX.Wrxb
         mov esi, [ebx + DRS.PostfixMsg]
@@ -473,22 +473,22 @@ dump_append_msg_list.loop.@2:
         
 dump_append_msg_list.next:        
         ;;
-        ;; µÈ´ı°´¼ü
+        ;; ç­‰å¾…æŒ‰é”®
         ;;
         call wait_a_key
         
         ;;
-        ;; ´¦Àí°´¼ü
-        ;; 1) <Up>£ºÏòÉÏ·­ĞĞ
-        ;; 2) <Down>: ÏòÏÂ·­ĞĞ
-        ;; 3) <SPACE>£º¸üĞÂĞÅÏ¢
-        ;; 4) <ENTER>£ºÇĞ»»»Ø dump_debug_record Ä£Ê½
+        ;; å¤„ç†æŒ‰é”®
+        ;; 1) <Up>ï¼šå‘ä¸Šç¿»è¡Œ
+        ;; 2) <Down>: å‘ä¸‹ç¿»è¡Œ
+        ;; 3) <SPACE>ï¼šæ›´æ–°ä¿¡æ¯
+        ;; 4) <ENTER>ï¼šåˆ‡æ¢å› dump_debug_record æ¨¡å¼
         ;;
         cmp al, SC_UP
         jne dump_append_msg_list.next.@1
         
         ;;
-        ;; ÏòÉÏ·­ĞĞ
+        ;; å‘ä¸Šç¿»è¡Œ
         ;;
         REX.Wrxb
         mov edx, [edx + DRS.PrevDrs]
@@ -503,7 +503,7 @@ dump_append_msg_list.next.@1:
         jne dump_append_msg_list.next.@2
         
         ;;
-        ;; ÏòÏÂ·­ĞĞ
+        ;; å‘ä¸‹ç¿»è¡Œ
         ;;
         REX.Wrxb
         mov eax, edx
@@ -518,10 +518,10 @@ dump_append_msg_list.next.@1:
         
 dump_append_msg_list.next.@2:        
 
-        cmp al, SC_SPACE                                        ; ÊÇ·ñÎª <SPACE>
+        cmp al, SC_SPACE                                        ; æ˜¯å¦ä¸º <SPACE>
         je dump_append_msg_list.start
         
-        cmp al, SC_ENTER                                        ; ÊÇ·ñÎª <ENTER>
+        cmp al, SC_ENTER                                        ; æ˜¯å¦ä¸º <ENTER>
         jne dump_append_msg_list.next
 
         
@@ -542,14 +542,14 @@ dump_append_msg_list.done:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´òÓ¡ debug µã¼ÇÂ¼
+; æè¿°ï¼š
+;       1) æ‰“å° debug ç‚¹è®°å½•
 ;-------------------------------------------------
 dump_debug_record:
 
 %ifndef DEBUG_RECORD_ENABLE
         ;;
-        ;; Èç¹ûÃ»ÓĞ¶¨Òå DEBUG_RECORD_ENABLE ·ûºÅ£¬ÔòÏÔÊ¾£º *** NO RECORD ***
+        ;; å¦‚æœæ²¡æœ‰å®šä¹‰ DEBUG_RECORD_ENABLE ç¬¦å·ï¼Œåˆ™æ˜¾ç¤ºï¼š *** NO RECORD ***
         ;;
         mov esi, 2
         mov edi, 0
@@ -585,10 +585,10 @@ dump_debug_record:
 %endif  
 
 
-        mov ecx, 1                                      ; µÚ 1 Ìõ¼ÇÂ¼
+        mov ecx, 1                                      ; ç¬¬ 1 æ¡è®°å½•
         
         ;;
-        ;; ¶ÁÈ¡ DRS Á´±íÍ·
+        ;; è¯»å– DRS é“¾è¡¨å¤´
         ;;
         REX.Wrxb
         mov ebx, [ebp + SDA.DrsHeadPtr] 
@@ -620,11 +620,11 @@ dump_debug_record.loop:
                
                
         ;;
-        ;; ±éÀú DRS Á´±í
+        ;; éå† DRS é“¾è¡¨
         ;;               
 dump_debug_record.next:        
         ;;
-        ;; ´òÓ¡ DRS ¼ÇÂ¼ĞÅÏ¢
+        ;; æ‰“å° DRS è®°å½•ä¿¡æ¯
         ;;
         REX.Wrxb
         mov esi, ebx
@@ -638,55 +638,55 @@ dump_debug_record.next:
         jnz dump_debug_record.@0
         
         ;;
-        ;; µ½´ï¼ÇÂ¼µ×
+        ;; åˆ°è¾¾è®°å½•åº•
         ;;
         mov esi, Drs.Msg3
         call puts
              
 dump_debug_record.@0:        
         ;;
-        ;; µÈ´ı°´¼ü
+        ;; ç­‰å¾…æŒ‰é”®
         ;;
         call wait_a_key
         
         ;;
-        ;; ´¦Àí°´¼ü
+        ;; å¤„ç†æŒ‰é”®
         ;;
-        cmp al, SC_ESC                                          ; ÊÇ·ñÎª <ESC>
+        cmp al, SC_ESC                                          ; æ˜¯å¦ä¸º <ESC>
         je dump_debug_record.done
-        cmp al, SC_ENTER                                        ; ÊÇ·ñÎª <Enter>
+        cmp al, SC_ENTER                                        ; æ˜¯å¦ä¸º <Enter>
         jne dump_debug_record.@01
         ;;
-        ;; ÇĞ»»ÏÔÊ¾ AppendMsg ÁĞ±í
+        ;; åˆ‡æ¢æ˜¾ç¤º AppendMsg åˆ—è¡¨
         ;;
         call dump_append_msg_list
         jmp dump_debug_record.loop
         
 dump_debug_record.@01:
-        cmp al, SC_PGUP                                         ; ÊÇ·ñÎª <PageUp>
+        cmp al, SC_PGUP                                         ; æ˜¯å¦ä¸º <PageUp>
         jne dump_debug_record.@1
         
         ;;
-        ;; ´¦ÀíÏòÉÏ·­Ò³
+        ;; å¤„ç†å‘ä¸Šç¿»é¡µ
         ;;
         REX.Wrxb
         cmp DWORD [ebx + DRS.PrevDrs], 0
         je dump_debug_record.@0
         REX.Wrxb
-        mov ebx, [ebx + DRS.PrevDrs]                            ; Ö¸ÏòÇ°Ò»Ìõ¼ÇÂ¼       
+        mov ebx, [ebx + DRS.PrevDrs]                            ; æŒ‡å‘å‰ä¸€æ¡è®°å½•       
         DECv ecx
         REX.Wrxb
-        cmp ebx, [ebp + SDA.DrsHeadPtr]                         ; ÊÇ·ñµ½´ï¼ÇÂ¼¶¥²¿
+        cmp ebx, [ebp + SDA.DrsHeadPtr]                         ; æ˜¯å¦åˆ°è¾¾è®°å½•é¡¶éƒ¨
         jne dump_debug_record.loop
         mov ecx, 1
         jmp dump_debug_record.loop
         
 dump_debug_record.@1:  
-        cmp al, SC_PGDN                                         ; ÊÇ·ñÎª <PageDown>
+        cmp al, SC_PGDN                                         ; æ˜¯å¦ä¸º <PageDown>
         jne dump_debug_record.@0
                 
         ;;
-        ;; ´¦ÀíÏòÏÂ·­Ò³
+        ;; å¤„ç†å‘ä¸‹ç¿»é¡µ
         ;;
         REX.Wrxb
         cmp DWORD [ebx + DRS.NextDrs], 0

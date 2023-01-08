@@ -2,7 +2,7 @@
 
 
 ;-----------------------------------------
-; strlen(): µÃÈ¡×Ö·û´®³¤¶È
+; strlen(): å¾—å–å­—ç¬¦ä¸²é•¿åº¦
 ; input:
 ;                esi: string
 ; output:
@@ -21,9 +21,9 @@ strlen_done:
         
         
 ;---------------------------------------------------
-; memcpy(): ¸´ÖÆ×Ö·û
+; memcpy(): å¤åˆ¶å­—ç¬¦
 ; input:
-;                esi: Ô´buffer edi:Ä¿±êbuffer [esp+4]: ×Ö½ÚÊı
+;                esi: æºbuffer edi:ç›®æ ‡buffer [esp+4]: å­—èŠ‚æ•°
 ;---------------------------------------------------
 __memcpy:
         push es
@@ -41,7 +41,7 @@ __memcpy:
         ret
 
 ;----------------------------------------------
-; reverse():        °´bit·´×ª
+; reverse():        æŒ‰bitåè½¬
 ; input:
 ;                esi: DWORD value
 ; ouput:
@@ -93,15 +93,15 @@ __get_current_column:
 
 
 ;--------------------------------------------
-; test_println():        ²âÊÔÊÇ·ñĞèÒª´òÓ¡»»ĞĞ·û
+; test_println():        æµ‹è¯•æ˜¯å¦éœ€è¦æ‰“å°æ¢è¡Œç¬¦
 ; input:
 ;                esi: string
 ; output:
-;                eax: 1(ĞèÒª), 0(²»ĞèÒª£©
+;                eax: 1(éœ€è¦), 0(ä¸éœ€è¦ï¼‰
 ;--------------------------------------------
 __test_println:
         push ecx
-        call __strlen                ; µÃµ½×Ö·û´®³¤¶È
+        call __strlen                ; å¾—åˆ°å­—ç¬¦ä¸²é•¿åº¦
         mov ecx, eax
         shl ecx, 1                        ; len * 2
         call __get_current_column
@@ -114,9 +114,9 @@ __test_println:
         ret
         
 ;-------------------------------------------
-; write_char(char c): Íù video ÀïĞ´ÈëÒ»¸ö×Ö·û
+; write_char(char c): å¾€ video é‡Œå†™å…¥ä¸€ä¸ªå­—ç¬¦
 ; input:
-;                esi: ×Ö·û
+;                esi: å­—ç¬¦
 ;-------------------------------------------
 __write_char:
         push ebx
@@ -143,7 +143,7 @@ do_write_char_done:
         
 
 ;--------------------------------
-; putc(): ´òÓ¡Ò»¸ö×Ö·û
+; putc(): æ‰“å°ä¸€ä¸ªå­—ç¬¦
 ; input: 
 ;                esi: char
 ;--------------------------------
@@ -153,14 +153,14 @@ __putc:
         ret
 
 ;--------------------------------
-; println(): ´òÓ¡»»ĞĞ
+; println(): æ‰“å°æ¢è¡Œ
 ;--------------------------------
 __println:
         mov si, 10
         call __putc
         ret
 ;------------------------------
-; printblank(): ´òÓ¡Ò»¸ö¿Õ¸ñ
+; printblank(): æ‰“å°ä¸€ä¸ªç©ºæ ¼
 ;-----------------------------
 __printblank:
         mov si, ' '
@@ -168,7 +168,7 @@ __printblank:
         ret        
 
 ;--------------------------------
-; puts(): ´òÓ¡×Ö·û´®ĞÅÏ¢
+; puts(): æ‰“å°å­—ç¬¦ä¸²ä¿¡æ¯
 ; input: 
 ;                esi: message
 ;--------------------------------
@@ -193,7 +193,7 @@ do_puts_done:
 
 
 ;-----------------------------------------
-; hex_to_char(): ½« Hex Êı×Ö×ª»»Îª Char ×Ö·û
+; hex_to_char(): å°† Hex æ•°å­—è½¬æ¢ä¸º Char å­—ç¬¦
 ; input:
 ;                esi: Hex number
 ; ouput:
@@ -211,16 +211,16 @@ do_hex_to_char:
         ret
 
 ;--------------------------------------
-; dump_hex() : ´òÓ¡ hex ´®
+; dump_hex() : æ‰“å° hex ä¸²
 ; input:
 ;        esi: value
 ;--------------------------------------
 __dump_hex:
         push ecx
         push esi
-        mov ecx, 8                                        ; 8 ¸ö half-byte
+        mov ecx, 8                                        ; 8 ä¸ª half-byte
 do_dump_hex_loop:
-        rol esi, 4                                        ; ¸ß4Î» --> µÍ 4Î»
+        rol esi, 4                                        ; é«˜4ä½ --> ä½ 4ä½
         mov edi, esi
         call __hex_to_char
         mov esi, eax
@@ -233,7 +233,7 @@ do_dump_hex_loop:
         ret
 
 ;---------------------------------------
-; print_value(): ´òÓ¡Öµ
+; print_value(): æ‰“å°å€¼
 ;---------------------------------------
 __print_value:
         call __dump_hex
@@ -247,32 +247,32 @@ __print_half_byte_value:
         ret
 
 ;------------------------
-; print_decimal(): ´òÓ¡Ê®½øÖÆÊı
+; print_decimal(): æ‰“å°åè¿›åˆ¶æ•°
 ; input:
-;                esi - 32 Î»Öµ
+;                esi - 32 ä½å€¼
 ;-------------------------
 __print_decimal:
         jmp do_print_decimal
-quotient        dd 0                        ; ÉÌ
-remainder        dd 0                        ; ÓàÊı
+quotient        dd 0                        ; å•†
+remainder        dd 0                        ; ä½™æ•°
 value_table: times 20 db 0
 do_print_decimal:        
         push edx
         push ecx
-        mov eax, esi                        ; ³õÊ¼ÉÌÖµ
+        mov eax, esi                        ; åˆå§‹å•†å€¼
         mov [quotient], eax        
         mov ecx, 10
         lea esi, [value_table+19]        
         
 do_print_decimal_loop:
-        dec esi                              ; Ö¸Ïò value_table
+        dec esi                              ; æŒ‡å‘ value_table
         xor edx, edx
-        div ecx                              ; ÉÌ/10
-        test eax, eax                        ; ÉÌ == 0 ?
+        div ecx                              ; å•†/10
+        test eax, eax                        ; å•† == 0 ?
         cmovz edx, [quotient]
         mov [quotient], eax
         lea edx, [edx + '0']        
-        mov [esi], dl                        ; Ğ´ÈëÓàÊıÖµ
+        mov [esi], dl                        ; å†™å…¥ä½™æ•°å€¼
         jnz do_print_decimal_loop
         
 do_print_decimal_done:
@@ -283,9 +283,9 @@ do_print_decimal_done:
 
 
 ;--------------------------------------
-; print_dword_float(): ´òÓ¡µ¥¾«¶ÈÖµ
+; print_dword_float(): æ‰“å°å•ç²¾åº¦å€¼
 ; input:
-;       esi - float µØÖ·Öµ
+;       esi - float åœ°å€å€¼
 ;-------------------------------------
 __print_dword_float:
         fnsave [fpu_image32]
@@ -296,9 +296,9 @@ __print_dword_float:
         ret
             
 ;--------------------------------------
-; print_qword_float(): ´òÓ¡Ë«¾«¶ÈÖµ
+; print_qword_float(): æ‰“å°åŒç²¾åº¦å€¼
 ; input:
-;       esi - double float µØÖ·Öµ
+;       esi - double float åœ°å€å€¼
 ;-------------------------------------
 __print_qword_float:
         fnsave [fpu_image32]
@@ -309,7 +309,7 @@ __print_qword_float:
         ret
 
 ;--------------------------------------
-; ´òÓ¡À©Õ¹Ë«¾«¶ÈÖµ
+; æ‰“å°æ‰©å±•åŒç²¾åº¦å€¼
 ;-------------------------------------
 __print_tword_float:
         fnsave [fpu_image32]
@@ -320,7 +320,7 @@ __print_tword_float:
         ret
                 
 ;-------------------------------------------
-; ´òÓ¡Ğ¡ÊıµãÇ°µÄÖµ
+; æ‰“å°å°æ•°ç‚¹å‰çš„å€¼
 ;-------------------------------------------     
 __print_point:
         jmp do_print_point
@@ -330,16 +330,16 @@ do_print_point:
         lea ebx, [digit_array + 98]
         mov BYTE [ebx], '.'
 print_point_loop:        
-;; µ±Ç°£º
+;; å½“å‰ï¼š
 ;; st(3) = 10.0
 ;; st(2) = 1.0
-;; st(1) = ÓàÊıÖµ
-;; st(0) = point Öµ
+;; st(1) = ä½™æ•°å€¼
+;; st(0) = point å€¼
         dec ebx
         fdiv st0, st3           ; value / 10
         fld st2
         fld st1
-        fprem                   ; ÇóÓàÊı
+        fprem                   ; æ±‚ä½™æ•°
         fsub st2, st0
         fmul st0, st5
         fistp DWORD [value]
@@ -348,7 +348,7 @@ print_point_loop:
         mov BYTE [ebx], al  
         fstp DWORD [value]      
         fldz
-        fcomip st0, st1         ; ÓàÊıĞ¡ÓÚ 0
+        fcomip st0, st1         ; ä½™æ•°å°äº 0
         jnz print_point_loop
 
 print_point_done:        
@@ -359,7 +359,7 @@ print_point_done:
         ret    
                 
 ;--------------------
-; ´òÓ¡¸¡µãÊı
+; æ‰“å°æµ®ç‚¹æ•°
 ;--------------------        
 __print_float:
         jmp do_print_float
@@ -370,29 +370,29 @@ do_print_float:
         fld TWORD [f_value]             ; st2
         fld1                            ; st1
         fld st2                         ; st0
-        fprem                           ; st0/st1, È¡ÓàÊı
+        fprem                           ; st0/st1, å–ä½™æ•°
         fld st3
         fsub st0, st1
         call __print_point
         
         mov DWORD [point], 0                
-;; µ±Ç°£º
+;; å½“å‰ï¼š
 ;; st(2) = 10.0
 ;; st(1) = 1.0
-;; st(0) = ÓàÊıÖµ        
+;; st(0) = ä½™æ•°å€¼        
 do_print_float_loop:        
         fldz
-        fcomip st0, st1                 ; ÓàÊıÊÇ·ñÎª 0
+        fcomip st0, st1                 ; ä½™æ•°æ˜¯å¦ä¸º 0
         jz print_float_next
-        fmul st0, st2                   ; ÓàÊı * 10
+        fmul st0, st2                   ; ä½™æ•° * 10
         fld st1                         ; 1.0
-        fld st1                         ; ÓàÊı * 10
-        fprem                           ; È¡ÓàÊı
+        fld st1                         ; ä½™æ•° * 10
+        fprem                           ; å–ä½™æ•°
         fld st2
         fsub st0, st1
         fistp DWORD [value]
         mov esi, [value]
-        call __print_decimal          	; ´òÓ¡Öµ    
+        call __print_decimal          	; æ‰“å°å€¼    
         mov DWORD [point], 1
         fxch st2
         fstp DWORD [value]
@@ -409,7 +409,7 @@ print_float_done:
 
 
 ;;---------------------------
-;; ´òÓ¡Ò»¸ö byte
+;; æ‰“å°ä¸€ä¸ª byte
 ;------------------------------        
 __print_byte_value:
         push ebx
@@ -455,7 +455,7 @@ __print_dword_value:
 ;--------------------------
 ; print_qword_value()
 ; input:
-;                edi:esi - 64 Î»Öµ
+;                edi:esi - 64 ä½å€¼
 ;--------------------------
 __print_qword_value:
         push ebx
@@ -470,11 +470,11 @@ __print_qword_value:
         ret        
         
 ;-------------------------------------------
-; letter():  ²âÊÔÊÇ·ñÎª×ÖÄ¸
+; letter():  æµ‹è¯•æ˜¯å¦ä¸ºå­—æ¯
 ; input:
 ;                esi: char
 ; output:
-;                eax: 1(ÊÇ×ÖÄ¸), 0(²»ÊÇ×ÖÄ¸£©
+;                eax: 1(æ˜¯å­—æ¯), 0(ä¸æ˜¯å­—æ¯ï¼‰
 ;-------------------------------------------
 __letter:
         and esi, 0xff
@@ -494,11 +494,11 @@ test_letter_done:
         ret
 
 ;---------------------------------------
-; lowercase(): ²âÊÔÊÇ·ñÎªĞ¡Ğ´×ÖÄ¸
+; lowercase(): æµ‹è¯•æ˜¯å¦ä¸ºå°å†™å­—æ¯
 ; input:
 ;                esi: char
 ; output:
-;                1: ÊÇ£¬ 0²»ÊÇ
+;                1: æ˜¯ï¼Œ 0ä¸æ˜¯
 ;----------------------------------------
 __lowercase:
         and esi, 0xff
@@ -512,11 +512,11 @@ test_lowercase_done:
         ret
         
 ;---------------------------------------
-; uppercase(): ²âÊÔÊÇ·ñÎª´óĞ´×ÖÄ¸
+; uppercase(): æµ‹è¯•æ˜¯å¦ä¸ºå¤§å†™å­—æ¯
 ; input:
 ;                esi: char
 ; output:
-;                1: ÊÇ£¬ 0²»ÊÇ
+;                1: æ˜¯ï¼Œ 0ä¸æ˜¯
 ;----------------------------------------
 __uppercase:
         and esi, 0xff
@@ -530,7 +530,7 @@ test_uppercase_done:
         ret
 
 ;-----------------------------------------
-; digit(): ²âÊÔÊÇ·ñÎªÊı×Ö
+; digit(): æµ‹è¯•æ˜¯å¦ä¸ºæ•°å­—
 ; input:
 ;                esi: char
 ; output: 
@@ -550,9 +550,9 @@ test_digit_done:
         
         
 ;----------------------------------------------------------------------
-; lower_upper():        ´óĞ¡Ğ´×ÖÄ¸µÄ×ª»»
+; lower_upper():        å¤§å°å†™å­—æ¯çš„è½¬æ¢
 ; input:
-;                esi:ĞèÒª×ª»»µÄ×ÖÄ¸,  edi: 1 (Ğ¡×Ö×ª»»Îª´óĞ´)£¬0 (´óĞ´×ª»»ÎªĞ¡Ğ´)
+;                esi:éœ€è¦è½¬æ¢çš„å­—æ¯,  edi: 1 (å°å­—è½¬æ¢ä¸ºå¤§å†™)ï¼Œ0 (å¤§å†™è½¬æ¢ä¸ºå°å†™)
 ; output:
 ;                eax: result letter
 ;---------------------------------------------------------------------
@@ -561,10 +561,10 @@ __lower_upper:
         mov ecx, DWORD ('a' - 'A')
         call __letter
         test eax, eax
-        jz do_lower_upper_done                   ; Èç¹û²»ÊÇ×ÖÄ¸
+        jz do_lower_upper_done                   ; å¦‚æœä¸æ˜¯å­—æ¯
         bt edi, 0
         jnc set_lower_upper                      ; 1?
-        neg ecx                                 ; Ğ¡Ğ´×ª´óĞ´£º¼õ
+        neg ecx                                 ; å°å†™è½¬å¤§å†™ï¼šå‡
 set_lower_upper:                
         add esi, ecx
 do_lower_upper_done:                
@@ -573,32 +573,32 @@ do_lower_upper_done:
         ret
 
 ;---------------------------------------------------
-; upper_to_lower(): ´óĞ´×ÖÄ¸×ªĞ¡Ğ´×ÖÄ¸
+; upper_to_lower(): å¤§å†™å­—æ¯è½¬å°å†™å­—æ¯
 ; input:
-;                esi: ĞèÒª×ª»»µÄ×ÖÄ¸
+;                esi: éœ€è¦è½¬æ¢çš„å­—æ¯
 ; output:
-;                eax: Ğ¡Ğ´×ÖÄ¸
+;                eax: å°å†™å­—æ¯
 ;---------------------------------------------------
 __upper_to_lower:
-        call __uppercase                        ; ÊÇ·ñÎª´óĞ´×ÖÄ¸
+        call __uppercase                        ; æ˜¯å¦ä¸ºå¤§å†™å­—æ¯
         test eax, eax
-        jz do_upper_to_lower_done        ; Èç¹û²»ÊÇ¾Í²»¸Ä±ä
+        jz do_upper_to_lower_done        ; å¦‚æœä¸æ˜¯å°±ä¸æ”¹å˜
         mov eax, DWORD ('a' - 'A')
 do_upper_to_lower_done:        
         add eax, esi
         ret
         
 ;---------------------------------------------------
-; lower_to_upper(): Ğ¡Ğ´×ÖÄ¸×ª´óĞ´×ÖÄ¸
+; lower_to_upper(): å°å†™å­—æ¯è½¬å¤§å†™å­—æ¯
 ; input:
-;                esi: ĞèÒª×ª»»µÄ×ÖÄ¸
+;                esi: éœ€è¦è½¬æ¢çš„å­—æ¯
 ; output:
-;                eax: ´óĞ´×ÖÄ¸
+;                eax: å¤§å†™å­—æ¯
 ;---------------------------------------------------
 __lower_to_upper:
-        call __lowercase                        ; ÊÇ·ñÎªĞ¡Ğ´×ÖÄ¸
+        call __lowercase                        ; æ˜¯å¦ä¸ºå°å†™å­—æ¯
         test eax, eax
-        jz do_lower_to_upper_done        ; Èç¹û²»ÊÇ¾Í²»¸Ä±ä
+        jz do_lower_to_upper_done        ; å¦‚æœä¸æ˜¯å°±ä¸æ”¹å˜
         mov eax, DWORD ('a' - 'A')
         neg eax
 do_lower_to_upper_done:        
@@ -606,9 +606,9 @@ do_lower_to_upper_done:
         ret
                 
 ;---------------------------------------------------
-; lowers_to_uppers(): Ğ¡Ğ´´®×ª»»Îª´óĞ´´®
+; lowers_to_uppers(): å°å†™ä¸²è½¬æ¢ä¸ºå¤§å†™ä¸²
 ; input:
-;                esi: Ô´´®£¬ edi:Ä¿±ê´®        
+;                esi: æºä¸²ï¼Œ edi:ç›®æ ‡ä¸²        
 ;---------------------------------------------------
 __lowers_to_uppers:
         push ecx
@@ -637,9 +637,9 @@ do_lowers_to_uppers_done:
         ret
 
 ;---------------------------------------------------
-; uppers_to_lowers(): ´óĞ´´®×ª»»ÎªĞ¡Ğ´´®
+; uppers_to_lowers(): å¤§å†™ä¸²è½¬æ¢ä¸ºå°å†™ä¸²
 ; input:
-;                esi: Ô´´®£¬ edi:Ä¿±ê´®        
+;                esi: æºä¸²ï¼Œ edi:ç›®æ ‡ä¸²        
 ;---------------------------------------------------
 __uppers_to_lowers:
         push ecx
@@ -668,15 +668,15 @@ do_uppers_to_lowers_done:
         ret
 
 ;--------------------------------------------------------------
-; get_qword_hex_string(): ½« QWORD ×ª»»Îª×Ö·û´®
+; get_qword_hex_string(): å°† QWORD è½¬æ¢ä¸ºå­—ç¬¦ä¸²
 ; input:
-;                esi: Ö¸Áî QWORD ÖµµÄÖ¸Õë, edi: buffer£¨×îÉÙĞèÒª17bytes)
+;                esi: æŒ‡ä»¤ QWORD å€¼çš„æŒ‡é’ˆ, edi: bufferï¼ˆæœ€å°‘éœ€è¦17bytes)
 ;--------------------------------------------------------------
 __get_qword_hex_string:
         push ecx
         push esi
         mov ecx, esi
-        mov esi, [ecx + 4]                        ; dump ¸ß 32 Î»
+        mov esi, [ecx + 4]                        ; dump é«˜ 32 ä½
         call __get_dword_hex_string
         mov esi, [ecx]
         call __get_dword_hex_string
@@ -685,17 +685,17 @@ __get_qword_hex_string:
         ret
 
 ;-------------------------------------------------
-; get_dword_hex_string(): ½«Êı (DWORD) ×ª»»Îª×Ö·û´®
+; get_dword_hex_string(): å°†æ•° (DWORD) è½¬æ¢ä¸ºå­—ç¬¦ä¸²
 ; input:
-;                esi: Ğè×ª»»µÄÊı£¨dword size)
-;                edi: Ä¿±ê´® buffer£¨×î¶ÌĞèÒª 9 bytes£¬°üÀ¨ 0)
+;                esi: éœ€è½¬æ¢çš„æ•°ï¼ˆdword size)
+;                edi: ç›®æ ‡ä¸² bufferï¼ˆæœ€çŸ­éœ€è¦ 9 bytesï¼ŒåŒ…æ‹¬ 0)
 ;---------------------------------------------------
 __get_dword_hex_string:
         push ecx
         push esi
-        mov ecx, 8                                        ; 8 ¸ö half-byte
+        mov ecx, 8                                        ; 8 ä¸ª half-byte
 do_get_dword_hex_string_loop:
-        rol esi, 4                                        ; ¸ß4Î» --> µÍ 4Î»
+        rol esi, 4                                        ; é«˜4ä½ --> ä½ 4ä½
         call __hex_to_char
         mov byte [edi], al
         inc edi
@@ -707,9 +707,9 @@ do_get_dword_hex_string_loop:
         ret        
 
 ;----------------------------------------------------
-; get_byte_hex_string(): ½« BYTE ×ª»»Îª×Ö·û´®
+; get_byte_hex_string(): å°† BYTE è½¬æ¢ä¸ºå­—ç¬¦ä¸²
 ; input:
-;                esi: BYTE Öµ, edi: buffer£¨×î¶ÌĞèÒª3¸ö)
+;                esi: BYTE å€¼, edi: bufferï¼ˆæœ€çŸ­éœ€è¦3ä¸ª)
 ;----------------------------------------------------
 __get_byte_hex_string:
         push ecx
@@ -770,12 +770,12 @@ __get_video_current:
 
 
 
-;******** lib32 Ä£¿éµÄ±äÁ¿¶¨Òå ********
+;******** lib32 æ¨¡å—çš„å˜é‡å®šä¹‰ ********
 ;;video_current   dd 0B8000h
 
 
         
-;; ¹² 28 ¸ö×Ö½Ú
+;; å…± 28 ä¸ªå­—èŠ‚
 fpu_image32:
 x87env32:
 control_word    dd 0
@@ -787,8 +787,8 @@ opcode          dw 0
 op_offset       dd 0
 op_selector     dd 0
 
-;; FSAVE/FNSAVE£¬FRSTOR Ö¸ÁîµÄ¸½¼ÓÓ³Ïñ
-;; ¶¨Òå 8 ¸ö 80 Î»µÄÄÚ´æµØÖ·±£´æ data ¼Ä´æÆ÷Öµ
+;; FSAVE/FNSAVEï¼ŒFRSTOR æŒ‡ä»¤çš„é™„åŠ æ˜ åƒ
+;; å®šä¹‰ 8 ä¸ª 80 ä½çš„å†…å­˜åœ°å€ä¿å­˜ data å¯„å­˜å™¨å€¼
 r0_value        dt 0.0
 r1_value        dt 0.0
 r2_value        dt 0.0

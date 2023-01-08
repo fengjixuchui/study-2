@@ -1,6 +1,6 @@
 ;*************************************************
 ; crt16.asm                                      *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
 
@@ -8,7 +8,7 @@
 %include "..\inc\support.inc"
 
 ;;
-;; ÕâÊÇ 16Î»ÊµÄ£Ê½ÏÂÊ¹ÓÃµÄ runtime ¿â
+;; è¿™æ˜¯ 16ä½å®æ¨¡å¼ä¸‹ä½¿ç”¨çš„ runtime åº“
 ;;
 
 
@@ -39,9 +39,9 @@ cls:
         
 
 ;-----------------------------------------------------------------
-; read_sector(): ¶ÁÈ¡ÉÈÇø
+; read_sector(): è¯»å–æ‰‡åŒº
 ; input:
-;       Ê¹ÓÃ disk_address_packet ½á¹¹
+;       ä½¿ç”¨ disk_address_packet ç»“æ„
 ; output:
 ;       0 - successful, otherwise - error code
 ;----------------------------------------------------------------        
@@ -51,20 +51,20 @@ read_sector:
         mov es, WORD [buffer_selector]                  ; es = buffer_selector
                
         ;
-        ; ÆğÊ¼ÉÈÇø´óÓÚ 0FFFFFFFFh
+        ; èµ·å§‹æ‰‡åŒºå¤§äº 0FFFFFFFFh
         ;
         cmp DWORD [start_sector + 4], 0
         jnz check_lba
         
         ;
-        ; Èç¹ûÄ£¿éÔÚµÍÓÚ 504M ÇøÓòÄÚÔòÊ¹ÓÃ CHS Ä£Ê½
+        ; å¦‚æœæ¨¡å—åœ¨ä½äº 504M åŒºåŸŸå†…åˆ™ä½¿ç”¨ CHS æ¨¡å¼
         ;
         cmp DWORD [start_sector], 504 * 1024 * 2        ; 504M
         jb chs_mode
         
 check_lba:
         ;
-        ; ¼ì²éÊÇ·ñÖ§³Ö 13h À©Õ¹¹¦ÄÜ
+        ; æ£€æŸ¥æ˜¯å¦æ”¯æŒ 13h æ‰©å±•åŠŸèƒ½
         ;
         call check_int13h_extension
         test ax, ax
@@ -72,7 +72,7 @@ check_lba:
         
 lba_mode:        
         ;
-        ; Ê¹ÓÃ LBA ·½Ê½¶Á sector
+        ; ä½¿ç”¨ LBA æ–¹å¼è¯» sector
         ;
         call read_sector_with_extension
         test ax, ax
@@ -80,41 +80,41 @@ lba_mode:
 
 
         ;
-        ; Ê¹ÓÃ CHS ·½Ê½¶Á sector
+        ; ä½¿ç”¨ CHS æ–¹å¼è¯» sector
         ;
 chs_mode:       
 
         ;
-        ; Èç¹ûÒ»´Î¶Á³¬¹ı 63 ¸öÉÈÇøÔò·ÖÅú¶ÁÈ¡£¬Ã¿´Î×î¶à¸ö63ÉÈÇø
+        ; å¦‚æœä¸€æ¬¡è¯»è¶…è¿‡ 63 ä¸ªæ‰‡åŒºåˆ™åˆ†æ‰¹è¯»å–ï¼Œæ¯æ¬¡æœ€å¤šä¸ª63æ‰‡åŒº
         ;
         movzx cx, BYTE [read_sectors]
         mov bx, cx
-        and bx, 3Fh                                     ; bl = 64ÒÔÄÚÉÈÇøÊı
+        and bx, 3Fh                                     ; bl = 64ä»¥å†…æ‰‡åŒºæ•°
         shr cx, 6                                       ; read_sectors / 64
         
-        mov BYTE [read_sectors], 64                     ; Ã¿´Î¶ÁÈ¡64¸öÉÈÇø
+        mov BYTE [read_sectors], 64                     ; æ¯æ¬¡è¯»å–64ä¸ªæ‰‡åŒº
         
 chs_mode.@0:        
         test cx, cx
         jz chs_mode.@1
 
-        call read_sector_with_chs                       ; ¶ÁÉÈÇø
+        call read_sector_with_chs                       ; è¯»æ‰‡åŒº
                 
         ;
-        ; µ÷ÕûÆğÊ¼ÉÈÇøºÍbuffer
+        ; è°ƒæ•´èµ·å§‹æ‰‡åŒºå’Œbuffer
         ;
-        add DWORD [start_sector], 64                    ; ÏÂÒ»¸öÆğÊ¼ÉÈÇø
-        add WORD [buffer_offset], 64 * 512              ; Ö¸ÏòÏÂÒ»¸ö buffer ¿é
+        add DWORD [start_sector], 64                    ; ä¸‹ä¸€ä¸ªèµ·å§‹æ‰‡åŒº
+        add WORD [buffer_offset], 64 * 512              ; æŒ‡å‘ä¸‹ä¸€ä¸ª buffer å—
         setc al
         shl ax, 12
-        add WORD [buffer_selector], ax                  ; selector Ôö¼Ó
+        add WORD [buffer_selector], ax                  ; selector å¢åŠ 
         dec cx
         jmp chs_mode.@0
 
 
 chs_mode.@1:
         ;
-        ; ¶ÁÈ¡Ê£ÓàÉÈÇø
+        ; è¯»å–å‰©ä½™æ‰‡åŒº
         ;
         mov [read_sectors], bl
         call read_sector_with_chs                
@@ -127,9 +127,9 @@ read_sector_done:
 
 
 ;--------------------------------------------------------
-; check_int13h_extension(): ²âÊÔÊÇ·ñÖ§³Ö int13h À©Õ¹¹¦ÄÜ
+; check_int13h_extension(): æµ‹è¯•æ˜¯å¦æ”¯æŒ int13h æ‰©å±•åŠŸèƒ½
 ; input:
-;       Ê¹ÓÃ driver_paramter_table ½á¹¹
+;       ä½¿ç”¨ driver_paramter_table ç»“æ„
 ; ouput:
 ;       1 - support, 0 - not support
 ;--------------------------------------------------------
@@ -139,13 +139,13 @@ check_int13h_extension:
         mov dl, [driver_number]                 ; driver number
         mov ah, 41h
         int 13h
-        setnc al                                ; c = Ê§°Ü
+        setnc al                                ; c = å¤±è´¥
         jc do_check_int13h_extension_done
         cmp bx, 0AA55h
-        setz al                                 ; nz = ²»Ö§³Ö
+        setz al                                 ; nz = ä¸æ”¯æŒ
         jnz do_check_int13h_extension_done
         test cx, 1
-        setnz al                                ; z = ²»Ö§³ÖÀ©Õ¹¹¦ÄÜºÅ£ºAH=42h-44h,47h,48h
+        setnz al                                ; z = ä¸æ”¯æŒæ‰©å±•åŠŸèƒ½å·ï¼šAH=42h-44h,47h,48h
 do_check_int13h_extension_done:        
         pop bx
         movzx ax, al
@@ -154,16 +154,16 @@ do_check_int13h_extension_done:
         
         
 ;--------------------------------------------------------------
-; read_sector_with_extension(): Ê¹ÓÃÀ©Õ¹¹¦ÄÜ¶ÁÉÈÇø        
+; read_sector_with_extension(): ä½¿ç”¨æ‰©å±•åŠŸèƒ½è¯»æ‰‡åŒº        
 ; input:
-;       Ê¹ÓÃ disk_address_packet ½á¹¹
+;       ä½¿ç”¨ disk_address_packet ç»“æ„
 ; output:
 ;       0 - successful, otherwise - error code
 ;--------------------------------------------------------------
 read_sector_with_extension:
         mov si, disk_address_packet             ; DS:SI = disk address packet        
         mov dl, [driver_number]                 ; driver
-        mov ah, 42h                             ; À©Õ¹¹¦ÄÜºÅ
+        mov ah, 42h                             ; æ‰©å±•åŠŸèƒ½å·
         int 13h
         movzx ax, ah                            ; if unsuccessful, ah = error code
         ret
@@ -171,9 +171,9 @@ read_sector_with_extension:
 
 
 ;-------------------------------------------------------------
-; read_sector_with_chs(): Ê¹ÓÃ CHS Ä£Ê½¶ÁÉÈÇø
+; read_sector_with_chs(): ä½¿ç”¨ CHS æ¨¡å¼è¯»æ‰‡åŒº
 ; input:
-;       Ê¹ÓÃ disk_address_packet ºÍ driver_paramter_table
+;       ä½¿ç”¨ disk_address_packet å’Œ driver_paramter_table
 ; output:
 ;       0 - successful
 ; unsuccessful:
@@ -183,7 +183,7 @@ read_sector_with_chs:
         push bx
         push cx
         ;
-        ; ½« LBA ×ª»»Îª CHS£¬Ê¹ÓÃ int 13h, ax = 02h ¶Á
+        ; å°† LBA è½¬æ¢ä¸º CHSï¼Œä½¿ç”¨ int 13h, ax = 02h è¯»
         ;
         call do_lba_to_chs
         mov dl, [driver_number]                 ; driver number
@@ -203,15 +203,15 @@ read_sector_with_chs_done:
         
         
 ;-------------------------------------------------------------
-; do_lba_to_chs(): LBA ºÅ×ª»»Îª CHS
+; do_lba_to_chs(): LBA å·è½¬æ¢ä¸º CHS
 ; input:
-;       Ê¹ÓÃ driver_parameter_table ºÍ disk_address_packet ½á¹¹
+;       ä½¿ç”¨ driver_parameter_table å’Œ disk_address_packet ç»“æ„
 ; output:
-;       ch - cylinder µÍ 8 Î»
-;       cl - [5:0] sector, [7:6] cylinder ¸ß 2 Î»
+;       ch - cylinder ä½ 8 ä½
+;       cl - [5:0] sector, [7:6] cylinder é«˜ 2 ä½
 ;       dh - header
 ;
-; ÃèÊö£º
+; æè¿°ï¼š
 ;       
 ; 1) 
 ;       eax = LBA / (head_maximum * sector_maximum),  cylinder = eax
@@ -247,9 +247,9 @@ do_lba_to_chs:
         
         
 ;---------------------------------------------------------------------
-; get_driver_parameters(): µÃµ½ driver ²ÎÊı
+; get_driver_parameters(): å¾—åˆ° driver å‚æ•°
 ; input:
-;       Ê¹ÓÃ driver_parameters_table ½á¹¹
+;       ä½¿ç”¨ driver_parameters_table ç»“æ„
 ; output:
 ;       0 - successful, 1 - failure
 ; failure: 
@@ -259,19 +259,19 @@ get_driver_parameters:
         push dx
         push cx
         push bx
-        mov ah, 08h                             ; 08h ¹¦ÄÜºÅ£¬¶Á driver parameters
+        mov ah, 08h                             ; 08h åŠŸèƒ½å·ï¼Œè¯» driver parameters
         mov dl, [driver_number]                 ; driver number
         mov di, [parameter_table]               ; es:di = address of parameter table
         int 13h
         jc get_driver_parameters_done
         mov BYTE [driver_type], bl              ; driver type for floppy drivers
         inc dh
-        mov BYTE [header_maximum], dh           ; ×î´ó head ºÅ
-        mov BYTE [sector_maximum], cl           ; ×î´ó sector ºÅ
-        and BYTE [sector_maximum], 3Fh          ; µÍ 6 Î»
+        mov BYTE [header_maximum], dh           ; æœ€å¤§ head å·
+        mov BYTE [sector_maximum], cl           ; æœ€å¤§ sector å·
+        and BYTE [sector_maximum], 3Fh          ; ä½ 6 ä½
         shr cl, 6
         rol cx, 8
-        and cx, 03FFh                           ; ×î´ó cylinder ºÅ
+        and cx, 03FFh                           ; æœ€å¤§ cylinder å·
         inc cx
         mov [cylinder_maximum], cx              ; cylinder
 get_driver_parameters_done:
@@ -285,18 +285,18 @@ get_driver_parameters_done:
 ;-------------------------------------------------------------------
 ; load_module(int module_sector, char *buf)
 ; input:
-;       Ê¹ÓÃ disk_address_packet ½á¹¹ÖĞÌá¹©µÄ²ÎÊı
+;       ä½¿ç”¨ disk_address_packet ç»“æ„ä¸­æä¾›çš„å‚æ•°
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ¼ÓÔØÄ£¿éµ½ buf »º³åÇø
+; æè¿°ï¼š
+;       1) åŠ è½½æ¨¡å—åˆ° buf ç¼“å†²åŒº
 ;-------------------------------------------------------------------
 load_module:
         push es
         push cx
         
         ;;
-        ;; ½«¶Á 1 ¸öÉÈÇø£¬µÃµ½Ä£¿éµÄ size Öµ£¬È»ºó¸ù¾İÕâ¸ö size ½øĞĞÕû¸öÄ£¿é¶ÁÈ¡
+        ;; å°†è¯» 1 ä¸ªæ‰‡åŒºï¼Œå¾—åˆ°æ¨¡å—çš„ size å€¼ï¼Œç„¶åæ ¹æ®è¿™ä¸ª size è¿›è¡Œæ•´ä¸ªæ¨¡å—è¯»å–
         ;;
         mov WORD [read_sectors], 1
 	    call read_sector
@@ -304,16 +304,16 @@ load_module:
 	    jnz do_load_module_done
         movzx esi, WORD [buffer_offset]
         mov es, WORD [buffer_selector]
-        mov ecx, [es: esi]                                              ; ¶ÁÈ¡Ä£¿é siz
+        mov ecx, [es: esi]                                              ; è¯»å–æ¨¡å— siz
         test ecx, ecx
         setz al
         jz do_load_module_done
         
         ;;
-        ;; size ÏòÉÏµ÷Õûµ½ 512 ±¶Êı
+        ;; size å‘ä¸Šè°ƒæ•´åˆ° 512 å€æ•°
         ;;
         add ecx, 512 - 1
-        shr ecx, 9							; ¼ÆËã block£¨sectors£©
+        shr ecx, 9							; è®¡ç®— blockï¼ˆsectorsï¼‰
         mov WORD [read_sectors], cx                                     ; 
         call read_sector
 do_load_module_done:  
@@ -325,11 +325,11 @@ do_load_module_done:
 ;------------------------------------------------------
 ; putc16()
 ; input: 
-;       si - ×Ö·û
+;       si - å­—ç¬¦
 ; output:
 ;       none
-; ÃèÊö£º
-;       ´òÓ¡Ò»¸ö×Ö·û
+; æè¿°ï¼š
+;       æ‰“å°ä¸€ä¸ªå­—ç¬¦
 ;------------------------------------------------------
 putc16:
 	push bx
@@ -346,8 +346,8 @@ putc16:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       ´òÓ¡»»ĞĞ
+; æè¿°ï¼š
+;       æ‰“å°æ¢è¡Œ
 ;------------------------------------------------------
 println16:
 	mov si, 13
@@ -359,11 +359,11 @@ println16:
 ;------------------------------------------------------
 ; puts16()
 ; input: 
-;       si - ×Ö·û´®
+;       si - å­—ç¬¦ä¸²
 ; output:
 ;       none
-; ÃèÊö£º
-;       ´òÓ¡×Ö·û´®ĞÅÏ¢
+; æè¿°ï¼š
+;       æ‰“å°å­—ç¬¦ä¸²ä¿¡æ¯
 ;------------------------------------------------------
 puts16:
 	pusha
@@ -387,9 +387,9 @@ do_puts16.done:
 ; input:
 ;       si - Hex number
 ; ouput:
-;       ax - ×Ö·û
-; ÃèÊö:
-;       ½« Hex Êı×Ö×ª»»Îª¶ÔÓ¦µÄ×Ö·û
+;       ax - å­—ç¬¦
+; æè¿°:
+;       å°† Hex æ•°å­—è½¬æ¢ä¸ºå¯¹åº”çš„å­—ç¬¦
 ;------------------------------------------------------
 hex_to_char16:
 	push si
@@ -402,17 +402,17 @@ hex_to_char16:
 ;------------------------------------------------------
 ; convert_word_into_buffer()
 ; input:
-;       si - Ğè×ª»»µÄÊı£¨word size)
-;       di - Ä¿±ê´® buffer£¨×î¶ÌĞèÒª 5 bytes£¬°üÀ¨ 0)
-; ÃèÊö£º
-;       ½«Ò»¸öWORD×ª»»Îª×Ö·û´®£¬·ÅÈëÌá¹©µÄ buffer ÄÚ
+;       si - éœ€è½¬æ¢çš„æ•°ï¼ˆword size)
+;       di - ç›®æ ‡ä¸² bufferï¼ˆæœ€çŸ­éœ€è¦ 5 bytesï¼ŒåŒ…æ‹¬ 0)
+; æè¿°ï¼š
+;       å°†ä¸€ä¸ªWORDè½¬æ¢ä¸ºå­—ç¬¦ä¸²ï¼Œæ”¾å…¥æä¾›çš„ buffer å†…
 ;------------------------------------------------------
 convert_word_into_buffer:
 	push cx
 	push si
-	mov cx, 4                                       ; 4 ¸ö half-byte
+	mov cx, 4                                       ; 4 ä¸ª half-byte
 convert_word_into_buffer.loop:
-	rol si, 4                                       ; ¸ß4Î» --> µÍ 4Î»
+	rol si, 4                                       ; é«˜4ä½ --> ä½ 4ä½
 	call hex_to_char16
 	mov BYTE [di], al
 	inc di
@@ -426,17 +426,17 @@ convert_word_into_buffer.loop:
 ;------------------------------------------------------
 ; convert_dword_into_buffer()
 ; input:
-;       esi - Ğè×ª»»µÄÊı£¨dword size)
-;       di - Ä¿±ê´® buffer£¨×î¶ÌĞèÒª 9 bytes£¬°üÀ¨ 0)
-; ÃèÊö£º
-;       ½«Ò»¸öWORD×ª»»Îª×Ö·û´®£¬·ÅÈëÌá¹©µÄ buffer ÄÚ
+;       esi - éœ€è½¬æ¢çš„æ•°ï¼ˆdword size)
+;       di - ç›®æ ‡ä¸² bufferï¼ˆæœ€çŸ­éœ€è¦ 9 bytesï¼ŒåŒ…æ‹¬ 0)
+; æè¿°ï¼š
+;       å°†ä¸€ä¸ªWORDè½¬æ¢ä¸ºå­—ç¬¦ä¸²ï¼Œæ”¾å…¥æä¾›çš„ buffer å†…
 ;------------------------------------------------------
 convert_dword_into_buffer:
 	push cx
 	push esi
-	mov cx, 8					; 8 ¸ö half-byte
+	mov cx, 8					; 8 ä¸ª half-byte
 convert_dword_into_buffer.loop:
-	rol esi, 4					; ¸ß4Î» --> µÍ 4Î»
+	rol esi, 4					; é«˜4ä½ --> ä½ 4ä½
 	call hex_to_char16
 	mov BYTE [di], al
 	inc di
@@ -451,8 +451,8 @@ convert_dword_into_buffer.loop:
 ; check_cpuid()
 ; output:
 ;       1 - support,  0 - no support
-; ÃèÊö:
-;       ¼ì²éÊÇ·ñÖ§³Ö CPUID Ö¸Áî
+; æè¿°:
+;       æ£€æŸ¥æ˜¯å¦æ”¯æŒ CPUID æŒ‡ä»¤
 ;------------------------------------------------------
 check_cpuid:
 	pushfd                                          ; save eflags DWORD size
@@ -473,8 +473,8 @@ check_cpuid:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       ¼ì²éÊÇ·ñÖ§³Ö x64
+; æè¿°ï¼š
+;       æ£€æŸ¥æ˜¯å¦æ”¯æŒ x64
 ;------------------------------------------------------
 check_cpu_environment:
         mov eax, [CpuIndex]
@@ -510,8 +510,8 @@ check_cpu_environment.done:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) µÃµ½ÄÚ´æ size£¬±£´æÔÚ MMap.Size Àï
+; æè¿°ï¼š
+;       1) å¾—åˆ°å†…å­˜ sizeï¼Œä¿å­˜åœ¨ MMap.Size é‡Œ
 ;------------------------------------------------------
 get_system_memory:
         push ebx
@@ -519,7 +519,7 @@ get_system_memory:
         push edx
         
 ;;
-;; ³£Á¿¶¨Òå
+;; å¸¸é‡å®šä¹‰
 ;;
 SMAP_SIGN       EQU     534D4150h
 MMAP_AVAILABLE  EQU     01h
@@ -530,11 +530,11 @@ MMAP_NVS        EQU     04h
 
 
 
-        xor ebx, ebx                            ; µÚ 1 ´Îµü´ú
+        xor ebx, ebx                            ; ç¬¬ 1 æ¬¡è¿­ä»£
         mov edi, MMap.Base        
         
         ;;
-        ;; ²éÑ¯ memory map
+        ;; æŸ¥è¯¢ memory map
         ;;
 get_system_memory.loop:      
         mov eax, 0E820h
@@ -573,9 +573,9 @@ get_system_memory.done:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ÔÚ 16 Î» real mode »·¾³ÏÂÊ¹ÓÃ
-;       2) º¯Êı·µ»Øºó£¬½øÈë 32Î» unreal mode£¬Ê¹ÓÃ 4G ¶ÎÏŞ
+; æè¿°ï¼š
+;       1) åœ¨ 16 ä½ real mode ç¯å¢ƒä¸‹ä½¿ç”¨
+;       2) å‡½æ•°è¿”å›åï¼Œè¿›å…¥ 32ä½ unreal modeï¼Œä½¿ç”¨ 4G æ®µé™
 ;------------------------------------------------------
 unreal_mode_enter:
         push ebp
@@ -586,48 +586,48 @@ unreal_mode_enter:
         mov cx, ds
         
         ;;
-        ;; ¼ÆËã½øÈë±£»¤Ä£Ê½ºÍ·µ»ØÊµÄ£Ê½Èë¿ÚµãµØÖ·
+        ;; è®¡ç®—è¿›å…¥ä¿æŠ¤æ¨¡å¼å’Œè¿”å›å®æ¨¡å¼å…¥å£ç‚¹åœ°å€
         ;;        
         call _TARGET
 _TARGET  EQU     $
         pop ax
         mov bx, ax
-        add ax, (_RETURN_TARGET - _TARGET)                      ; ·µ»ØÊµÄ£Ê½Èë¿ÚÆ«ÒÆÁ¿
-        add bx, (_ENTER_TARGET - _TARGET)                       ; ½øÈë±£»¤Ä£Ê½Èë¿ÚÆ«ÒÆÁ¿
+        add ax, (_RETURN_TARGET - _TARGET)                      ; è¿”å›å®æ¨¡å¼å…¥å£åç§»é‡
+        add bx, (_ENTER_TARGET - _TARGET)                       ; è¿›å…¥ä¿æŠ¤æ¨¡å¼å…¥å£åç§»é‡
           
         ;;
-        ;; ±£´æÔ­ GDT pointer
+        ;; ä¿å­˜åŸ GDT pointer
         ;;
         sub esp, 6
         sgdt [esp]
         
         ;;
-        ;; Ñ¹Èë·µ»ØÊµÄ£Ê½µÄ far pointer(16:16)
+        ;; å‹å…¥è¿”å›å®æ¨¡å¼çš„ far pointer(16:16)
         ;;
         push cs
         push ax
       
         
         ;;
-        ;; ¼ÇÂ¼·µ»Øµ½ÊµÄ£Ê½Ç°µÄ stack pointer Öµ
+        ;; è®°å½•è¿”å›åˆ°å®æ¨¡å¼å‰çš„ stack pointer å€¼
         ;;        
         mov ebp, esp
         
         ;;
-        ;; Ñ¹Èë code descriptor
+        ;; å‹å…¥ code descriptor
         ;;
         mov ax, cs
         xor edx, edx
         shld edx, eax, 20
         shl eax, 20
         or eax, 0000FFFFh                                       ; limit = 4G, base = cs << 4
-        or edx, 00CF9A00h                                       ; DPL = 0, P = 1,¡¡32-bit code segment
+        or edx, 00CF9A00h                                       ; DPL = 0, P = 1,ã€€32-bit code segment
         ;or edx, 008F9A00h
         push edx
         push eax
         
         ;;
-        ;; Ñ¹Èë data descriptor
+        ;; å‹å…¥ data descriptor
         ;;
         mov ax, ds
         xor edx, edx       
@@ -639,7 +639,7 @@ _TARGET  EQU     $
         push eax
         
         ;;
-        ;; Ñ¹Èë NULL descriptor
+        ;; å‹å…¥ NULL descriptor
         ;;
         xor eax, eax
         push eax
@@ -647,31 +647,31 @@ _TARGET  EQU     $
 
         
         ;;
-        ;; ±ØĞë±£Ö¤ ds = ss
+        ;; å¿…é¡»ä¿è¯ ds = ss
         ;;
         mov ax, ss
         mov ds, ax
         
         ;;
-        ;; Ñ¹Èë¡¡GDT pointer(16:32)
+        ;; å‹å…¥ã€€GDT pointer(16:32)
         ;;
         push esp
         push WORD (3 * 8 - 1)
         
         ;;
-        ;; ¼ÓÔØ GDT
+        ;; åŠ è½½ GDT
         ;;
         lgdt [esp]
         
         ;;
-        ;; ÇĞ»»µ½ 32 Î»±£»¤Ä£Ê½
+        ;; åˆ‡æ¢åˆ° 32 ä½ä¿æŠ¤æ¨¡å¼
         ;;
         mov eax, cr0
         bts eax, 0
         mov cr0, eax
         
         ;;
-        ;; ×ªÈë±£»¤Ä£Ê½£¨´Ë´¦ operand size = 16)
+        ;; è½¬å…¥ä¿æŠ¤æ¨¡å¼ï¼ˆæ­¤å¤„ operand size = 16)
         ;;
         push 10h
         push bx
@@ -680,7 +680,7 @@ _TARGET  EQU     $
 
 
 ;;
-;; 32 Î»±£»¤Ä£Ê½Èë¿Ú
+;; 32 ä½ä¿æŠ¤æ¨¡å¼å…¥å£
 ;;
 
 _ENTER_TARGET   EQU     $
@@ -689,7 +689,7 @@ _ENTER_TARGET   EQU     $
         ;bits 16
         
         ;;
-        ;; ¸üĞÂ segment
+        ;; æ›´æ–° segment
         ;;
         mov ax, 08
         mov ds, ax
@@ -700,15 +700,15 @@ _ENTER_TARGET   EQU     $
         mov esp, ebp
         
         ;;
-        ;; ¹Ø±Õ±£»¤Ä£Ê½
+        ;; å…³é—­ä¿æŠ¤æ¨¡å¼
         ;;
         mov eax, cr0
         btr eax, 0
         mov cr0, eax
         
         ;;
-        ;; ·µ»Øµ½ÊµÄ£Ê½£¨´Ë´¦ operand size = 32)
-        ;; Òò´Ë£ºÊ¹ÓÃ 66h À´µ÷Õûµ½ 16 Î» operand
+        ;; è¿”å›åˆ°å®æ¨¡å¼ï¼ˆæ­¤å¤„ operand size = 32)
+        ;; å› æ­¤ï¼šä½¿ç”¨ 66h æ¥è°ƒæ•´åˆ° 16 ä½ operand
         ;;
         DB 66h
         retf
@@ -718,7 +718,7 @@ _ENTER_TARGET   EQU     $
 _RETURN_TARGET  EQU     $
 
         ;;
-        ;; »Ö¸´Ô­ data segment Öµ
+        ;; æ¢å¤åŸ data segment å€¼
         ;;
         mov ds, cx
         mov es, cx
@@ -727,7 +727,7 @@ _RETURN_TARGET  EQU     $
         mov ss, cx
         
         ;;
-        ;; »Ö¸´Ô­ GDT pointer Öµ
+        ;; æ¢å¤åŸ GDT pointer å€¼
         ;;
         lgdt [esp]
         add esp, 6
@@ -738,8 +738,8 @@ _RETURN_TARGET  EQU     $
         pop ebp
         
         ;;
-        ;; ´Ë´¦ÊÇ 32-bit operand size
-        ;; Òò´Ë£ºĞèÊ¹ÓÃ 16 Î»µÄ·µ»ØµØÖ·
+        ;; æ­¤å¤„æ˜¯ 32-bit operand size
+        ;; å› æ­¤ï¼šéœ€ä½¿ç”¨ 16 ä½çš„è¿”å›åœ°å€
         ;;
         DB 66h
         ret
@@ -751,9 +751,9 @@ _RETURN_TARGET  EQU     $
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) º¯Êı½«ÇĞ»»µ½±£»¤Ä£Ê½
-;       2) ¼ÓÔØÎª FS ÉèÖÃµÄÃèÊö·û
+; æè¿°ï¼š
+;       1) å‡½æ•°å°†åˆ‡æ¢åˆ°ä¿æŠ¤æ¨¡å¼
+;       2) åŠ è½½ä¸º FS è®¾ç½®çš„æè¿°ç¬¦
 ;------------------------------------------------------
         bits 16
         
@@ -770,7 +770,7 @@ protected_mode_enter:
 	    movzx eax, ax
                 
         ;;
-        ;; ¼ÆËã½øÈë±£»¤Ä£Ê½ºÍ·µ»ØÊµÄ£Ê½Èë¿ÚµãµØÖ·
+        ;; è®¡ç®—è¿›å…¥ä¿æŠ¤æ¨¡å¼å’Œè¿”å›å®æ¨¡å¼å…¥å£ç‚¹åœ°å€
         ;;        
         call _TARGET1
 _TARGET1 EQU $
@@ -784,14 +784,14 @@ _TARGET1 EQU $
 
         
         ;;
-        ;; ¼ÇÂ¼·µ»Øµ½ÊµÄ£Ê½Ç°µÄ stack pointer Öµ
+        ;; è®°å½•è¿”å›åˆ°å®æ¨¡å¼å‰çš„ stack pointer å€¼
         ;;        
 	    mov ax, ss
 	    shl eax, 4
         lea ebp, [esp+eax]
 
 	    ;;
-        ;; ÉèÖÃÁÙÊ±µÄ GDT ±í£¬²¢¼ÓÔØ GDT   
+        ;; è®¾ç½®ä¸´æ—¶çš„ GDT è¡¨ï¼Œå¹¶åŠ è½½ GDT   
 	    ;;
 	    mov esi, [CpuIndex]
         shl esi, 7
@@ -801,7 +801,7 @@ _TARGET1 EQU $
 
 
         ;;
-        ;; ÇĞ»»µ½ 32 Î»±£»¤Ä£Ê½
+        ;; åˆ‡æ¢åˆ° 32 ä½ä¿æŠ¤æ¨¡å¼
         ;;
         mov eax, cr0
         bts eax, 0
@@ -815,7 +815,7 @@ _OFFSET:
 
 
 ;;
-;; 32 Î»±£»¤Ä£Ê½Èë¿Ú
+;; 32 ä½ä¿æŠ¤æ¨¡å¼å…¥å£
 ;;
 
 _TARGET2  EQU     $
@@ -823,7 +823,7 @@ _TARGET2  EQU     $
         bits 32
 
         ;;
-        ;; ¸üĞÂ segment
+        ;; æ›´æ–° segment
         ;;
         mov ax, FsSelector
         mov fs, ax        
@@ -856,18 +856,18 @@ _TARGET2  EQU     $
 ;       esi - lock
 ; output:
 ;       none
-; ÃèÊö:
-;       1) ´Ëº¯ÊıÓÃÀ´»ñµÃ×ÔĞıËø
-;       2) ÊäÈë²ÎÊıÎª spin lock µØÖ·
+; æè¿°:
+;       1) æ­¤å‡½æ•°ç”¨æ¥è·å¾—è‡ªæ—‹é”
+;       2) è¾“å…¥å‚æ•°ä¸º spin lock åœ°å€
 ;------------------------------------------------------
 get_spin_lock16:
         ;;
-        ;; ×ÔĞıËø²Ù×÷·½·¨ËµÃ÷:
-        ;; 1) Ê¹ÓÃ bts Ö¸Áî£¬ÈçÏÂÃæÖ¸ÁîĞòÁĞ
+        ;; è‡ªæ—‹é”æ“ä½œæ–¹æ³•è¯´æ˜:
+        ;; 1) ä½¿ç”¨ bts æŒ‡ä»¤ï¼Œå¦‚ä¸‹é¢æŒ‡ä»¤åºåˆ—
         ;;    lock bts DWORD [esi], 0
         ;;    jnc AcquireLockOk
         ;;
-        ;; 2) ±¾ÀıÖĞÊ¹ÓÃ cmpxchg Ö¸Áî
+        ;; 2) æœ¬ä¾‹ä¸­ä½¿ç”¨ cmpxchg æŒ‡ä»¤
         ;;    lock cmpxchg [esi], edi
         ;;    jnc AcquireLockOk
         ;;    
@@ -876,16 +876,16 @@ get_spin_lock16:
         mov edi, 1        
         
         ;;
-        ;; ³¢ÊÔ»ñÈ¡ lock
+        ;; å°è¯•è·å– lock
         ;;
 get_spink_lock16.acquire:
         lock cmpxchg [esi], edi
         je get_spink_lock16.done
 
         ;;
-        ;; »ñÈ¡Ê§°Üºó£¬¼ì²é lock ÊÇ·ñ¿ª·Å£¨Î´ÉÏËø£©
-        ;; 1) ÊÇ£¬ÔòÔÙ´ÎÖ´ĞĞ»ñÈ¡Ëø£¬²¢ÉÏËø
-        ;; 2) ·ñ£¬¼ÌĞø²»¶ÏµØ¼ì²é lock£¬Ö±µ½ lock ¿ª·Å
+        ;; è·å–å¤±è´¥åï¼Œæ£€æŸ¥ lock æ˜¯å¦å¼€æ”¾ï¼ˆæœªä¸Šé”ï¼‰
+        ;; 1) æ˜¯ï¼Œåˆ™å†æ¬¡æ‰§è¡Œè·å–é”ï¼Œå¹¶ä¸Šé”
+        ;; 2) å¦ï¼Œç»§ç»­ä¸æ–­åœ°æ£€æŸ¥ lockï¼Œç›´åˆ° lock å¼€æ”¾
         ;;
 get_spink_lock16.check:        
         mov eax, [esi]
@@ -900,24 +900,24 @@ get_spink_lock16.done:
 
 
 ;;
-;; ÓÃÓÚ±£´æ int 13h/ax=08h »ñµÃµÄ driver ²ÎÊı
+;; ç”¨äºä¿å­˜ int 13h/ax=08h è·å¾—çš„ driver å‚æ•°
 ;;
 driver_parameters_table:        
         driver_number           DB      0               ; driver number
         driver_type             DB      0               ; driver type       
-        cylinder_maximum        DW      0               ; ×î´óµÄ cylinder ºÅ
-        header_maximum          DW      0               ; ×î´óµÄ header ºÅ
-        sector_maximum          DW      0               ; ×î´óµÄ sector ºÅ
+        cylinder_maximum        DW      0               ; æœ€å¤§çš„ cylinder å·
+        header_maximum          DW      0               ; æœ€å¤§çš„ header å·
+        sector_maximum          DW      0               ; æœ€å¤§çš„ sector å·
         parameter_table         DW      0               ; address of parameter table 
                 
 ;;
-;; ¶¨Òå int 13h Ê¹ÓÃµÄ disk address packet£¬ÓÃÓÚ int 13h ¶Á/Ğ´
+;; å®šä¹‰ int 13h ä½¿ç”¨çš„ disk address packetï¼Œç”¨äº int 13h è¯»/å†™
 ;;        
 disk_address_packet:
         size                    DW      10h             ; size of packet
         read_sectors            DW      0               ; number of sectors
         buffer_offset           DW      0               ; buffer far pointer(16:16)
-        buffer_selector         DW      0               ; Ä¬ÈÏ buffer Îª 0
+        buffer_selector         DW      0               ; é»˜è®¤ buffer ä¸º 0
         start_sector            DQ      0               ; start sector
 
 

@@ -1,16 +1,16 @@
 ;*************************************************
 ;* smp.asm                                       *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
      
 
 
 ;;
-;; ¶¨ÒåIPIÖ´ĞĞ·½Ê½
-;;      1) GOTO_ENTRY:                  ÈÃ´¦ÀíÆ÷Ìø×ªµ½Èë¿Úµã
-;;      2) DISPATCH_TO_ROUTINE:         ÈÃ´¦ÀíÆ÷Ö´ĞĞÒ»¶Î routine
-;;      3) FORCE_DISPATCH_TO_ROUTINE:   ÈÃ´¦ÀíÆ÷Ö´ĞĞ NMI handler
+;; å®šä¹‰IPIæ‰§è¡Œæ–¹å¼
+;;      1) GOTO_ENTRY:                  è®©å¤„ç†å™¨è·³è½¬åˆ°å…¥å£ç‚¹
+;;      2) DISPATCH_TO_ROUTINE:         è®©å¤„ç†å™¨æ‰§è¡Œä¸€æ®µ routine
+;;      3) FORCE_DISPATCH_TO_ROUTINE:   è®©å¤„ç†å™¨æ‰§è¡Œ NMI handler
 ;;
 %define GOTO_ENTRY                      FIXED_DELIVERY | IPI_ENTRY_VECTOR
 %define DISPATCH_TO_ROUTINE             FIXED_DELIVERY | IPI_VECTOR
@@ -23,13 +23,13 @@
 ;-----------------------------------------------------
 ; force_dispatch_to_processor()
 ; input:
-;       esi - ´¦ÀíÆ÷ index
-;       edi - routine Èë¿Ú
+;       esi - å¤„ç†å™¨ index
+;       edi - routine å…¥å£
 ; output:
 ;       eax - status code
-; ÃèÊö£º
-;       1) Ê¹ÓÃ NMI delivery ·½Ê½·¢ËÍ IPI
-;       2) ½«ºöÂÔÄ¿±ê´¦ÀíÆ÷µÄ eflags.IF ±êÖ¾Î»
+; æè¿°ï¼š
+;       1) ä½¿ç”¨ NMI delivery æ–¹å¼å‘é€ IPI
+;       2) å°†å¿½ç•¥ç›®æ ‡å¤„ç†å™¨çš„ eflags.IF æ ‡å¿—ä½
 ;-----------------------------------------------------
 force_dispatch_to_processor:
         mov eax, FORCE_DISPATCH_TO_ROUTINE
@@ -40,16 +40,16 @@ force_dispatch_to_processor:
 ;-----------------------------------------------------
 ; goto_processor()
 ; input:
-;       esi - ´¦ÀíÆ÷ Index ºÅ
+;       esi - å¤„ç†å™¨ Index å·
 ;       edi - entry
 ; output:
 ;       eax - status code 
-; ÃèÊö£º
-;       1) ×ªµ½Ä¿±ê´¦ÀíÆ÷µÄÈë¿ÚµãÖ´ĞĞ
-;       2) ÊäÈë²ÎÊı esi Ìá¹©Ä¿±ê´¦ÀíÆ÷µÄ index Öµ£¨´Ó0¿ªÊ¼£©
-;       3) ÊäÈë²ÎÊı edi Ìá¹©Ä¿±ê´úÂëÈë¿ÚµØÖ·
-;       4) Õâ¸öº¯ÊıÎŞĞëµÈ´ıÖ±½Ó·µ»Ø       
-;       5) ¿ÉÒÔ¸ø×Ô¼ºµ÷¶ÈÖ´ĞĞ£¡
+; æè¿°ï¼š
+;       1) è½¬åˆ°ç›®æ ‡å¤„ç†å™¨çš„å…¥å£ç‚¹æ‰§è¡Œ
+;       2) è¾“å…¥å‚æ•° esi æä¾›ç›®æ ‡å¤„ç†å™¨çš„ index å€¼ï¼ˆä»0å¼€å§‹ï¼‰
+;       3) è¾“å…¥å‚æ•° edi æä¾›ç›®æ ‡ä»£ç å…¥å£åœ°å€
+;       4) è¿™ä¸ªå‡½æ•°æ— é¡»ç­‰å¾…ç›´æ¥è¿”å›       
+;       5) å¯ä»¥ç»™è‡ªå·±è°ƒåº¦æ‰§è¡Œï¼
 ;-----------------------------------------------------
 goto_processor:
         mov eax, GOTO_ENTRY
@@ -60,16 +60,16 @@ goto_processor:
 ;-----------------------------------------------------
 ; dispatch_to_processor()
 ; input:
-;       esi - ´¦ÀíÆ÷ Index ºÅ
-;       edi - routine Èë¿Ú
+;       esi - å¤„ç†å™¨ Index å·
+;       edi - routine å…¥å£
 ; output:
 ;       eax - status code
-; ÃèÊö£º
-;       1) ½«Ò»¶Î routine µ÷¶Èµ½Ä³¸ö´¦ÀíÆ÷Ö´ĞĞ
-;       2) ÊäÈë²ÎÊı esi Ìá¹©Ä¿±ê´¦ÀíÆ÷µÄ index Öµ£¨´Ó0¿ªÊ¼£©
-;       3) ÊäÈë²ÎÊı edi Ìá¹©Ä¿±ê´úÂëÈë¿ÚµØÖ·
-;       4) Õâ¸öº¯ÊıÎŞĞëµÈ´ıÖ±½Ó·µ»Ø       
-;       5) ²»ÄÜ×Ô¼º¸ø×Ô¼ºµ÷¶ÈÈÎÎñÖ´ĞĞ£¡
+; æè¿°ï¼š
+;       1) å°†ä¸€æ®µ routine è°ƒåº¦åˆ°æŸä¸ªå¤„ç†å™¨æ‰§è¡Œ
+;       2) è¾“å…¥å‚æ•° esi æä¾›ç›®æ ‡å¤„ç†å™¨çš„ index å€¼ï¼ˆä»0å¼€å§‹ï¼‰
+;       3) è¾“å…¥å‚æ•° edi æä¾›ç›®æ ‡ä»£ç å…¥å£åœ°å€
+;       4) è¿™ä¸ªå‡½æ•°æ— é¡»ç­‰å¾…ç›´æ¥è¿”å›       
+;       5) ä¸èƒ½è‡ªå·±ç»™è‡ªå·±è°ƒåº¦ä»»åŠ¡æ‰§è¡Œï¼
 ;-----------------------------------------------------
 dispatch_to_processor:
         mov eax, DISPATCH_TO_ROUTINE
@@ -87,18 +87,18 @@ dispatch_to_processor.Entry:
         mov ebp, [gs: PCB.Base]
 %endif               
 
-        mov ecx, esi                                                    ; ´¦ÀíÆ÷ index Öµ
+        mov ecx, esi                                                    ; å¤„ç†å™¨ index å€¼
         mov edx, eax
         
         ;;
-        ;; µÃµ½Ä¿±ê´¦ÀíÆ÷µÄ PCB ¿é
+        ;; å¾—åˆ°ç›®æ ‡å¤„ç†å™¨çš„ PCB å—
         ;;
         call get_processor_pcb
         REX.Wrxb
         mov ebx, eax
         
         ;;
-        ;; ¼ì²éÊÇ·ñ³ö´í
+        ;; æ£€æŸ¥æ˜¯å¦å‡ºé”™
         ;;
         mov eax, STATUS_PROCESSOR_INDEX_EXCEED
         REX.Wrxb
@@ -107,26 +107,26 @@ dispatch_to_processor.Entry:
         
 
         ;;
-        ;; ÖÃ´¦ÀíÆ÷Îª busy ×´Ì¬£¨È¥µô usable processor ÁĞ±í£©
+        ;; ç½®å¤„ç†å™¨ä¸º busy çŠ¶æ€ï¼ˆå»æ‰ usable processor åˆ—è¡¨ï¼‰
         ;;
         mov eax, SDA.UsableProcessorMask
-        lock btr DWORD [fs: eax], ecx                                   ; ´¦ÀíÆ÷Îª unusable ×´Ì¬
+        lock btr DWORD [fs: eax], ecx                                   ; å¤„ç†å™¨ä¸º unusable çŠ¶æ€
         
         cmp edx, FORCE_DISPATCH_TO_ROUTINE
         jne dispatch_to_processor.@0
         ;;
-        ;; Èç¹ûÊÇÊ¹ÓÃ NMI delivery ·½Ê½
+        ;; å¦‚æœæ˜¯ä½¿ç”¨ NMI delivery æ–¹å¼
         ;;
         REX.Wrxb
         mov ebp, [ebp + PCB.SdaBase]                                    ; sda base
         REX.Wrxb
-        mov [ebp + SDA.NmiIpiRoutine], edi                              ; Ğ´Èë SDA.NmiIpiRoutine
-        lock bts DWORD [ebp + SDA.NmiIpiRequestMask], ecx               ; ÉèÖÃ Nmi IPI routine MaskÎ»
+        mov [ebp + SDA.NmiIpiRoutine], edi                              ; å†™å…¥ SDA.NmiIpiRoutine
+        lock bts DWORD [ebp + SDA.NmiIpiRequestMask], ecx               ; è®¾ç½® Nmi IPI routine Maskä½
         jmp dispatch_to_processor.@1
         
 dispatch_to_processor.@0:        
         ;;
-        ;; Ğ´Èë Routine Èë¿ÚµØÖ·µ½ PCB ÖĞ
+        ;; å†™å…¥ Routine å…¥å£åœ°å€åˆ° PCB ä¸­
         ;;
         REX.Wrxb
         mov [ebx + PCB.IpiRoutinePointer], edi
@@ -135,9 +135,9 @@ dispatch_to_processor.@0:
 dispatch_to_processor.@1:
         
         ;;
-        ;; Ê¹ÓÃÎïÀíID·½Ê½£¬·¢ËÍ IPI µ½Ä¿±ê´¦ÀíÆ÷
+        ;; ä½¿ç”¨ç‰©ç†IDæ–¹å¼ï¼Œå‘é€ IPI åˆ°ç›®æ ‡å¤„ç†å™¨
         ;;
-        mov esi, [ebx + PCB.ApicId]                     ; ´¦ÀíÆ÷ ID Öµ        
+        mov esi, [ebx + PCB.ApicId]                     ; å¤„ç†å™¨ ID å€¼        
         SEND_IPI_TO_PROCESSOR   esi, edx
   
         mov eax, STATUS_SUCCESS
@@ -155,29 +155,29 @@ dispatch_to_processor.done:
 ;-----------------------------------------------------
 ; dipatch_to_processor_with_waitting()
 ; input:
-;       esi - ´¦ÀíÆ÷ Index ºÅ
-;       edi - routine Èë¿Ú
+;       esi - å¤„ç†å™¨ Index å·
+;       edi - routine å…¥å£
 ; output:
 ;       eax - status code
-; ÃèÊö£º
-;       1) ½«Ò»¶Î routine µ÷¶Èµ½Ä³¸ö´¦ÀíÆ÷Ö´ĞĞ
-;       2) ÊäÈë²ÎÊı esi Ìá¹©Ä¿±ê´¦ÀíÆ÷µÄ index Öµ£¨´Ó0¿ªÊ¼£©
-;       3) ÊäÈë²ÎÊı edi Ìá¹©Ä¿±ê´úÂëÈë¿ÚµØÖ·
-;       4) Õâ¸öº¯ÊıµÈ dispatch routine Íê³Éºó·µ»Ø
+; æè¿°ï¼š
+;       1) å°†ä¸€æ®µ routine è°ƒåº¦åˆ°æŸä¸ªå¤„ç†å™¨æ‰§è¡Œ
+;       2) è¾“å…¥å‚æ•° esi æä¾›ç›®æ ‡å¤„ç†å™¨çš„ index å€¼ï¼ˆä»0å¼€å§‹ï¼‰
+;       3) è¾“å…¥å‚æ•° edi æä¾›ç›®æ ‡ä»£ç å…¥å£åœ°å€
+;       4) è¿™ä¸ªå‡½æ•°ç­‰ dispatch routine å®Œæˆåè¿”å›
 ;-----------------------------------------------------
 dispatch_to_processor_with_waitting:
         ;;
-        ;; ÄÚ²¿ĞÅºÅÎŞĞ§
+        ;; å†…éƒ¨ä¿¡å·æ— æ•ˆ
         ;;
         RELEASE_INTERNAL_SIGNAL
         
         ;;
-        ;; µ÷¶Èµ½´¦ÀíÆ÷
+        ;; è°ƒåº¦åˆ°å¤„ç†å™¨
         ;;     
         call dispatch_to_processor
         
         ;;
-        ;; µÈ´ıĞÅºÅÓĞĞ§£¬µÈ´ıÄ¿±ê´¦ÀíÆ÷Ö´ĞĞÍê±Ï
+        ;; ç­‰å¾…ä¿¡å·æœ‰æ•ˆï¼Œç­‰å¾…ç›®æ ‡å¤„ç†å™¨æ‰§è¡Œå®Œæ¯•
         ;;
         WAIT_FOR_INTERNAL_SIGNAL        
         ret
@@ -187,12 +187,12 @@ dispatch_to_processor_with_waitting:
 ;-----------------------------------------------------
 ; broadcast_message_exclude_self()
 ; input:
-;       esi - routine Èë¿Ú
+;       esi - routine å…¥å£
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ÒÔ NMI delivery ·½Ê½¹ã²¥ IPI
-;       2) ²»°üÀ¨×Ô¼º
+; æè¿°ï¼š
+;       1) ä»¥ NMI delivery æ–¹å¼å¹¿æ’­ IPI
+;       2) ä¸åŒ…æ‹¬è‡ªå·±
 ;-----------------------------------------------------
 broadcast_message_exclude_self:
         push ebp
@@ -207,17 +207,17 @@ broadcast_message_exclude_self:
         xor eax, eax
         xor edi, edi
         DECv eax                                        ; eax = 0FFFFFFFFh        
-        mov ecx, [ebp + SDA.ProcessorCount]             ; ´¦ÀíÆ÷¸öÊı
+        mov ecx, [ebp + SDA.ProcessorCount]             ; å¤„ç†å™¨ä¸ªæ•°
         shld edi, eax, cl                               ; edi = ProcessorCount Mask
         mov eax, PCB.ProcessorIndex
-        mov eax, [gs: eax]                              ; ´¦ÀíÆ÷ index
-        btr edi, eax                                    ; Çå self Mask Î»                
-        mov [ebp + SDA.NmiIpiRequestMask], edi          ; Ğ´Èë NMI request Mask Öµ
+        mov eax, [gs: eax]                              ; å¤„ç†å™¨ index
+        btr edi, eax                                    ; æ¸… self Mask ä½                
+        mov [ebp + SDA.NmiIpiRequestMask], edi          ; å†™å…¥ NMI request Mask å€¼
         REX.Wrxb
-        mov [ebp + SDA.NmiIpiRoutine], esi              ; Ğ´Èë NMI IPI routine
+        mov [ebp + SDA.NmiIpiRoutine], esi              ; å†™å…¥ NMI IPI routine
         
         ;;
-        ;; ¹ã²¥ NMI IPI message
+        ;; å¹¿æ’­ NMI IPI message
         ;;
         BROADCASE_MESSAGE       ALL_EX_SELF | NMI_DELIVERY | 02h
 
@@ -236,9 +236,9 @@ broadcast_message_exclude_self:
 ;       esi - signal
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) »ñÈ¡ĞÅºÅÁ¿
-;       2) ÊäÈë²ÎÊı esi Ìá¹©ĞÅºÅµØÖ·       
+; æè¿°ï¼š
+;       1) è·å–ä¿¡å·é‡
+;       2) è¾“å…¥å‚æ•° esi æä¾›ä¿¡å·åœ°å€       
 ;-----------------------------------------------------
 get_for_signal:
         mov [fs: SDA.SignalPointer], esi
@@ -253,23 +253,23 @@ get_for_signal:
 ;       esi - Signal
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) µÈ´ı signal
+; æè¿°ï¼š
+;       1) ç­‰å¾… signal
 ;-----------------------------------------------------
 wait_for_signal:
         mov eax, 1
         xor edi, edi       
         ;;
-        ;; ³¢ÊÔ»ñÈ¡ lock
+        ;; å°è¯•è·å– lock
         ;;
 wait_for_signal.acquire:
         lock cmpxchg [esi], edi
         je wait_for_signal.done
 
         ;;
-        ;; »ñÈ¡Ê§°Üºó£¬¼ì²é lock ÊÇ·ñ¿ª·Å£¨Î´ÉÏËø£©
-        ;; 1) ÊÇ£¬ÔòÔÙ´ÎÖ´ĞĞ»ñÈ¡Ëø£¬²¢ÉÏËø
-        ;; 2) ·ñ£¬¼ÌĞø²»¶ÏµØ¼ì²é lock£¬Ö±µ½ lock ¿ª·Å
+        ;; è·å–å¤±è´¥åï¼Œæ£€æŸ¥ lock æ˜¯å¦å¼€æ”¾ï¼ˆæœªä¸Šé”ï¼‰
+        ;; 1) æ˜¯ï¼Œåˆ™å†æ¬¡æ‰§è¡Œè·å–é”ï¼Œå¹¶ä¸Šé”
+        ;; 2) å¦ï¼Œç»§ç»­ä¸æ–­åœ°æ£€æŸ¥ lockï¼Œç›´åˆ° lock å¼€æ”¾
         ;;
 wait_for_signal.check:        
         mov eax, [esi]
@@ -285,12 +285,12 @@ wait_for_signal.done:
 ;-----------------------------------------------------
 ; get_processor_pcb()
 ; input:
-;       esi - ´¦ÀíÆ÷ Index Öµ
+;       esi - å¤„ç†å™¨ Index å€¼
 ; output:
-;       eax - ¸Ã´¦ÀíÆ÷µÄ PCB »ùÖ·
-; ÃèÊö£º
-;       1) ¸ù¾İÌá¹©µÄ´¦ÀíÆ÷IndexÖµ£¨´Ó0¿ªÊ¼£©£¬µÃµ½¸Ã´¦ÀíÆ÷¶ÔÓ¦µÄ PCB ¿é
-;       2) ³ö´íÊ±·µ»Ø 0 Öµ
+;       eax - è¯¥å¤„ç†å™¨çš„ PCB åŸºå€
+; æè¿°ï¼š
+;       1) æ ¹æ®æä¾›çš„å¤„ç†å™¨Indexå€¼ï¼ˆä»0å¼€å§‹ï¼‰ï¼Œå¾—åˆ°è¯¥å¤„ç†å™¨å¯¹åº”çš„ PCB å—
+;       2) å‡ºé”™æ—¶è¿”å› 0 å€¼
 ;-----------------------------------------------------
 get_processor_pcb:
         push ebp
@@ -302,7 +302,7 @@ get_processor_pcb:
         mov ebp, [fs: SDA.Base]
 %endif        
         ;;
-        ;; ¼ì²éÌá¹©µÄ´¦ÀíÆ÷ Index ÖµÊÇ·ñ³¬ÏŞ
+        ;; æ£€æŸ¥æä¾›çš„å¤„ç†å™¨ Index å€¼æ˜¯å¦è¶…é™
         ;;
         mov eax, [ebp + SDA.ProcessorCount]
         cmp esi, eax
@@ -310,7 +310,7 @@ get_processor_pcb:
         movzx eax, al
         jae get_processor_pcb.done
         ;;
-        ;; Ä¿±ê´¦ÀíÆ÷ PCB base = PCB_BASE + (Index * PCB_SIZE)
+        ;; ç›®æ ‡å¤„ç†å™¨ PCB base = PCB_BASE + (Index * PCB_SIZE)
         ;;
         mov eax, PCB_SIZE
         mul esi
@@ -326,12 +326,12 @@ get_processor_pcb.done:
 ;-----------------------------------------------------
 ; get_processor_id()
 ; input:
-;       esi - ´¦ÀíÆ÷ Index Öµ
+;       esi - å¤„ç†å™¨ Index å€¼
 ; output:
 ;       eax - local APIC ID
-; ÃèÊö£º
-;       1) ¸ù¾İÌá¹©µÄ´¦ÀíÆ÷IndexÖµ£¨´Ó0¿ªÊ¼£©£¬µÃµ½¸Ã´¦ÀíÆ÷ LAPIC ID
-;       2) ³ö´íÊ±·µ»Ø -1 Öµ
+; æè¿°ï¼š
+;       1) æ ¹æ®æä¾›çš„å¤„ç†å™¨Indexå€¼ï¼ˆä»0å¼€å§‹ï¼‰ï¼Œå¾—åˆ°è¯¥å¤„ç†å™¨ LAPIC ID
+;       2) å‡ºé”™æ—¶è¿”å› -1 å€¼
 ;-----------------------------------------------------
 get_processor_id:
         call get_processor_pcb
@@ -352,46 +352,46 @@ get_processor_id.FoundNot:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´¦ÀíÆ÷µÄ IPI ·şÎñÀı³Ì
+; æè¿°ï¼š
+;       1) å¤„ç†å™¨çš„ IPI æœåŠ¡ä¾‹ç¨‹
 ;-----------------------------------------------------        
 dispatch_routine:
         ;;
-        ;; ±£´æ±»ÖĞ¶ÏÕß context
+        ;; ä¿å­˜è¢«ä¸­æ–­è€… context
         ;;
         pusha
         
         ;;
-        ;; ¹¹Ôì BottomHalf Àı³Ì 0 ¼¶ÖĞ¶ÏÕ»
+        ;; æ„é€  BottomHalf ä¾‹ç¨‹ 0 çº§ä¸­æ–­æ ˆ
         ;;
-        push 02 | FLAGS_IF                      ; eflags£¬¿ÉÖĞ¶Ï
+        push 02 | FLAGS_IF                      ; eflagsï¼Œå¯ä¸­æ–­
         push KernelCsSelector32                 ; cs
         push dispatch_routine.BottomHalf        ; eip       
        
         ;;
-        ;; ¶Á routine Èë¿ÚµØÖ·
+        ;; è¯» routine å…¥å£åœ°å€
         ;;
         mov ebx, [gs: PCB.IpiRoutinePointer]
         
         ;;
-        ;; IPI routine ·µ»Ø£¬Ä¿±êÈÎÎñÓÉ BottomHalf ´¦Àí
+        ;; IPI routine è¿”å›ï¼Œç›®æ ‡ä»»åŠ¡ç”± BottomHalf å¤„ç†
         ;;
-        LAPIC_EOI_COMMAND                       ; ·¢ËÍ EOI ÃüÁî
-        iret                                    ; ×ªÈëÖ´ĞĞ BottomHalf Àı³Ì
+        LAPIC_EOI_COMMAND                       ; å‘é€ EOI å‘½ä»¤
+        iret                                    ; è½¬å…¥æ‰§è¡Œ BottomHalf ä¾‹ç¨‹
                 
 
 
 
 ;-----------------------------------------------------
 ; dispatch_routine.BottomHalf
-; ÃèÊö£º
-;       dispatch_routine µÄÏÂ°ë²¿·Ö´¦Àí
+; æè¿°ï¼š
+;       dispatch_routine çš„ä¸‹åŠéƒ¨åˆ†å¤„ç†
 ;-----------------------------------------------------
 dispatch_routine.BottomHalf:
         ;;
-        ;; µ±Ç°Õ»ÖĞÊı¾İ£º
-        ;; 1) 8 ¸ö GPRs
-        ;; 2) ±»ÖĞ¶ÏÕßµÄ·µ»Ø²ÎÊı
+        ;; å½“å‰æ ˆä¸­æ•°æ®ï¼š
+        ;; 1) 8 ä¸ª GPRs
+        ;; 2) è¢«ä¸­æ–­è€…çš„è¿”å›å‚æ•°
         ;;
 
 %define RETURN_EIP_OFFSET               (8 * 4)
@@ -399,29 +399,29 @@ dispatch_routine.BottomHalf:
         mov ebp, esp
                 
         ;;
-        ;; ½«ÖĞ¶ÏÕ»½á¹¹µ÷ÕûÎª far pointer
+        ;; å°†ä¸­æ–­æ ˆç»“æ„è°ƒæ•´ä¸º far pointer
         ;;
-        mov eax, [ebp + RETURN_EIP_OFFSET]                      ; ¶Á eip
-        mov esi, [ebp + RETURN_EIP_OFFSET + 4]                  ; ¶Á cs
-        mov ecx, [ebp + RETURN_EIP_OFFSET + 8]                  ; ¶Á eflags
-        mov [ebp + RETURN_EIP_OFFSET + 8], esi                  ; cs Ğ´ÈëÔ­ eflags Î»ÖÃ
-        mov [ebp + RETURN_EIP_OFFSET + 4], eax                  ; eip Ğ´ÈëÔ­ cs Î»ÖÃ
-        mov [ebp + RETURN_EIP_OFFSET], ecx                      ; eflags Ğ´ÈëÔ­ eip Î»ÖÃ
+        mov eax, [ebp + RETURN_EIP_OFFSET]                      ; è¯» eip
+        mov esi, [ebp + RETURN_EIP_OFFSET + 4]                  ; è¯» cs
+        mov ecx, [ebp + RETURN_EIP_OFFSET + 8]                  ; è¯» eflags
+        mov [ebp + RETURN_EIP_OFFSET + 8], esi                  ; cs å†™å…¥åŸ eflags ä½ç½®
+        mov [ebp + RETURN_EIP_OFFSET + 4], eax                  ; eip å†™å…¥åŸ cs ä½ç½®
+        mov [ebp + RETURN_EIP_OFFSET], ecx                      ; eflags å†™å…¥åŸ eip ä½ç½®
         
         ;;
-        ;; Ö´ĞĞÄ¿±êÈÎÎñ
+        ;; æ‰§è¡Œç›®æ ‡ä»»åŠ¡
         ;;
         test ebx, ebx
         jz dispatch_routine.BottomHalf.@1
         call ebx
         
         ;;
-        ;; Ğ´Èë×´Ì¬Öµ
+        ;; å†™å…¥çŠ¶æ€å€¼
         ;;
         mov [fs: SDA.LastStatusCode], eax
          
         ;;
-        ;; Èç¹ûÌá¹©ÁË IPI routine ÏÂ°ë²¿·Ö´¦Àí£¬ÔòÖ´ĞĞ
+        ;; å¦‚æœæä¾›äº† IPI routine ä¸‹åŠéƒ¨åˆ†å¤„ç†ï¼Œåˆ™æ‰§è¡Œ
         ;;
         mov eax, [gs: PCB.IpiRoutineBottomHalf]
         test eax, eax
@@ -430,13 +430,13 @@ dispatch_routine.BottomHalf:
         
 dispatch_routine.BottomHalf.@1:
         ;;
-        ;; Ä¿±ê´¦ÀíÆ÷ÒÑÍê³É¹¤×÷£¬ÖÃÎª usable ×´Ì¬
+        ;; ç›®æ ‡å¤„ç†å™¨å·²å®Œæˆå·¥ä½œï¼Œç½®ä¸º usable çŠ¶æ€
         ;;
         mov eax, [gs: PCB.ProcessorIndex]
         lock bts DWORD [fs: SDA.UsableProcessorMask], eax
 
         ;;
-        ;; ÖÃÄÚ²¿ĞÅºÅÓĞĞ§
+        ;; ç½®å†…éƒ¨ä¿¡å·æœ‰æ•ˆ
         ;;        
         SET_INTERNAL_SIGNAL
      
@@ -444,11 +444,11 @@ dispatch_routine.BottomHalf.@1:
 %undef RETURN_EIP_OFFSET        
 
         ;;
-        ;; »Ö¸´ context ·µ»Ø±»ÖĞ¶ÏÕß
+        ;; æ¢å¤ context è¿”å›è¢«ä¸­æ–­è€…
         ;;
-        popa                                                    ; ±»ÖĞ¶ÏÕß context
+        popa                                                    ; è¢«ä¸­æ–­è€… context
         popf                                                    ; eflags
-        retf                                                    ; ·µ»Ø±»ÖĞ¶ÏÕß
+        retf                                                    ; è¿”å›è¢«ä¸­æ–­è€…
         
                 
 
@@ -459,44 +459,44 @@ dispatch_routine.BottomHalf.@1:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) Ç¿ÖÆÈÃ´¦ÀíÆ÷Ìøµ½Èë¿Úµã´úÂë
-;       2) ×¢Òâ£¬ÕâÖÖ·½Ê½²»ÄÜ·µ»Ø£¡
+; æè¿°ï¼š
+;       1) å¼ºåˆ¶è®©å¤„ç†å™¨è·³åˆ°å…¥å£ç‚¹ä»£ç 
+;       2) æ³¨æ„ï¼Œè¿™ç§æ–¹å¼ä¸èƒ½è¿”å›ï¼
 ;-----------------------------------------------------
 goto_entry:
         push eax
         push ebp
         mov ebp, esp
         
-        add esp, 12                                             ; Ö¸Ïò CS
+        add esp, 12                                             ; æŒ‡å‘ CS
         
         ;;
-        ;; ¼ì²é±»ÖĞ¶ÏÕßÈ¨ÏŞ
+        ;; æ£€æŸ¥è¢«ä¸­æ–­è€…æƒé™
         ;;
-        test DWORD [esp], 03                                    ; ¼ì²é cs
+        test DWORD [esp], 03                                    ; æ£€æŸ¥ cs
         jz goto_entry.@0
         
         ;;
-        ;; ÊôÓÚ·Ç0¼¶£¬¸ÄĞ´Îª 0 ¼¶ÖĞ¶ÏÕ»
+        ;; å±äºé0çº§ï¼Œæ”¹å†™ä¸º 0 çº§ä¸­æ–­æ ˆ
         ;;
-        add esp, 16                                             ; Ö¸ÏòÎ´Ñ¹Èë·µ»Ø²ÎÊıÇ°
-        push 02 | FLAGS_IF                                      ; Ñ¹Èë EFLAGS
-        push KernelCsSelector32                                 ; Ñ¹Èë CS
+        add esp, 16                                             ; æŒ‡å‘æœªå‹å…¥è¿”å›å‚æ•°å‰
+        push 02 | FLAGS_IF                                      ; å‹å…¥ EFLAGS
+        push KernelCsSelector32                                 ; å‹å…¥ CS
         
 goto_entry.@0:        
         ;;
-        ;; Ğ´ÈëÄ¿±êµØÖ·
+        ;; å†™å…¥ç›®æ ‡åœ°å€
         ;;
-        push DWORD [gs: PCB.IpiRoutinePointer]                  ; Ô­·µ»ØµØÖ· <--- Ä¿±êµØÖ·
+        push DWORD [gs: PCB.IpiRoutinePointer]                  ; åŸè¿”å›åœ°å€ <--- ç›®æ ‡åœ°å€
 
         ;;
-        ;; Ğ´ lapic EOI ÃüÁî
+        ;; å†™ lapic EOI å‘½ä»¤
         ;;        
         mov eax, [gs: PCB.LapicBase]
         mov DWORD [eax + EOI], 0
         mov eax, [ebp + 4]
         mov ebp, [ebp]
-        iret                                                    ; ×ªÈëÄ¿±êµØÖ·
+        iret                                                    ; è½¬å…¥ç›®æ ‡åœ°å€
 
 
 
@@ -504,11 +504,11 @@ goto_entry.@0:
 ;-----------------------------------------------------
 ; do_schedule()
 ; input:
-;       esi -´¦ÀíÆ÷ index
+;       esi -å¤„ç†å™¨ index
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) °´ÏÂ¹¦ÄÜ¼ü£¬½øĞĞµ±Ç°´¦ÀíÆ÷ÇĞ»»
+; æè¿°ï¼š
+;       1) æŒ‰ä¸‹åŠŸèƒ½é”®ï¼Œè¿›è¡Œå½“å‰å¤„ç†å™¨åˆ‡æ¢
 ;-----------------------------------------------------
 do_schedule:
         push esi
@@ -516,7 +516,7 @@ do_schedule:
         push ecx
 
         ;;
-        ;; ÇĞ»»µ±Ç°´¦ÀíÆ÷
+        ;; åˆ‡æ¢å½“å‰å¤„ç†å™¨
         ;;
         mov edi, switch_to_processor
         call force_dispatch_to_processor
@@ -534,8 +534,8 @@ do_schedule:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ÇĞ»»µ±Ç°´¦ÀíÆ÷
+; æè¿°ï¼š
+;       1) åˆ‡æ¢å½“å‰å¤„ç†å™¨
 ;-----------------------------------------------------
 switch_to_processor:
         push ebp
@@ -550,14 +550,14 @@ switch_to_processor:
 %endif  
 
         ;;
-        ;; ÇĞ»»½¹µã´¦ÀíÆ÷
+        ;; åˆ‡æ¢ç„¦ç‚¹å¤„ç†å™¨
         ;;
         mov ecx, [ebp + PCB.ProcessorIndex]
         mov eax, SDA.InFocus
         xchg [fs: eax], ecx        
 
         ;;
-        ;; ¼ì²éÊÇ·ñÓĞ guese »·¾³´æÔÚĞèÒªÇĞ»»
+        ;; æ£€æŸ¥æ˜¯å¦æœ‰ guese ç¯å¢ƒå­˜åœ¨éœ€è¦åˆ‡æ¢
         ;;
         mov esi, [ebp + PCB.ProcessorStatus]
         test esi, CPU_STATUS_GUEST_EXIST
@@ -565,9 +565,9 @@ switch_to_processor:
         
         
         ;;
-        ;; ¼ì²éµ±Ç°´¦ÀíÆ÷ÊÇ·ñÒÑ¾­ÓµÓĞ½¹µã ?
-        ;; 1) ÊÇ£ºÔò XOR CPU_STATUS_GUEST ±êÖ¾Î»
-        ;; 2) ·ñ£ºÔòÇå CPU_STATUS_GUEST ±êÖ¾Î»
+        ;; æ£€æŸ¥å½“å‰å¤„ç†å™¨æ˜¯å¦å·²ç»æ‹¥æœ‰ç„¦ç‚¹ ?
+        ;; 1) æ˜¯ï¼šåˆ™ XOR CPU_STATUS_GUEST æ ‡å¿—ä½
+        ;; 2) å¦ï¼šåˆ™æ¸… CPU_STATUS_GUEST æ ‡å¿—ä½
         ;;
         mov edi, esi
         and esi, ~CPU_STATUS_GUEST_FOCUS
@@ -577,7 +577,7 @@ switch_to_processor:
         mov [ebp + PCB.ProcessorStatus], esi
         
         ;;
-        ;; ¼ì²é host/guest ½¹µã
+        ;; æ£€æŸ¥ host/guest ç„¦ç‚¹
         ;;
         test esi, CPU_STATUS_GUEST_FOCUS
         jnz switch_to_processor.Guest
@@ -585,7 +585,7 @@ switch_to_processor:
 
 switch_to_processor.host:
         ;;
-        ;; ÇĞ»» lcoal keyboard buffer
+        ;; åˆ‡æ¢ lcoal keyboard buffer
         ;;
         REX.Wrxb
         mov ebx, [ebp + PCB.LsbBase]                    ; ebx = LSB
@@ -603,16 +603,16 @@ switch_to_processor.host:
         mov [ebp + SDA.KeyBufferLength], eax            ; KeyBufferLength = LocalKeyBufferSize
         
         ;;
-        ;; ÇĞ»»ÆÁÄ»
+        ;; åˆ‡æ¢å±å¹•
         ;;        
-        call flush_local_video_buffer                   ; Ë¢ĞÂÎªµ±Ç°´¦ÀíÆ÷ local video buffer                
+        call flush_local_video_buffer                   ; åˆ·æ–°ä¸ºå½“å‰å¤„ç†å™¨ local video buffer                
 
         jmp switch_to_processor.Done
 
 
 switch_to_processor.Guest:
         ;;
-        ;; ÇĞ»» VM keyboard buffer
+        ;; åˆ‡æ¢ VM keyboard buffer
         ;;
         REX.Wrxb
         mov ebx, [ebp + PCB.CurrentVmbPointer]
@@ -632,9 +632,9 @@ switch_to_processor.Guest:
         mov [ebp + SDA.KeyBufferLength], eax            ; SDA.KeyBufferLength = VmKeyBufferSize
         
         ;;
-        ;; ÇĞ»»ÆÁÄ»
+        ;; åˆ‡æ¢å±å¹•
         ;;        
-        call flush_vm_video_buffer                      ; Ë¢ĞÂÎªµ±Ç°´¦ÀíÆ÷ vm video buffer  
+        call flush_vm_video_buffer                      ; åˆ·æ–°ä¸ºå½“å‰å¤„ç†å™¨ vm video buffer  
 
 switch_to_processor.Done:        
         pop ebx

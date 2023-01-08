@@ -1,12 +1,12 @@
 ;*************************************************
 ;* creg.asm                                      *
-;* Copyright (c) 2009-2013 ��־                  *
+;* Copyright (c) 2009-2013 邓志                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
 
 
-;; ��ӡ control register ��Ϣ
+;; 打印 control register 信息
 
         bits 32
 
@@ -14,7 +14,7 @@
 ;---------------------------------------
 ; print_flags_value()
 ; input:
-;       esi- eflags ֵ
+;       esi- eflags 值
 ;---------------------------------------
 dump_flags_value:
         jmp do_print_flags_value
@@ -49,7 +49,7 @@ do_print_flags_value:
         mov esi, pfv_msg1
         call puts
 
-; ��ӡ IOPL ֵ
+; 打印 IOPL 值
         mov esi, iopl
         call puts
         mov esi, edx
@@ -58,7 +58,7 @@ do_print_flags_value:
         call print_dword_decimal
         call printblank
 
-; ��ӡ eflags ��־λ
+; 打印 eflags 标志位
         mov esi, edx
         shl esi, 10
         call reverse

@@ -1,6 +1,6 @@
 ;*************************************************
 ;* DoOpcode.asm                                  *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
@@ -12,8 +12,8 @@
 ;       esi - buffer of encodes
 ;       edi - buffer of out
 ; output:
-;       eax - bits 7:0 ·µ»Ø³¤¶ÈÖµ
-;             bits 31:8 ·µ»ØÂë
+;       eax - bits 7:0 è¿”å›é•¿åº¦å€¼
+;             bits 31:8 è¿”å›ç 
 ;-------------------------------------------------
 DoOpcode48:
         push ebp
@@ -30,8 +30,8 @@ DoOpcode48:
         test DWORD [ebx + DMB.TargetCpuMode], TARGET_CODE64
         jz DoOpcode48.@1
         or DWORD [ebx + DMB.DecodePrefixFlag], DECODE_PREFIX_REX
-        mov al, [esi]                                   ; ¶Á encode
-        mov [ebx + DMB.PrefixRex], al                   ; ±£´æ REX prefix
+        mov al, [esi]                                   ; è¯» encode
+        mov [ebx + DMB.PrefixRex], al                   ; ä¿å­˜ REX prefix
         mov eax, DECODE_STATUS_CONTINUE | 1
         jmp DoOpcode48.done
         
@@ -94,8 +94,8 @@ DoOpcodeB7:
 ;       esi - buffer of encodes
 ;       edi - buffer of out
 ; output:
-;       eax - bits 7:0 ·µ»Ø³¤¶ÈÖµ
-;             bits 31:8 ·µ»ØÂë
+;       eax - bits 7:0 è¿”å›é•¿åº¦å€¼
+;             bits 31:8 è¿”å›ç 
 ;-------------------------------------------------
 DoOpcodeB8:
         push ebx
@@ -106,25 +106,25 @@ DoOpcodeB8:
         
         REX.Wrxb
         test edi, edi
-        jz DoOpcodeB8.done                              ; Ä¿±ê buffer Îª¿Õ
+        jz DoOpcodeB8.done                              ; ç›®æ ‡ buffer ä¸ºç©º
         
         mov esi, InstructionMsgB8
-        call strcpy                                     ; Ğ´ÈëÖ¸ÁîÃû
+        call strcpy                                     ; å†™å…¥æŒ‡ä»¤å
         mov BYTE [edi], ' '
         REX.Wrxb
         INCv edi
-        mov esi, Register40                             ; Ğ´Èë¼Ä´æÆ÷Ãû
+        mov esi, Register40                             ; å†™å…¥å¯„å­˜å™¨å
         call strcpy
         mov BYTE [edi], ','
         REX.Wrxb
         INCv edi
         mov esi, [ebx + 1]
-        call dword_to_string                            ; ¶¨ÈëÁ¢¼´Êı×Ö·û´®
+        call dword_to_string                            ; å®šå…¥ç«‹å³æ•°å­—ç¬¦ä¸²
         mov BYTE [edi], 0
         REX.Wrxb
         INCv edi        
         
-        mov eax, 5                                      ; ·µ»Ø encode ³¤¶È
+        mov eax, 5                                      ; è¿”å› encode é•¿åº¦
         
 DoOpcodeB8.done:
         pop ebx        
@@ -168,25 +168,25 @@ DoOpcodeBF:
 ;       esi - buffer of encodes
 ;       edi - buffer of out
 ; output:
-;       eax - bits 7:0 ·µ»Ø³¤¶ÈÖµ
-;             bits 31:8 ·µ»ØÂë
+;       eax - bits 7:0 è¿”å›é•¿åº¦å€¼
+;             bits 31:8 è¿”å›ç 
 ;-------------------------------------------------
 DoOpcodeCD:
         push ebx        
         REX.Wrxb
         mov ebx, esi
         mov esi, InstructionMsgCD
-        call strcpy                                     ; Ğ´ÈëÖ¸ÁîÃû
+        call strcpy                                     ; å†™å…¥æŒ‡ä»¤å
         mov BYTE [edi], ' '
         REX.Wrxb
         INCv edi        
         REX.Wrxb
         movzx esi, BYTE [ebx + 1]
-        call byte_to_string                            ; ¶¨ÈëÁ¢¼´Êı×Ö·û´®
+        call byte_to_string                            ; å®šå…¥ç«‹å³æ•°å­—ç¬¦ä¸²
         mov BYTE [edi], 0
         REX.Wrxb
         INCv edi                
-        mov eax, 2                                      ; ·µ»Ø encode ³¤¶È
+        mov eax, 2                                      ; è¿”å› encode é•¿åº¦
         pop ebx
         ret
 
@@ -196,19 +196,19 @@ DoOpcodeCD:
 ;       esi - buffer of encodes
 ;       edi - buffer of out
 ; output:
-;       eax - bits 7:0 ·µ»Ø³¤¶ÈÖµ
-;             bits 31:8 ·µ»ØÂë
+;       eax - bits 7:0 è¿”å›é•¿åº¦å€¼
+;             bits 31:8 è¿”å›ç 
 ;-------------------------------------------------
 DoOpcodeC3:
         push ebx        
         REX.Wrxb
         mov ebx, esi
         mov esi, InstructionMsgC3
-        call strcpy                                     ; Ğ´ÈëÖ¸ÁîÃû
+        call strcpy                                     ; å†™å…¥æŒ‡ä»¤å
         mov BYTE [edi], 0
         REX.Wrxb
         INCv edi                
-        mov eax, 1                                      ; ·µ»Ø encode ³¤¶È
+        mov eax, 1                                      ; è¿”å› encode é•¿åº¦
         pop ebx
         ret
 
@@ -219,16 +219,16 @@ DoOpcodeC3:
 ;       esi - buffer of encodes
 ;       edi - buffer of out
 ; output:
-;       eax - bits 7:0 ·µ»Ø³¤¶ÈÖµ
-;             bits 31:8 ·µ»ØÂë
+;       eax - bits 7:0 è¿”å›é•¿åº¦å€¼
+;             bits 31:8 è¿”å›ç 
 ;-------------------------------------------------
 DoOpcodeCF:
         mov esi, InstructionMsgCF
-        call strcpy                                     ; Ğ´ÈëÖ¸ÁîÃû
+        call strcpy                                     ; å†™å…¥æŒ‡ä»¤å
         mov BYTE [edi], 0
         REX.Wrxb
         INCv edi                
-        mov eax, 1                                      ; ·µ»Ø encode ³¤¶È
+        mov eax, 1                                      ; è¿”å› encode é•¿åº¦
         ret
 
 
@@ -240,8 +240,8 @@ DoOpcodeCF:
 ;       esi - buffer of encodes
 ;       edi - buffer of out
 ; output:
-;       eax - bits 7:0 ·µ»Ø³¤¶ÈÖµ
-;             bits 31:8 ·µ»ØÂë
+;       eax - bits 7:0 è¿”å›é•¿åº¦å€¼
+;             bits 31:8 è¿”å›ç 
 ;-------------------------------------------------
 DoOpcodeE8:
         ret        

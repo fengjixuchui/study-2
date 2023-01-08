@@ -1,17 +1,17 @@
 ;*************************************************
 ;* dump_page32.asm                               *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
 
 
 ;-------------------------------------------
-; dump_pae_page(): ´òÓ¡ PAE paging Ä£Ê½Ò³×ª»»±íĞÅÏ¢
+; dump_pae_page(): æ‰“å° PAE paging æ¨¡å¼é¡µè½¬æ¢è¡¨ä¿¡æ¯
 ; input:
 ;                esi: virtual address(linear address)
-; ×¢Òâ£º
-;                Õâ¸öº¯ÊıÊÇÔÚÒ»¶ÔÒ»Ó³ÉäµÄÇé¿öÏÂ£¨virtual addressºÍphysical address Ò»ÖÂ£©
+; æ³¨æ„ï¼š
+;                è¿™ä¸ªå‡½æ•°æ˜¯åœ¨ä¸€å¯¹ä¸€æ˜ å°„çš„æƒ…å†µä¸‹ï¼ˆvirtual addresså’Œphysical address ä¸€è‡´ï¼‰
 ;-------------------------------------------
 dump_pae_page:
         push ecx
@@ -20,7 +20,7 @@ dump_pae_page:
         mov DWORD [pdpt_base], PDPT_BASE
         call get_maxphyaddr_select_mask
         mov ecx, esi
-; Êä³ö PDPTE
+; è¾“å‡º PDPTE
         mov esi, pdpte_msg
         call puts
         mov eax, ecx
@@ -53,18 +53,18 @@ pdpte_next:
         mov edi, pdpte_pae_flags
         call dump_flags
         call println
-        mov eax, [maxphyaddr_select_mask + 4]   ; select mask ¸ßÎ»
+        mov eax, [maxphyaddr_select_mask + 4]   ; select mask é«˜ä½
         not eax
-        test ebx, eax                           ; ¼ì²â¸ß32Î»±£ÁôÎ»ÊÇ·ñÎª 0
+        test ebx, eax                           ; æ£€æµ‹é«˜32ä½ä¿ç•™ä½æ˜¯å¦ä¸º 0
         jnz print_reserved_error
-        test edx, 1E6h                          ; ¼ì²âµÍ32Î»±£ÁôÎ»ÊÇ·ñÎª 0 
+        test edx, 1E6h                          ; æ£€æµ‹ä½32ä½ä¿ç•™ä½æ˜¯å¦ä¸º 0 
 print_reserved_error:
         mov esi, 0
         mov edi, reserved_error
         cmovnz esi, edi
         call puts
 
-; Êä³ö PDE        
+; è¾“å‡º PDE        
         mov esi, pde_msg
         call puts
         mov eax, ecx
@@ -87,14 +87,14 @@ pde_next:
         and esi, [maxphyaddr_select_mask]
         and esi, 0xffe00000
         and edi, [maxphyaddr_select_mask + 4]
-;        and edi, 0x7fffffff                                ; ÇåXDÎ»
+;        and edi, 0x7fffffff                                ; æ¸…XDä½
         call print_qword_value
         call printblank
         mov esi, attr_msg
         call puts
         mov esi, edx
 ;        shl esi, 19
-        ;; ĞÂ¼ÓÈë xd ±êÖ¾
+        ;; æ–°åŠ å…¥ xd æ ‡å¿—
         shl esi, 18
         btr esi, 31
         and ebx, 0x80000000
@@ -104,7 +104,7 @@ pde_next:
         mov edi, pde_pae_2m_flags
         call dump_flags
         call println
-        test edx, 0FE000h                       ; ¼ì²â±£ÁôÎ»ÊÇ·ñÎª 0
+        test edx, 0FE000h                       ; æ£€æµ‹ä¿ç•™ä½æ˜¯å¦ä¸º 0
         mov esi, 0
         mov edi, reserved_error
         cmovnz esi, edi
@@ -121,7 +121,7 @@ dump_pae_4k_pde:
         call puts
         mov esi, edx
 ;        shl esi, 19        
-        ;ĞÂ¼ÓÈëxd±êÖ¾
+        ;æ–°åŠ å…¥xdæ ‡å¿—
         shl esi, 18
         btr esi, 31
         and ebx, 0x80000000
@@ -132,7 +132,7 @@ dump_pae_4k_pde:
         mov edi, pde_pae_4k_flags
         call dump_flags
         call println
-;; Êä³ö pte        
+;; è¾“å‡º pte        
         mov esi, pte_msg
         call puts
         mov eax, ecx
@@ -158,7 +158,7 @@ pte_next:
         call puts
         mov esi, edx
 ;        shl esi, 19        
-        ; ĞÂ¼ÓÈë xd ±êÖ¾
+        ; æ–°åŠ å…¥ xd æ ‡å¿—
         shl esi, 18
         btr esi, 31
         and ebx, 0x80000000
@@ -176,11 +176,11 @@ dump_pae_page_done:
         ret
 
 ;-------------------------------------------
-; dump_page(): ´òÓ¡Ò³×ª»»±íĞÅÏ¢
+; dump_page(): æ‰“å°é¡µè½¬æ¢è¡¨ä¿¡æ¯
 ; input:
 ;                esi: virtual address(linear address)
-; ×¢Òâ£º
-;                Õâ¸öº¯ÊıÊÇÔÚÒ»¶ÔÒ»Ó³ÉäµÄÇé¿öÏÂ£¨virtual addressºÍphysical address Ò»ÖÂ£©
+; æ³¨æ„ï¼š
+;                è¿™ä¸ªå‡½æ•°æ˜¯åœ¨ä¸€å¯¹ä¸€æ˜ å°„çš„æƒ…å†µä¸‹ï¼ˆvirtual addresså’Œphysical address ä¸€è‡´ï¼‰
 ;-------------------------------------------        
 dump_page:
         push ecx
@@ -194,7 +194,7 @@ dump_page:
         mov edx, eax
         bt eax, 7                                        ; PS = ?
         jnc dump_4k_page
-;; Êä³ö 4M Ò³ÃæµÄ PDE
+;; è¾“å‡º 4M é¡µé¢çš„ PDE
         mov edi, eax
         mov esi, eax
         and esi, 0xffc00000                        ; 4M page frame
@@ -214,7 +214,7 @@ dump_page:
         jmp do_dump_page_done
 
 dump_4k_page:        
-;; 4KÒ³Ãæ
+;; 4Ké¡µé¢
 
 ; 1) PDE
         mov esi, edx
@@ -261,7 +261,7 @@ do_dump_page_done:
 
        
 
-;------------ Êı¾İÇø ------------
+;------------ æ•°æ®åŒº ------------
         
 
 maxphyaddr_select_mask  dq 0

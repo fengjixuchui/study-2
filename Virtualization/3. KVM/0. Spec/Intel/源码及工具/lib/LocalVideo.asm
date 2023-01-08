@@ -1,6 +1,6 @@
 ;*************************************************
 ;* LocalVideo.asm                                *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
@@ -13,8 +13,8 @@
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) Ë¢ local video buffer Êı¾İµ½ video
+; æè¿°ï¼š
+;       1) åˆ· local video buffer æ•°æ®åˆ° video
 ;-------------------------------------------------        
 flush_video_buffer:
         push ebp
@@ -34,8 +34,8 @@ do_flush_video_buffer:
         mov ebx, [ebp + PCB.SdaBase]
         
         ;;
-        ;; ´Ó LocalVideBufferHead ¿ªÊ¼µ½ LocalVideoBufferPtr
-        ;; Ë¢ĞÂµ½ target video buffer ÖĞ
+        ;; ä» LocalVideBufferHead å¼€å§‹åˆ° LocalVideoBufferPtr
+        ;; åˆ·æ–°åˆ° target video buffer ä¸­
         ;;
         REX.Wrxb
         mov ebp, [ebp + PCB.LsbBase]        
@@ -56,8 +56,8 @@ do_flush_video_buffer:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) Ë¢ĞÂÕû¸ö local video buffer
+; æè¿°ï¼š
+;       1) åˆ·æ–°æ•´ä¸ª local video buffer
 ;-------------------------------------------------        
 flush_local_video_buffer:
         push ebp
@@ -75,7 +75,7 @@ flush_local_video_buffer:
         mov ebx, [ebp + PCB.SdaBase]
             
         ;;
-        ;; ½« LocalVideoBufferHead ¿ªÊ¼µÄÕûÆÁÇøÓò¸´ÖÆµ½ target video buffer
+        ;; å°† LocalVideoBufferHead å¼€å§‹çš„æ•´å±åŒºåŸŸå¤åˆ¶åˆ° target video buffer
         ;;
         REX.Wrxb
         mov ebp, [ebp + PCB.LsbBase]
@@ -96,7 +96,7 @@ do_flush_local_video_buffer:
         call memcpy
         
         ;;
-        ;; ¸üĞÂ SDA.VideoBufferPtr:
+        ;; æ›´æ–° SDA.VideoBufferPtr:
         ;; 1) SDA.VideoBufferPtr = (LocalVideoBufferPtr - LocalVideoBufferHead) + ViodeBufferHead
         ;;
         REX.Wrxb
@@ -109,7 +109,7 @@ do_flush_local_video_buffer:
         mov [ebx + SDA.VideoBufferPtr], edi
         
         ;;
-        ;; ¸üĞÂ SDA.VideoBufferLastChar
+        ;; æ›´æ–° SDA.VideoBufferLastChar
         ;;
         mov eax, [ebp + LSB.LocalVideoBufferLastChar]
         mov [ebx + SDA.VideoBufferLastChar], eax
@@ -127,8 +127,8 @@ do_flush_local_video_buffer:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ½«Õû¸öÆÁÄ»±£´æÔÚµ±Ç°µÄ local video buffer
+; æè¿°ï¼š
+;       1) å°†æ•´ä¸ªå±å¹•ä¿å­˜åœ¨å½“å‰çš„ local video buffer
 ;-------------------------------------------------  
 store_local_video_buffer:
         push ebp
@@ -147,7 +147,7 @@ store_local_video_buffer:
         mov ebp, [ebp + PCB.LsbBase]            ; ebp = LSB
         
         ;;
-        ;; ¸´ÖÆÆÁÄ»ÄÚÈİ
+        ;; å¤åˆ¶å±å¹•å†…å®¹
         ;;
         
         REX.Wrxb
@@ -164,7 +164,7 @@ store_local_video_buffer:
         call memcpy
         
         ;;
-        ;; ¸üĞÂ LocalVideoBufferPtr ºÍ LocalVideoBufferLastChar
+        ;; æ›´æ–° LocalVideoBufferPtr å’Œ LocalVideoBufferLastChar
         ;;
         REX.Wrxb
         mov eax, [ebx + SDA.VideoBufferPtr]
@@ -192,8 +192,8 @@ store_local_video_buffer:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) Ë¢ local video buffer Êı¾İµ½ video
+; æè¿°ï¼š
+;       1) åˆ· local video buffer æ•°æ®åˆ° video
 ;-------------------------------------------------        
 flush_video_buffer:
         push ebp
@@ -213,8 +213,8 @@ do_flush_video_buffer:
         mov ebx, [ebp + PCB.SdaBase]
         
         ;;
-        ;; ´Ó LocalVideBufferHead ¿ªÊ¼µ½ LocalVideoBufferPtr
-        ;; Ë¢ĞÂµ½ target video buffer ÖĞ
+        ;; ä» LocalVideBufferHead å¼€å§‹åˆ° LocalVideoBufferPtr
+        ;; åˆ·æ–°åˆ° target video buffer ä¸­
         ;;
         REX.Wrxb
         mov ebp, [ebp + PCB.LsbBase]        
@@ -237,8 +237,8 @@ do_flush_video_buffer:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) Ë¢ĞÂÕû¸ö VM video buffer
+; æè¿°ï¼š
+;       1) åˆ·æ–°æ•´ä¸ª VM video buffer
 ;-------------------------------------------------        
 flush_vm_video_buffer:
         push ebp
@@ -259,7 +259,7 @@ flush_vm_video_buffer:
         
         
         ;;
-        ;; ½« VmVideoBufferHead ¿ªÊ¼µÄÕûÆÁÇøÓò¸´ÖÆµ½ target video buffer
+        ;; å°† VmVideoBufferHead å¼€å§‹çš„æ•´å±åŒºåŸŸå¤åˆ¶åˆ° target video buffer
         ;;         
         REX.Wrxb
         mov edx, [ebp + PCB.CurrentVmbPointer]
@@ -281,7 +281,7 @@ do_flush_vm_video_buffer:
         call memcpy
         
         ;;
-        ;; ¸üĞÂ SDA.VideoBufferPtr:
+        ;; æ›´æ–° SDA.VideoBufferPtr:
         ;; 1) SDA.VideoBufferPtr = (VmVideoBufferPtr - VmVideoBufferHead) + ViodeBufferHead
         ;;
         REX.Wrxb
@@ -294,7 +294,7 @@ do_flush_vm_video_buffer:
         mov [ebx + SDA.VideoBufferPtr], edi
         
         ;;
-        ;; ¸üĞÂ SDA.VideoBufferLastChar
+        ;; æ›´æ–° SDA.VideoBufferLastChar
         ;;
         mov eax, [edx + VSB.VmVideoBufferLastChar]
         mov [ebx + SDA.VideoBufferLastChar], eax
@@ -313,8 +313,8 @@ do_flush_vm_video_buffer:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ½«Õû¸öÆÁÄ»±£´æÔÚµ±Ç°µÄ local video buffer
+; æè¿°ï¼š
+;       1) å°†æ•´ä¸ªå±å¹•ä¿å­˜åœ¨å½“å‰çš„ local video buffer
 ;-------------------------------------------------  
 store_local_video_buffer:
         push ebp
@@ -333,7 +333,7 @@ store_local_video_buffer:
         mov ebp, [ebp + PCB.LsbBase]            ; ebp = LSB
         
         ;;
-        ;; ¸´ÖÆÆÁÄ»ÄÚÈİ
+        ;; å¤åˆ¶å±å¹•å†…å®¹
         ;;
         
         REX.Wrxb
@@ -350,7 +350,7 @@ store_local_video_buffer:
         call memcpy
         
         ;;
-        ;; ¸üĞÂ LocalVideoBufferPtr ºÍ LocalVideoBufferLastChar
+        ;; æ›´æ–° LocalVideoBufferPtr å’Œ LocalVideoBufferLastChar
         ;;
         REX.Wrxb
         mov eax, [ebx + SDA.VideoBufferPtr]

@@ -1,6 +1,6 @@
 ;*************************************************
 ;* smp64.asm                                     *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
@@ -14,10 +14,10 @@
 ; dispatch_to_processor_sets64()
 ; input:
 ;       esi - sets of index
-;       rdi - routine Èë¿Ú
-;       rax - delivery ÀàĞÍ
-; ÃèÊö£º
-;       1) ·¢ËÍ IPI ¸øÒ»×éCPU
+;       rdi - routine å…¥å£
+;       rax - delivery ç±»å‹
+; æè¿°ï¼š
+;       1) å‘é€ IPI ç»™ä¸€ç»„CPU
 ;-----------------------------------------------------
 dispatch_to_processor_sets64:
         push rbx         
@@ -30,16 +30,16 @@ dispatch_to_processor_sets64:
         
         
         ;;
-        ;; µÃµ½Ä¿±ê´¦ÀíÆ÷µÄ PCB ¿é
+        ;; å¾—åˆ°ç›®æ ‡å¤„ç†å™¨çš„ PCB å—
         ;;
 dispatch_to_processor_sets64.@0:
         bsf esi, ecx
         jz dispatch_to_processor_sets64.@1
         
         ;;
-        ;; ÖÃ´¦ÀíÆ÷Îª busy ×´Ì¬£¨È¥µô usable processor ÁĞ±í£©
+        ;; ç½®å¤„ç†å™¨ä¸º busy çŠ¶æ€ï¼ˆå»æ‰ usable processor åˆ—è¡¨ï¼‰
         ;;
-        lock btr DWORD [fs: SDA.UsableProcessorMask], esi               ; ´¦ÀíÆ÷Îª unusable ×´Ì¬
+        lock btr DWORD [fs: SDA.UsableProcessorMask], esi               ; å¤„ç†å™¨ä¸º unusable çŠ¶æ€
         btr ecx, esi
         
         call get_processor_pcb
@@ -49,14 +49,14 @@ dispatch_to_processor_sets64.@0:
         jz dispatch_to_processor_sets64.@1
         
         ;;
-        ;; Ğ´Èë Routine Èë¿ÚµØÖ·µ½ PCB ÖĞ
+        ;; å†™å…¥ Routine å…¥å£åœ°å€åˆ° PCB ä¸­
         ;;
         mov [rbx + PCB.IpiRoutinePointer], rdi       
         jmp dispatch_to_processor_sets64.@0
 
 dispatch_to_processor_sets64.@1:                
         ;;
-        ;; ·¢ËÍ IPI µ½Ä¿±ê´¦ÀíÆ÷
+        ;; å‘é€ IPI åˆ°ç›®æ ‡å¤„ç†å™¨
         ;;
         mov eax, [rbx + PCB.ApicId]
         shl edx, 24
@@ -84,12 +84,12 @@ dispatch_to_processor_sets64.done:
 ;       none
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´¦ÀíÆ÷µÄ IPI ·şÎñÀı³Ì
+; æè¿°ï¼š
+;       1) å¤„ç†å™¨çš„ IPI æœåŠ¡ä¾‹ç¨‹
 ;-----------------------------------------------------        
 dispatch_routine64:
         ;;
-        ;; ¶ÁÈ¡·µ»Ø²ÎÊı
+        ;; è¯»å–è¿”å›å‚æ•°
         ;;
         pop QWORD [gs: PCB.RetRip]
         pop QWORD [gs: PCB.RetCs]
@@ -98,28 +98,28 @@ dispatch_routine64:
         pop QWORD [gs: PCB.RetSs]
         
         ;;
-        ;; ±£´æ context
+        ;; ä¿å­˜ context
         ;;
         pusha64
         
         mov rbp, rsp
                 
         ;;
-        ;; ¹¹Ôì BottomHalf Àı³Ì 0 ¼¶ÖĞ¶ÏÕ»
+        ;; æ„é€  BottomHalf ä¾‹ç¨‹ 0 çº§ä¸­æ–­æ ˆ
         ;;
         push KernelSsSelector64                 ; ss
         push rbp                                ; rsp
-        push 02 | FLAGS_IF                      ; rflags£¬¿ÉÖĞ¶Ï
+        push 02 | FLAGS_IF                      ; rflagsï¼Œå¯ä¸­æ–­
         push KernelCsSelector64                 ; cs
         push dispatch_routine64.BottomHalf      ; rip
                 
         ;;
-        ;; ¶Á routine Èë¿ÚµØÖ·
+        ;; è¯» routine å…¥å£åœ°å€
         ;;
         mov rbx, [gs: PCB.IpiRoutinePointer]
 
         ;;
-        ;; IPI routine ·µ»Ø£¬Ä¿±êÈÎÎñÓÉ BottomHalf ´¦Àí
+        ;; IPI routine è¿”å›ï¼Œç›®æ ‡ä»»åŠ¡ç”± BottomHalf å¤„ç†
         ;;
         LAPIC_EOI_COMMAND
         iret64        
@@ -131,24 +131,24 @@ dispatch_routine64:
   
 ;-----------------------------------------------------
 ; dispatch_routine64.BottomHalf
-; ÃèÊö£º
-;       dispatch_routine µÄÏÂ°ë²¿·Ö´¦Àí
+; æè¿°ï¼š
+;       dispatch_routine çš„ä¸‹åŠéƒ¨åˆ†å¤„ç†
 ;-----------------------------------------------------
 dispatch_routine64.BottomHalf:               
         ;;
-        ;; Ö´ĞĞÄ¿±êÈÎÎñ
+        ;; æ‰§è¡Œç›®æ ‡ä»»åŠ¡
         ;;
         test rbx, rbx
         jz dispatch_routine64.BottomHalf.@1
         call rbx
         
         ;;
-        ;; Ğ´Èë routine ·µ»Ø×´Ì¬
+        ;; å†™å…¥ routine è¿”å›çŠ¶æ€
         ;;
         mov [fs: SDA.LastStatusCode], eax
         
         ;;
-        ;; Èç¹ûÌá¹©ÁË Ipi routine ÏÂ°ë²¿·Ö´¦Àí£¬ÔòÖ´ĞĞ
+        ;; å¦‚æœæä¾›äº† Ipi routine ä¸‹åŠéƒ¨åˆ†å¤„ç†ï¼Œåˆ™æ‰§è¡Œ
         ;;
         mov rax, [gs: PCB.IpiRoutineBottomHalf]
         test rax, rax
@@ -157,27 +157,27 @@ dispatch_routine64.BottomHalf:
         
 dispatch_routine64.BottomHalf.@1:
         ;;
-        ;; Ä¿±ê´¦ÀíÆ÷ÒÑÍê³É¹¤×÷£¬ÖÃÎª usable ×´Ì¬
+        ;; ç›®æ ‡å¤„ç†å™¨å·²å®Œæˆå·¥ä½œï¼Œç½®ä¸º usable çŠ¶æ€
         ;;
         mov ecx, [gs: PCB.ProcessorIndex]
         lock bts DWORD [fs: SDA.UsableProcessorMask], ecx        
 
         ;;
-        ;; ÖÃÄÚ²¿ĞÅºÅÓĞĞ§
+        ;; ç½®å†…éƒ¨ä¿¡å·æœ‰æ•ˆ
         ;;
         SET_INTERNAL_SIGNAL
         
         ;;
-        ;; »Ö¸´ context ·µ»Ø±»ÖĞ¶ÏÕß
+        ;; æ¢å¤ context è¿”å›è¢«ä¸­æ–­è€…
         ;;
-        popa64                                                  ; ±»ÖĞ¶ÏÕß context
+        popa64                                                  ; è¢«ä¸­æ–­è€… context
 
         cli
         mov rsp, [gs: PCB.ReturnStackPointer]
         popf
         
         ;;
-        ;; ¼ì²éÊÇ·ñ·µ»Ø 0 ¼¶
+        ;; æ£€æŸ¥æ˜¯å¦è¿”å› 0 çº§
         ;;
         test DWORD [gs: PCB.RetCs], 03
         jz dispatch_routine64.BottomHalf.R0
@@ -195,43 +195,43 @@ dispatch_routine64.BottomHalf.R0:
 ;-----------------------------------------------------
 ; goto_entry64()
 ; input:
-;       rsi - Ä¿±êµØÖ·
+;       rsi - ç›®æ ‡åœ°å€
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ÈÃ´¦ÀíÆ÷×ªÈëÖ´ĞĞÈë¿Úµã´úÂë
+; æè¿°ï¼š
+;       1) è®©å¤„ç†å™¨è½¬å…¥æ‰§è¡Œå…¥å£ç‚¹ä»£ç 
 ;-----------------------------------------------------
 goto_entry64:
         push rax
         push rbp
         mov rbp, rsp
         
-        add rsp, 24                                     ; Ö¸Ïò CS
+        add rsp, 24                                     ; æŒ‡å‘ CS
         
         ;;
-        ;; ¼ì²é±»ÖĞ¶ÏÕßÈ¨ÏŞ
+        ;; æ£€æŸ¥è¢«ä¸­æ–­è€…æƒé™
         ;;
-        test DWORD [rsp], 03                            ; ¼ì²é CS 
+        test DWORD [rsp], 03                            ; æ£€æŸ¥ CS 
         jz goto_entry64.@0
         
         ;;
-        ;; ÊôÓÚ·Ç0¼¶£¬¸ÄĞ´Îª 0 ¼¶ÖĞ¶ÏÕ»
+        ;; å±äºé0çº§ï¼Œæ”¹å†™ä¸º 0 çº§ä¸­æ–­æ ˆ
         ;;
-        add rsp, 32                                     ; Ö¸ÏòÎ´Ñ¹Èë·µ»Ø²ÎÊıÇ°
+        add rsp, 32                                     ; æŒ‡å‘æœªå‹å…¥è¿”å›å‚æ•°å‰
         mov rax, rsp
         push KernelSsSelector64
         push rax
-        push 02 | FLAGS_IF                              ; Ñ¹Èë rflags
-        push KernelCsSelector64                         ; Ñ¹Èë cs       
+        push 02 | FLAGS_IF                              ; å‹å…¥ rflags
+        push KernelCsSelector64                         ; å‹å…¥ cs       
         
 goto_entry64.@0:        
-        push QWORD [gs: PCB.IpiRoutinePointer]          ; Ô­·µ»ØµØÖ· <--- Ä¿±êµØÖ·
+        push QWORD [gs: PCB.IpiRoutinePointer]          ; åŸè¿”å›åœ°å€ <--- ç›®æ ‡åœ°å€
         
         mov rax, [gs: PCB.LapicBase]
         mov DWORD [rax + EOI], 0
         mov rax, [rbp + 8]
         mov rbp, [rbp]
-        iret64                                          ; ×ªÈëÄ¿±êµØÖ·
+        iret64                                          ; è½¬å…¥ç›®æ ‡åœ°å€
 
 
         

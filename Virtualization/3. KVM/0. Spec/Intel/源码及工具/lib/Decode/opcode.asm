@@ -1,6 +1,6 @@
 ;*************************************************
 ;* opcode.asm                                    *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
@@ -74,7 +74,7 @@ MAKE_OPCODE_INFO        C3, 'ret', 0
 MAKE_OPCODE_INFO        CF, 'iret', 0
 
 ;;
-;; ¼Ä´æÆ÷±í
+;; å¯„å­˜å™¨è¡¨
 ;;
 MAKE_REGISTER_INFO      al
 MAKE_REGISTER_INFO      cl

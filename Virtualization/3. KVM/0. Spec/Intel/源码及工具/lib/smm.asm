@@ -9,7 +9,7 @@
 
 	bits 16
 	
-; SMI handler Èë¿Úµã
+; SMI handler å…¥å£ç‚¹
 	
 ;	org SMBASE + 0x8000
 

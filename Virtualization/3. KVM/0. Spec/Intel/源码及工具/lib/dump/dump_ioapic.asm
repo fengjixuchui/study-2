@@ -1,30 +1,30 @@
 ;*************************************************
 ;* ioapic.asm                                    *
-;* Copyright (c) 2009-2013 µÀ÷æ                  *
+;* Copyright (c) 2009-2013 ÈÇìÂøó                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
 
 ;---------------------------------------------
-; dump_ioapic(): ¥Ú”° ioapic ºƒ¥Ê∆˜–≈œ¢
+; dump_ioapic(): ÊâìÂç∞ ioapic ÂØÑÂ≠òÂô®‰ø°ÊÅØ
 ;---------------------------------------------
 dump_ioapic:
         push ecx
         
-; ¥Ú”° ID, Version
+; ÊâìÂç∞ ID, Version
         mov esi, id_msg
         call puts
         mov DWORD [IOAPIC_INDEX_REG], IOAPIC_ID_INDEX
-        mov esi, [IOAPIC_DATA_REG]                              ; ∂¡ ioapic ID
+        mov esi, [IOAPIC_DATA_REG]                              ; ËØª ioapic ID
         call print_dword_value
         mov esi, ver_msg
         call puts
         mov DWORD [IOAPIC_INDEX_REG], IOAPIC_VER_INDEX
-        mov esi, [IOAPIC_DATA_REG]                              ; ∂¡ version
+        mov esi, [IOAPIC_DATA_REG]                              ; ËØª version
         call print_dword_value
         call println
 
-; ¥Ú”° IOAPIC redirection table
+; ÊâìÂç∞ IOAPIC redirection table
         xor ecx, ecx
         mov esi, redirection
         call puts        
@@ -42,10 +42,10 @@ dump_next:
         call puts
 
         lea eax, [ecx * 2 + 10h]                        ; index
-        mov [IOAPIC_INDEX_REG], eax                     ; –¥»Î index
+        mov [IOAPIC_INDEX_REG], eax                     ; ÂÜôÂÖ• index
         mov esi, [IOAPIC_DATA_REG]
         lea eax, [ecx * 2 + 11h]                        ; index
-        mov [IOAPIC_INDEX_REG], eax                     ; –¥»Î index
+        mov [IOAPIC_INDEX_REG], eax                     ; ÂÜôÂÖ• index
         mov edi, [IOAPIC_DATA_REG]
         call print_qword_value
         mov esi, ' '
@@ -62,7 +62,7 @@ dump_next:
 
 
 
-;****** ioapic  ˝æ›«¯ **********
+;****** ioapic Êï∞ÊçÆÂå∫ **********
 
 id_msg          db 'ID: ', 0
 ver_msg         db '        Ver: ', 0

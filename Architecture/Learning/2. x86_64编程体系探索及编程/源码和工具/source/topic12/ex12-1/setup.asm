@@ -3,35 +3,35 @@
 ; All rights reserved.
 
 
-; ÕâÊÇÒ»¸ö¿Õ°×Ä£¿éÊ¾Àı£¬ÉèÎª setup Ä£¿é
-; ÓÃÓÚĞ´Èë´ÅÅÌµÄµÚ 2 ¸öÉÈÇø £¡
+; è¿™æ˜¯ä¸€ä¸ªç©ºç™½æ¨¡å—ç¤ºä¾‹ï¼Œè®¾ä¸º setup æ¨¡å—
+; ç”¨äºå†™å…¥ç£ç›˜çš„ç¬¬ 2 ä¸ªæ‰‡åŒº ï¼
 ;
 
 %include "..\inc\support.inc"
 %include "..\inc\protected.inc"
 
 ;
-; setup Ä£¿éÊÇÔËĞĞÔÚ 16 Î»ÊµÄ£Ê½ÏÂ
+; setup æ¨¡å—æ˜¯è¿è¡Œåœ¨ 16 ä½å®æ¨¡å¼ä¸‹
 
         bits 16
         
         
 ;
-; Ä£¿é¿ªÊ¼µãÊÇ SETUP_SEG - 2£¬¼õ 2 ÊÇÒòÎªÒªËãÉÏÄ£¿éÍ·µÄ´æ·ÅµÄ¡°Ä£¿é size¡±
-; load_module ¼ÓÔØµ½ SETUP_SEG-2£¬Êµ¼ÊĞ§¹ûÊÇ SETUP Ä£¿é»á±»¼ÓÔØµ½¡°Èë¿Úµã¡±¼´£ºsetup_entry
+; æ¨¡å—å¼€å§‹ç‚¹æ˜¯ SETUP_SEG - 2ï¼Œå‡ 2 æ˜¯å› ä¸ºè¦ç®—ä¸Šæ¨¡å—å¤´çš„å­˜æ”¾çš„â€œæ¨¡å— sizeâ€
+; load_module åŠ è½½åˆ° SETUP_SEG-2ï¼Œå®é™…æ•ˆæœæ˜¯ SETUP æ¨¡å—ä¼šè¢«åŠ è½½åˆ°â€œå…¥å£ç‚¹â€å³ï¼šsetup_entry
 ;
         org SETUP_SEG - 2
         
 ;
-; ÔÚÄ£¿éµÄ¿ªÍ· word ´óĞ¡µÄÇøÓòÀï´æ·ÅÄ£¿éµÄ´óĞ¡£¬
-; load_module »á¸ù¾İÕâ¸ö size ¼ÓÔØÄ£¿éµ½ÄÚ´æ
+; åœ¨æ¨¡å—çš„å¼€å¤´ word å¤§å°çš„åŒºåŸŸé‡Œå­˜æ”¾æ¨¡å—çš„å¤§å°ï¼Œ
+; load_module ä¼šæ ¹æ®è¿™ä¸ª size åŠ è½½æ¨¡å—åˆ°å†…å­˜
 
 SETUP_BEGIN:
 
-setup_length        dw (SETUP_END - SETUP_BEGIN)        ; SETUP_END-SETUP_BEGIN ÊÇÕâ¸öÄ£¿éµÄ size
+setup_length        dw (SETUP_END - SETUP_BEGIN)        ; SETUP_END-SETUP_BEGIN æ˜¯è¿™ä¸ªæ¨¡å—çš„ size
 
 
-setup_entry:                            ; ÕâÊÇÄ£¿é´úÂëµÄÈë¿Úµã¡£
+setup_entry:                            ; è¿™æ˜¯æ¨¡å—ä»£ç çš„å…¥å£ç‚¹ã€‚
 
         cli
         NMI_DISABLE
@@ -41,12 +41,12 @@ setup_entry:                            ; ÕâÊÇÄ£¿é´úÂëµÄÈë¿Úµã¡£
         jz no_support
 
 
-; ¼ÓÔØ GDTR
-        db 66h                          ; Ê¹ÓÃ 32 Î» operand size
+; åŠ è½½ GDTR
+        db 66h                          ; ä½¿ç”¨ 32 ä½ operand size
         lgdt [GDT_POINTER]        
 
 
-; ¿ªÆô PAE
+; å¼€å¯ PAE
         mov eax, cr4
         bts eax, 5                      ; CR4.PAE = 1
         mov cr4, eax
@@ -54,7 +54,7 @@ setup_entry:                            ; ÕâÊÇÄ£¿é´úÂëµÄÈë¿Úµã¡£
 ; init page
         call init_page
 
-; ¼ÓÔØ CR3
+; åŠ è½½ CR3
         mov eax, 5000h
         mov cr3, eax
 
@@ -67,11 +67,11 @@ setup_entry:                            ; ÕâÊÇÄ£¿é´úÂëµÄÈë¿Úµã¡£
         mov si, msg0
         call puts
 
-; ¼ÓÔØ IDTR        
-        db 66h                          ; Ê¹ÓÃ 32-bit operand size
+; åŠ è½½ IDTR        
+        db 66h                          ; ä½¿ç”¨ 32-bit operand size
         lidt [IDT_POINTER]        
 
-; ¿ªÆô PE ºÍ paging
+; å¼€å¯ PE å’Œ paging
         mov eax, cr0
         bts eax, 0                      ; CR0.PE =1
         bts eax, 31
@@ -86,12 +86,12 @@ no_support:
         call puts
         jmp $
 
-;;; ÒÔÏÂÊÇ 64-bit Ä£Ê½´úÂë
+;;; ä»¥ä¸‹æ˜¯ 64-bit æ¨¡å¼ä»£ç 
         
         bits 64
 
 entry64:
-        mov ax, 30h                    ; ÉèÖÃ data segment
+        mov ax, 30h                    ; è®¾ç½® data segment
         mov ds, ax
         mov es, ax
         mov ss, ax
@@ -128,7 +128,7 @@ msg1        db 'no support long mode', 13, 10, 0
 msg2        db 10, 'now: enter 64-bit mode', 0
         
 
-; ÒÔÏÂ¶¨Òå protected mode µÄ GDT ±í segment descriptor
+; ä»¥ä¸‹å®šä¹‰ protected mode çš„ GDT è¡¨ segment descriptor
 
 GDT:
 null_desc               dq 0                            ; NULL descriptor
@@ -142,21 +142,21 @@ data32_desc             dq 0x00cf92000000ffff           ; for protected mode dat
 
 kernel_code64_desc      dq 0x0020980000000000           ; 64-bit code segment
 kernel_data64_desc      dq 0x0000920000000001            ; 64-bit data segment
-;;; Ò²Îª sysexit Ö¸ÁîÊ¹ÓÃ¶ø×éÖ¯
+;;; ä¹Ÿä¸º sysexit æŒ‡ä»¤ä½¿ç”¨è€Œç»„ç»‡
 user_code32_desc        dq 0x00cffa000000ffff           ; for protected mode code segment
                                                         ; or for compatibility mode code segmnt
 user_data32_desc        dq 0x00cff2000000ffff           ; for protected mode data segment
                                                         ; or for compatibility mode data segment        
-;; Ò²Îª sysexit Ö¸ÁîÊ¹ÓÃ¶ø×éÖ¯                                                 
+;; ä¹Ÿä¸º sysexit æŒ‡ä»¤ä½¿ç”¨è€Œç»„ç»‡                                                 
 user_code64_desc        dq 0x0020f80000000000           ; 64-bit non-conforming
 user_data64_desc        dq 0x0000f20000000000           ; 64-bit data segment
-        times 10        dq 0                            ; ±£Áô 10 ¸ö
+        times 10        dq 0                            ; ä¿ç•™ 10 ä¸ª
 GDT_END:
 
 
-; ÒÔÏÂ¶¨Òå protected mode µÄ IDT entry
+; ä»¥ä¸‹å®šä¹‰ protected mode çš„ IDT entry
 IDT:
-        times 0x50 dq 0                                ; ±£Áô 0x50 ¸ö vector
+        times 0x50 dq 0                                ; ä¿ç•™ 0x50 ä¸ª vector
 IDT_END:
 
 
@@ -184,33 +184,33 @@ TSS_TEST_END:
 
 
 
-;; Îª IO bit map ±£Áô 10 bytes£¨IO space ´Ó 0 - 80£©
+;; ä¸º IO bit map ä¿ç•™ 10 bytesï¼ˆIO space ä» 0 - 80ï¼‰
 IOBITMAP:
 times        10 db 0        
 IOBITMAP_END:
 
 
-; ¶¨Òå GDT pointer
+; å®šä¹‰ GDT pointer
 GDT_POINTER:
 GDT_LIMIT        dw        GDT_END - GDT - 1
 GDT_BASE         dd        GDT
 
-; ¶¨Òå IDT pointer
+; å®šä¹‰ IDT pointer
 IDT_POINTER:
 IDT_LIMIT        dw        IDT_END - IDT - 1
 IDT_BASE         dd        IDT
 
-;; ¶¨ÒåÊµÄ£Ê½µÄ  IVT pointer
+;; å®šä¹‰å®æ¨¡å¼çš„  IVT pointer
 IVT_POINTER:     dw     3FFH
                  dd     0
 
 
         bits 16
 
-;; ³õÊ¼»¯ page 
+;; åˆå§‹åŒ– page 
 init_page:
-        ;; virtual address 0 µ½ 1FFFFFh
-        ;; Ó³Éäµ½ physical address 0 µ½ 1FFFFFh£¬Ê¹ÓÃ 2M Ò³
+        ;; virtual address 0 åˆ° 1FFFFFh
+        ;; æ˜ å°„åˆ° physical address 0 åˆ° 1FFFFFhï¼Œä½¿ç”¨ 2M é¡µ
 
         ; PML4T[0]
         mov DWORD [0x5000], 0x6000 | RW | US | P
@@ -221,14 +221,14 @@ init_page:
         mov DWORD [0x6004], 0
 
         ; PDT[0]
-        mov DWORD [0x7000], 0000h | PS | RW | US | P    ; ÎïÀí page 0
+        mov DWORD [0x7000], 0000h | PS | RW | US | P    ; ç‰©ç† page 0
         mov DWORD [0x7004], 0
 
         ret
                 
 
 ;---------------------------------------------------
-; support_long_mode(): ¼ì²âÊÇ·ñÖ§³Ölong-modeÄ£Ê½
+; support_long_mode(): æ£€æµ‹æ˜¯å¦æ”¯æŒlong-modeæ¨¡å¼
 ; output:
 ;        1-support, 0-no support
 ;---------------------------------------------------
@@ -240,7 +240,7 @@ support_long_mode:
         jb support_long_mode
         mov eax, 80000001H
         cpuid
-        bt edx, 29                ; long mode  support Î»
+        bt edx, 29                ; long mode  support ä½
         setc al
 
 support_long_mode_done:
@@ -249,8 +249,8 @@ support_long_mode_done:
 
 
 ;
-; ÒÔÏÂÊÇÕâ¸öÄ£¿éµÄº¯Êıµ¼Èë±í
-; Ê¹ÓÃÁË lib16 ¿âµÄÀïµÄº¯Êı
+; ä»¥ä¸‹æ˜¯è¿™ä¸ªæ¨¡å—çš„å‡½æ•°å¯¼å…¥è¡¨
+; ä½¿ç”¨äº† lib16 åº“çš„é‡Œçš„å‡½æ•°
 
 
 FUNCTION_IMPORT_TABLE:

@@ -1,12 +1,12 @@
 ;*************************************************
 ;* dump_msr.asm                                  *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
 
 
-;; Õâ¸öÄ£¿éÊÇ¹ØÓÚ MSR ¼Ä´æÆ÷
+;; è¿™ä¸ªæ¨¡å—æ˜¯å…³äº MSR å¯„å­˜å™¨
 
         bits 32
         
@@ -66,12 +66,12 @@ do_dump_IA32_APIC_BASE:
         ret
         
 
-;;** include mtrr Ä£¿é *****
+;;** include mtrr æ¨¡å— *****
 
 %include "..\lib\mtrr.asm"
 
 
-;; *** MSR Ä£¿éÊı¾İ *******
+;; *** MSR æ¨¡å—æ•°æ® *******
 enable        db 'yes', 0
 disable       db 'no', 0
 

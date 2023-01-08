@@ -1,6 +1,6 @@
 ;*************************************************
 ;* VmxExit.asm                                   *
-;* Copyright (c) 2009-2013 ��־                  *
+;* Copyright (c) 2009-2013 邓志                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
@@ -13,8 +13,8 @@
 ;       none
 ; output:
 ;       none
-; ������
-;       1) �ռ��� exception ���� NMI ������ vector ��Ϣ
+; 描述：
+;       1) 收集由 exception 或者 NMI 引发的 vector 信息
 ;-----------------------------------------------------------------------
 GetExceptionInfo:
 
@@ -28,8 +28,8 @@ GetExceptionInfo:
 ;       none
 ; output:
 ;       none
-; ������
-;       1) �ռ����� MOV-CR ���� VM-exit ����Ϣ
+; 描述：
+;       1) 收集由于 MOV-CR 引起 VM-exit 的信息
 ;-----------------------------------------------------------------------
 GetMovCrInfo:
         push ebp
@@ -45,7 +45,7 @@ GetMovCrInfo:
         lea ebx, [ebp + PCB.GuestExitInfo]
 
         ;;
-        ;; ��Ĵ���ֵ
+        ;; 清寄存器值
         ;;
         xor eax, eax
         REX.Wrxb
@@ -54,12 +54,12 @@ GetMovCrInfo:
         mov [ebx + MOV_CR_INFO.ControlRegister], eax
         
         ;;
-        ;; ��ȡ VM-exit ��ϸ��Ϣ
+        ;; 读取 VM-exit 明细信息
         ;;
         mov eax, [ebp + PCB.ExitInfoBuf + EXIT_INFO.ExitQualification]
         
         ;;
-        ;; ��������
+        ;; 访问类型
         ;;
         mov ecx, eax
         shr ecx, 4
@@ -67,18 +67,18 @@ GetMovCrInfo:
         mov [ebx + MOV_CR_INFO.Type], ecx
 
         ;;
-        ;; �жϷ�������
+        ;; 判断访问类型
         ;;
         cmp ecx, CAT_LMSW
-        je GetMovCrInfo.Lmsw                            ;; ���� LMSW
+        je GetMovCrInfo.Lmsw                            ;; 处理 LMSW
         cmp ecx, CAT_MOV_TO_CR
-        je GetMovCrInfo.MovToCr                         ;; ���� MOV-to-CR
+        je GetMovCrInfo.MovToCr                         ;; 处理 MOV-to-CR
         cmp ecx, CAT_MOV_FROM_CR
-        jne GetMovCrInfo.Done                           ;; ���� MOV-from-CR
+        jne GetMovCrInfo.Done                           ;; 处理 MOV-from-CR
 
 GetMovCrInfo.MovFromCr:        
         ;;
-        ;; ��ȡĿ��Ĵ��� ID
+        ;; 读取目标寄存器 ID
         ;;
         mov esi, eax
         shr esi, 8
@@ -86,7 +86,7 @@ GetMovCrInfo.MovFromCr:
         mov [ebx + MOV_CR_INFO.RegisterID], esi
         
         ;;
-        ;; ��ȡԴ���ƼĴ���ֵ
+        ;; 读取源控制寄存器值
         ;;        
         mov esi, eax
         and esi, 0Fh        
@@ -107,14 +107,14 @@ GetMovCrInfo.MovFromCr.GetCr:
 
 GetMovCrInfo.MovToCr:
         ;;
-        ;; ��ȡĿ����ƼĴ���ID
+        ;; 读取目标控制寄存器ID
         ;;
         mov esi, eax
         and esi, 0Fh
         mov [ebx + MOV_CR_INFO.ControlRegisterID], esi
 
         ;;
-        ;; ��ȡԴ�Ĵ���ֵ 
+        ;; 读取源寄存器值 
         ;;
         mov esi, eax
         shr esi, 8
@@ -128,7 +128,7 @@ GetMovCrInfo.MovToCr:
         
 GetMovCrInfo.Lmsw:        
         ;;
-        ;; ��ȡ LMSW Դ������ֵ
+        ;; 读取 LMSW 源操作数值
         ;;
         mov esi, eax
         shr esi, 16
@@ -136,13 +136,13 @@ GetMovCrInfo.Lmsw:
         mov [ebx + MOV_CR_INFO.LmswSource], esi
         
         ;;
-        ;; ��� LMSW ָ�����������
+        ;; 检查 LMSW 指令操作数类型
         ;;
         test eax, (1 << 6)
         jz GetMovCrInfo.Done
         
         ;;
-        ;; �����ڴ������ʱ����ȡ���Ե�ֵַ
+        ;; 属于内存操作数时，读取线性地址值
         ;;
         REX.Wrxb
         mov esi, [ebp + PCB.ExitInfoBuf + EXIT_INFO.GuestLinearAddress]
@@ -165,8 +165,8 @@ GetMovCrInfo.Done:
 ;       none
 ; output:
 ;       none
-; ������
-;       1) �ռ��� exception ���� NMI ������ vector ��Ϣ
+; 描述：
+;       1) 收集由 exception 或者 NMI 引发的 vector 信息
 ;-----------------------------------------------------------------------
 GetTaskSwitchInfo:
         push ebp
@@ -182,25 +182,25 @@ GetTaskSwitchInfo:
         lea ebx, [ebp + PCB.GuestExitInfo]
         
         ;;
-        ;; ��ȡ VM-exit ��Ϣ 
+        ;; 读取 VM-exit 信息 
         ;;
         mov eax, [ebp + PCB.ExitInfoBuf + EXIT_INFO.ExitQualification]
         movzx esi, ax
-        mov [ebx + TASK_SWITCH_INFO.NewTrSelector], esi                 ; ��¼Ŀ�� TSS selector
+        mov [ebx + TASK_SWITCH_INFO.NewTrSelector], esi                 ; 记录目标 TSS selector
         shr eax, 30
         and eax, 3
-        mov [ebx + TASK_SWITCH_INFO.Source], eax                        ; �����л�Դ
+        mov [ebx + TASK_SWITCH_INFO.Source], eax                        ; 任务切换源
         GetVmcsField    GUEST_TR_SELECTOR
-        mov [ebx + TASK_SWITCH_INFO.CurrentTrSelector], eax             ; ��¼��ǰ TSS selector
+        mov [ebx + TASK_SWITCH_INFO.CurrentTrSelector], eax             ; 记录当前 TSS selector
         
         ;;
-        ;; ��ȡָ���
+        ;; 读取指令长度
         ;;
         mov eax, [ebp + PCB.ExitInfoBuf + EXIT_INFO.InstructionLength]
         mov [ebx + TASK_SWITCH_INFO.InstructionLength], eax
         
         ;;
-        ;; ��ȡ GDT/IDT base
+        ;; 读取 GDT/IDT base
         ;;
         GetVmcsField    GUEST_GDTR_BASE
         REX.Wrxb
@@ -218,7 +218,7 @@ GetTaskSwitchInfo:
         mov [ebx + TASK_SWITCH_INFO.GuestIdtBase], eax
 
         ;;
-        ;; ��ȡ GDT/IDT limit
+        ;; 读取 GDT/IDT limit
         ;;
         GetVmcsField    GUEST_GDTR_LIMIT
         mov [ebx + TASK_SWITCH_INFO.GuestGdtLimit], eax
@@ -227,49 +227,49 @@ GetTaskSwitchInfo:
         
 
         ;;
-        ;; ��ȡ current/new-task TSS ��������ַ
+        ;; 读取 current/new-task TSS 描述符地址
         ;;
         mov eax, [ebx + TASK_SWITCH_INFO.CurrentTrSelector]       
         REX.Wrxb
         lea eax, [edx + eax]                                            ; Gdt.Base + selector
         REX.Wrxb
-        mov [ebx + TASK_SWITCH_INFO.CurrentTssDesc], eax                ; ��¼��ǰ TSS ��������ַ
-        mov eax, [ebx + TASK_SWITCH_INFO.NewTrSelector]                 ; Ŀ�� TSS selector
+        mov [ebx + TASK_SWITCH_INFO.CurrentTssDesc], eax                ; 记录当前 TSS 描述符地址
+        mov eax, [ebx + TASK_SWITCH_INFO.NewTrSelector]                 ; 目标 TSS selector
         REX.Wrxb
-        lea eax, [edx + eax]                                            ; Ŀ�� TSS ��������ַ = Gdt.Base + selector
+        lea eax, [edx + eax]                                            ; 目标 TSS 描述符地址 = Gdt.Base + selector
         REX.Wrxb
         mov [ebx + TASK_SWITCH_INFO.NewTaskTssDesc], eax
 
         ;;
-        ;; ��ȡ current TSS ��ַ
+        ;; 读取 current TSS 地址
         ;;
         GetVmcsField    GUEST_TR_BASE
         REX.Wrxb
         mov esi, eax
         call get_system_va_of_guest_va
         REX.Wrxb
-        mov [ebx + TASK_SWITCH_INFO.CurrentTss], eax                    ; ��ǰ TSS ��ַ
+        mov [ebx + TASK_SWITCH_INFO.CurrentTss], eax                    ; 当前 TSS 地址
 
         ;;
-        ;; ��ȡ new-task TSS ��ַ
-        ;; *** ע�⣬����Ҫ��ȡ 64 λ TSS ��ַ���� longmode �²�֧�������л���***        
+        ;; 读取 new-task TSS 地址
+        ;; *** 注意，不需要读取 64 位 TSS 地址。在 longmode 下不支持任务切换！***        
         ;;
         REX.Wrxb
         mov eax, [ebx + TASK_SWITCH_INFO.NewTaskTssDesc]
-        mov esi, [eax]                                                  ; ������ low 32
-        mov edi, [eax + 4]                                              ; ������ high 32
+        mov esi, [eax]                                                  ; 描述符 low 32
+        mov edi, [eax + 4]                                              ; 描述符 high 32
         shr esi, 16
-        and esi, 0FFFFh                                                 ; TSS ��ַ bits 15:0
+        and esi, 0FFFFh                                                 ; TSS 地址 bits 15:0
         mov eax, edi
-        and eax, 0FF000000h                                             ; TSS ��ַ bits 31:24
+        and eax, 0FF000000h                                             ; TSS 地址 bits 31:24
         shl edi, (23 - 7)
-        and edi, 00FF0000h                                              ; TSS ��ַ bits 23:16
+        and edi, 00FF0000h                                              ; TSS 地址 bits 23:16
         or edi, eax
-        or esi, edi                                                     ; TSS ��ַ bits 31:0
-        mov [ebx + TASK_SWITCH_INFO.NewTaskTssBase], esi                ; TR.base �� guest-linear address ֵ      
+        or esi, edi                                                     ; TSS 地址 bits 31:0
+        mov [ebx + TASK_SWITCH_INFO.NewTaskTssBase], esi                ; TR.base 的 guest-linear address 值      
         call get_system_va_of_guest_va
         REX.Wrxb
-        mov [ebx + TASK_SWITCH_INFO.NewTaskTss], eax                    ; Ŀ�� TSS ��ַ
+        mov [ebx + TASK_SWITCH_INFO.NewTaskTss], eax                    ; 目标 TSS 地址
 
         pop edx
         pop ebx
@@ -284,8 +284,8 @@ GetTaskSwitchInfo:
 ;       none
 ; output:
 ;       none
-; ������
-;       1) �ռ��ɷ������������Ĵ��������� vector ��Ϣ
+; 描述：
+;       1) 收集由访问描述符表寄存器引发的 vector 信息
 ;-----------------------------------------------------------------------
 GetDescTableRegisterInfo:
         push ebp
@@ -302,7 +302,7 @@ GetDescTableRegisterInfo:
         lea ebx, [ebp + PCB.GuestExitInfo]
 
         ;;
-        ;; �ռ�������Ϣ
+        ;; 收集基本信息
         ;;
         mov eax, [ebp + PCB.ExitInfoBuf + EXIT_INFO.ExitQualification]
         mov [ebx + INSTRUCTION_INFO.Displacement], eax
@@ -312,11 +312,11 @@ GetDescTableRegisterInfo:
         mov [ebx + INSTRUCTION_INFO.Flags], edx
 
         ;;
-        ;; ������ȡ��Ϣ
+        ;; 分析提取信息
         ;;
         mov eax, edx
         and eax, 03h
-        mov [ebx + INSTRUCTION_INFO.Scale], eax                 ; scale ֵ
+        mov [ebx + INSTRUCTION_INFO.Scale], eax                 ; scale 值
         mov eax, edx
         shr eax, 7
         and eax, 07h
@@ -339,7 +339,7 @@ GetDescTableRegisterInfo:
         mov [ebx + INSTRUCTION_INFO.Type], eax                  ; instruction type
 
         ;;
-        ;; LLDT, SLDT, LTR, STR ָ��ļĴ���������
+        ;; LLDT, SLDT, LTR, STR 指令的寄存器操作数
         ;;
         mov eax, edx
         shr eax, 3
@@ -348,9 +348,9 @@ GetDescTableRegisterInfo:
         
         
         ;;
-        ;; ���� operand size
-        ;; 1) SGDT/SIDT���ڷ� 64-bit ���� 32λ���� 64-bit ���� 64λ
-        ;; 2) LGDT/LIDT��16λ��32λ��64λ
+        ;; 分析 operand size
+        ;; 1) SGDT/SIDT：在非 64-bit 下是 32位，在 64-bit 下是 64位
+        ;; 2) LGDT/LIDT：16位，32位，64位
         ;;             
         GetVmcsField    GUEST_CS_ACCESS_RIGHTS
         mov esi, INSTRUCTION_OPS_DWORD
@@ -360,7 +360,7 @@ GetDescTableRegisterInfo:
         cmp edx, INSTRUCTION_TYPE_SIDT
         je GetDescTableRegisterInfo.Ops.@1
         
-        bt edx, 11                                              ; operand size λ
+        bt edx, 11                                              ; operand size 位
         mov esi, 0
         
 GetDescTableRegisterInfo.Ops.@1:
@@ -384,8 +384,8 @@ GetDescTableRegisterInfo.Ops.@1:
 ;       none
 ; output:
 ;       none
-; ������
-;       1) �ռ��жϴ��������Ϣ
+; 描述：
+;       1) 收集中断处理相关信息
 ;-----------------------------------------------------------------------
 get_interrupt_info:
         push ebp
@@ -400,16 +400,16 @@ get_interrupt_info:
         mov ebx, [ebp + PCB.CurrentVmbPointer]
         
         ;;
-        ;; ���� IDT-vectoring information �ֶη����ж�����
-        ;; 1) IDT-vectoring information [31] = 0 ʱ������Ҫ����
-        ;; 2) �� IDT-vectoring informating ��ȡ�ж������ż����ͣ�������
+        ;; 根据 IDT-vectoring information 字段分析中断类型
+        ;; 1) IDT-vectoring information [31] = 0 时，不需要处理
+        ;; 2) 从 IDT-vectoring informating 读取中断向量号及类型，并保存
         ;;
         mov BYTE [ebp + PCB.GuestExitInfo + INTERRUPT_INFO.InterruptType], INTERRUPT_TYPE_NONE
         mov eax, [ebp + PCB.ExitInfoBuf + EXIT_INFO.IdtVectoringInfo]
         test eax, FIELD_VALID_FLAG
         jz get_interrupt_info.Done
         and eax, 7FFh                                                           ; bits[11:0]
-        mov [ebp + PCB.GuestExitInfo + INTERRUPT_INFO.Vector], ax               ; ���������ż��ж�����
+        mov [ebp + PCB.GuestExitInfo + INTERRUPT_INFO.Vector], ax               ; 保存向量号及中断类型
 
         ;;
         ;; guest RIP
@@ -481,7 +481,7 @@ get_interrupt_info:
         mov [ebp + PCB.GuestExitInfo + INTERRUPT_INFO.OldSs], ax        
 
         ;;
-        ;; ���� return RIP ֵ
+        ;; 分析 return RIP 值
         ;;
         mov eax, [ebp + PCB.ExitInfoBuf + EXIT_INFO.InstructionLength]
         cmp BYTE [ebp + PCB.GuestExitInfo + INTERRUPT_INFO.InterruptType], INTERRUPT_TYPE_SOFTWARE
@@ -494,7 +494,7 @@ get_interrupt_info.@1:
 get_interrupt_info.@2:        
 
         ;;
-        ;; current SS ������
+        ;; current SS 描述符
         ;;
         movzx eax, WORD [ebp + PCB.GuestExitInfo + INTERRUPT_INFO.OldSs]
         and eax, 0FFF8h
@@ -532,8 +532,8 @@ get_interrupt_info.Done:
 ;       none
 ; output:
 ;       none
-; ������
-;       1) �ռ��� IO ָ������ VM-exit �������Ϣ
+; 描述：
+;       1) 收集由 IO 指令引起 VM-exit 的相关信息
 ;-----------------------------------------------------------------------
 get_io_instruction_info:
         push ebp
@@ -575,12 +575,12 @@ get_io_instruction_info:
         jnz get_io_info.String
         
         ;;
-        ;; �Ǵ�ָ��
+        ;; 非串指令
         ;;
         test eax, IO_FLAGS_IN
         jnz get_io_info.Done
         ;;
-        ;; ��� operand size
+        ;; 检查 operand size
         ;;
         mov eax, [ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.OperandSize]
         cmp eax, IO_OPS_BYTE
@@ -589,21 +589,21 @@ get_io_instruction_info:
         je get_io_info.Word
         
         ;;
-        ;; ���� dword 
+        ;; 读入 dword 
         ;;
         mov esi, [ebx + VSB.Rax]
         jmp get_io_info.GetValue
         
 get_io_info.Byte:
         ;;
-        ;; ���� byte
+        ;; 读入 byte
         ;;
         movzx esi, BYTE [ebx + VSB.Rax]
         jmp get_io_info.GetValue
         
 get_io_info.Word:
         ;;
-        ;; ���� word
+        ;; 读入 word
         ;;
         movzx esi, WORD [ebx + VSB.Rax]
         jmp get_io_info.GetValue
@@ -644,27 +644,27 @@ get_io_info.String.@1:
         REX.Wrxb
         mov esi, [ebp + PCB.ExitInfoBuf + EXIT_INFO.GuestLinearAddress]
         ;;
-        ;; ��� address size
+        ;; 检查 address size
         ;;
         cmp eax, IO_ADRS_WORD
         je get_io_info.String.AddrWord
         cmp eax, IO_ADRS_DWORD
         jne get_io_info.String.GetAddr
         ;;
-        ;; 32 λ��ַ
+        ;; 32 位地址
         ;;
         mov esi, esi  
         jmp get_io_info.String.GetAddr              
         
 get_io_info.String.AddrWord:
         ;;
-        ;; 16 λ��ַ
+        ;; 16 位地址
         ;;
         movzx esi, si
         
 get_io_info.String.GetAddr:
         ;;
-        ;; ��ȡ system ��ֵַ
+        ;; 读取 system 地址值
         ;;
         call get_system_va_of_guest_os
         REX.Wrxb
@@ -676,13 +676,13 @@ get_io_info.String.GetAddr:
         jz get_io_info.Done
         
         ;;
-        ;; ��ȡ����д�� IO ports ��ֵ
+        ;; 读取尝试写入 IO ports 的值
         ;;        
         test DWORD [ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.IoFlags], IO_FLAGS_IN
         jnz get_io_info.Done        
         
         ;;
-        ;; ��� operand size
+        ;; 检查 operand size
         ;;
         mov eax, [ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.OperandSize]
         cmp eax, IO_OPS_BYTE
@@ -691,21 +691,21 @@ get_io_info.String.GetAddr:
         je get_io_info.String.Word
         
         ;;
-        ;; ���� 32 λ
+        ;; 读入 32 位
         ;;
         mov esi, [ebx]
         jmp get_io_info.GetValue
         
 get_io_info.String.Byte:
         ;;
-        ;; ���� 8 λ
+        ;; 读入 8 位
         ;;
         movzx esi, BYTE [ebx]
         jmp get_io_info.GetValue
         
 get_io_info.String.Word:
         ;;
-        ;; ���� 16 λ
+        ;; 读入 16 位
         ;;
         movzx esi, WORD [ebx]
         
@@ -720,7 +720,7 @@ get_io_info.Done:
 
 
 ;**********************************
-; VM-exit��Ϣ�������̱�           *
+; VM-exit信息处理例程表           *
 ;**********************************
 
 GetVmexitInfoRoutineTable:

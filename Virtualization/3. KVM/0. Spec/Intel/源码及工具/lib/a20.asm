@@ -3,10 +3,10 @@
 
 ;----------------------------------------------
 ; int a20_test(int loops)
-; ÃèÊö:
-;       ²âÊÔ a20 ÊÇ·ñ¿ªÆô
+; æè¿°:
+;       æµ‹è¯• a20 æ˜¯å¦å¼€å¯
 ; input:
-;       esi - Ìá¹©²âÊÔ´ÎÊı
+;       esi - æä¾›æµ‹è¯•æ¬¡æ•°
 ; output:
 ;       0 - unsuccessful
 ;       other - successful
@@ -20,12 +20,12 @@ a20_test:
     push ax
 a20_test.loop:
     inc ax
-    mov [fs:0x200], ax          ; Ïò 0000:0200 Ğ´ÈëÖµ
+    mov [fs:0x200], ax          ; å‘ 0000:0200 å†™å…¥å€¼
     IO_DELAY
-    xor ax, [gs:0x210]          ; ¼ì²é ffff:0210 µÄÖµÊÇ·ñÏàµÈ
+    xor ax, [gs:0x210]          ; æ£€æŸ¥ ffff:0210 çš„å€¼æ˜¯å¦ç›¸ç­‰
     jnz a20_test.done
     dec esi
-    jnz a20_test.loop           ; ÏàµÈÊ±£¬¼ÌĞø²âÊÔ
+    jnz a20_test.loop           ; ç›¸ç­‰æ—¶ï¼Œç»§ç»­æµ‹è¯•
 a20_test.done:
     pop WORD [fs:0x200]
     ret
@@ -35,9 +35,9 @@ a20_test.done:
 
 ;--------------------------------------
 ; int empty_8042()
-; ÃèÊö:
-;       µÈ´ıÖ±µ½ keyboard input-buf Îª¿Õ,¿É½ÓÊÜÃüÁî
-; ·µ»Ø:
+; æè¿°:
+;       ç­‰å¾…ç›´åˆ° keyboard input-buf ä¸ºç©º,å¯æ¥å—å‘½ä»¤
+; è¿”å›:
 ;       0 - unsuccessful
 ;       other - successful
 ;--------------------------------------
@@ -47,7 +47,7 @@ empty_8042:
 
 empty_8042.loop:
     IO_DELAY
-    in al, 0x64                 ; ¶Á¼üÅÌ¿ØÖÆÆ÷×´Ì¬
+    in al, 0x64                 ; è¯»é”®ç›˜æ§åˆ¶å™¨çŠ¶æ€
     cmp al, 0xff 
     jne empty_8042.@0
     dec di
@@ -55,14 +55,14 @@ empty_8042.loop:
     
 empty_8042.@0:
     ;;
-    ;; bit0 = 1 Ê±, Ö¸Ê¾ output buf 60h ÓĞÊı¾İ
-    ;; ĞèÒª¶ÁÊı¾İ, Çå¿Õ output buf
+    ;; bit0 = 1 æ—¶, æŒ‡ç¤º output buf 60h æœ‰æ•°æ®
+    ;; éœ€è¦è¯»æ•°æ®, æ¸…ç©º output buf
     ;;
     test al, 1
     jnz empty_8042.@1
 
     ;;
-    ;; bit1 = 0 Ê±, Ö¸Ê¾ input buf Îª¿Õ, ¿É½ÓÊÜÃüÁîÊäÈë
+    ;; bit1 = 0 æ—¶, æŒ‡ç¤º input buf ä¸ºç©º, å¯æ¥å—å‘½ä»¤è¾“å…¥
     ;;
     test al, 2
     jnz empty_8042.@2
@@ -72,7 +72,7 @@ empty_8042.@0:
 
 empty_8042.@1:
     ;;
-    ;; ´Ó buf ¶ÁÈ¡Êı¾İ, Çå output-buf
+    ;; ä» buf è¯»å–æ•°æ®, æ¸… output-buf
     ;;
     IO_DELAY
     in al, 0x60
@@ -90,9 +90,9 @@ empty_8042.result:
 
 ;--------------------------------------
 ; int enable_a20()
-; ÃèÊö:
-;       ¿ªÆô A20 µØÖ·Ïß
-; ·µ»Ø:
+; æè¿°:
+;       å¼€å¯ A20 åœ°å€çº¿
+; è¿”å›:
 ;       0 - unsuccessful
 ;       other - successful
 ;--------------------------------------

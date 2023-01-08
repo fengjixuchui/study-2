@@ -1,6 +1,6 @@
 ;*************************************************
 ; GuestKernel.asm                                *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
 
@@ -16,7 +16,7 @@
         dd GUEST_KERNEL_LENGTH
         
 ;;
-;; µ±Ç° guest ÒÑ¾­Î»ÓÚÎ´·ÖÒ³µÄ protected Ä£Ê½ÏÂ
+;; å½“å‰ guest å·²ç»ä½äºæœªåˆ†é¡µçš„ protected æ¨¡å¼ä¸‹
 ;; 
         bits 32
 
@@ -27,16 +27,16 @@ GuestKernel.Start:
 
         mov eax, cr4
         or eax, CR4_PAE
-        mov cr4, eax                            ; ¿ªÆô CR4.PAE
+        mov cr4, eax                            ; å¼€å¯ CR4.PAE
         
         
         ;;
-        ;; ¸ù¾İ GUEST_X64 ·ûºÅÀ´¾ö¶¨ guest ½øÈë IA-32e »¹ÊÇ protected Ä£Ê½
+        ;; æ ¹æ® GUEST_X64 ç¬¦å·æ¥å†³å®š guest è¿›å…¥ IA-32e è¿˜æ˜¯ protected æ¨¡å¼
         ;;
         
 %ifdef GUEST_X64
         ;;
-        ;; ³õÊ¼»¯ long mode Ä£Ê½Ò³±í
+        ;; åˆå§‹åŒ– long mode æ¨¡å¼é¡µè¡¨
         ;;
         call init_longmode_page
         
@@ -44,7 +44,7 @@ GuestKernel.Start:
         mov cr3, eax
         
         ;;
-        ;; ¿ªÆô long mode
+        ;; å¼€å¯ long mode
         ;;
         mov ecx, IA32_EFER
         rdmsr
@@ -52,7 +52,7 @@ GuestKernel.Start:
         wrmsr
         
         ;;
-        ;; ¿ªÆô·ÖÒ³
+        ;; å¼€å¯åˆ†é¡µ
         ;;
         mov eax, cr0
         or eax, CR0_PG
@@ -78,7 +78,7 @@ GuestKernel.@0:
 %else   
 
         ;;-------------------------
-        ;; 32 Î»±£»¤Ä£Ê½
+        ;; 32 ä½ä¿æŠ¤æ¨¡å¼
         ;;-------------------------
    
         call init_pae_page
@@ -87,7 +87,7 @@ GuestKernel.@0:
         mov cr3, eax
         
         ;;
-        ;; ¿ªÆô·ÖÒ³
+        ;; å¼€å¯åˆ†é¡µ
         ;;
         mov eax, cr0
         or eax, CR0_PG
@@ -109,12 +109,12 @@ GuestKernel.@0:
 
  GuestKernel.Next:  
         ;;
-        ;; ¸üĞÂ´¦ÀíÆ÷±êÖ¾
+        ;; æ›´æ–°å¤„ç†å™¨æ ‡å¿—
         ;;
         or DWORD [Guest.ProcessorFlag], GUEST_PROCESSOR_PAGING 
         
         ;;
-        ;; Êä³öĞÅÏ¢
+        ;; è¾“å‡ºä¿¡æ¯
         ;;     
         mov esi, Guest.DoneMsg
         call PutStr
@@ -131,7 +131,7 @@ GuestKernel.@0:
 
        
         ;;
-        ;; geust_ex.asm ÊÇ guest µÄÊ¾ÀıÎÄ¼ş
+        ;; geust_ex.asm æ˜¯ guest çš„ç¤ºä¾‹æ–‡ä»¶
         ;;
         %include "guest_ex.asm"
         
@@ -149,7 +149,7 @@ GuestKernel.@0:
 
 ;;#####################################
 ;;
-;;         Guest µÄÊı¾İÇøÓò
+;;         Guest çš„æ•°æ®åŒºåŸŸ
 ;;
 ;;#####################################
         
@@ -158,7 +158,7 @@ GuestKernel.@0:
 Guest.PoolPhysicalBase          DD      GUEST_POOL_PHYSICAL_BASE
 
 ;;
-;; ´¦ÀíÆ÷×´Ì¬±êÖ¾Î»
+;; å¤„ç†å™¨çŠ¶æ€æ ‡å¿—ä½
 ;;
 Guest.ProcessorFlag             DD      0
 
@@ -180,8 +180,8 @@ KeyBuffer            times 256  DB      0
 %ifndef GUEST_X64
 
 ;;
-;; ÏÂÃæÊÇ PAE paging ÏÂµÄ PDPT ±í
-;; 1) Ã¿¸ö PDPTE Îª 8 ×Ö½Ú
+;; ä¸‹é¢æ˜¯ PAE paging ä¸‹çš„ PDPT è¡¨
+;; 1) æ¯ä¸ª PDPTE ä¸º 8 å­—èŠ‚
 ;;
         ALIGNB 32
 Guest.Pdpt                      DQ      GUEST_PDT0_BASE | P
@@ -193,7 +193,7 @@ Guest.Pdpt                      DQ      GUEST_PDT0_BASE | P
 
 
 ;;
-;; ĞÅÏ¢
+;; ä¿¡æ¯
 ;;
 Guest.StartMsg                  db      '[OS]: start ...', 10, 0
 Guest.DoneMsg                   db      '[OS]: initialize done ...', 10, 0

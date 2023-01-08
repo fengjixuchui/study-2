@@ -1,14 +1,14 @@
 ;*************************************************
 ;* mem.asm                                       *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
 
 ;;
-;; ËµÃ÷£º
-;;      1) ÊµÏÖ 64/32 Î»ÏÂµÄ kernel/user stack ÒÔ¼° kernel/user pool ·ÖÅäº¯Êı
-;;      2) Ê¹ÓÃ 32 Î»±àÒë
+;; è¯´æ˜ï¼š
+;;      1) å®ç° 64/32 ä½ä¸‹çš„ kernel/user stack ä»¥åŠ kernel/user pool åˆ†é…å‡½æ•°
+;;      2) ä½¿ç”¨ 32 ä½ç¼–è¯‘
 ;;
 
 
@@ -17,15 +17,15 @@
 ; input:
 ;       none
 ; output:
-;       eax - 4K stack base£¨ĞéÄâµØÖ·£©
-; ÃèÊö£º
-;       1)·ÖÅäÒ»¸ö4KÒ³Ãæ´óĞ¡µÄ user stack baseµÄ¿ÉÓÃÖµ         
-;       2)²¢¸üĞÂµ±Ç° user stack base ¼ÇÂ¼
-;       3) ÔÚ x64 ÏÂ rax ·µ»Ø 64 Î» user stack base
+;       eax - 4K stack baseï¼ˆè™šæ‹Ÿåœ°å€ï¼‰
+; æè¿°ï¼š
+;       1)åˆ†é…ä¸€ä¸ª4Ké¡µé¢å¤§å°çš„ user stack baseçš„å¯ç”¨å€¼         
+;       2)å¹¶æ›´æ–°å½“å‰ user stack base è®°å½•
+;       3) åœ¨ x64 ä¸‹ rax è¿”å› 64 ä½ user stack base
 ;-----------------------------------------------------------------------
 alloc_user_stack_4k_base:
 alloc_user_stack_base:
-        mov esi, SDA.UserStackBase                                      ; User stack ·ÖÅä¼ÇÂ¼
+        mov esi, SDA.UserStackBase                                      ; User stack åˆ†é…è®°å½•
         jmp do_alloc_4k_base
 
 
@@ -35,15 +35,15 @@ alloc_user_stack_base:
 ; input:
 ;       none
 ; output:
-;       eax - 4K stack base£¨ÎïÀíµØÖ·£©
-; ÃèÊö£º
-;       1)·ÖÅäÒ»¸ö4KÒ³Ãæ´óĞ¡µÄ user stack baseµÄ¿ÉÓÃÖµ         
-;       2)²¢¸üĞÂµ±Ç° user stack base ¼ÇÂ¼
-;       3) X64 ÏÂ rax ·µ»Ø 64 Î» user stack base Öµ
+;       eax - 4K stack baseï¼ˆç‰©ç†åœ°å€ï¼‰
+; æè¿°ï¼š
+;       1)åˆ†é…ä¸€ä¸ª4Ké¡µé¢å¤§å°çš„ user stack baseçš„å¯ç”¨å€¼         
+;       2)å¹¶æ›´æ–°å½“å‰ user stack base è®°å½•
+;       3) X64 ä¸‹ rax è¿”å› 64 ä½ user stack base å€¼
 ;-----------------------------------------------------------------------
 alloc_user_stack_4k_physical_base:
 alloc_user_stack_physical_base:
-        mov esi, SDA.UserStackPhysicalBase                              ; User stack physical ¿Õ¼ä·ÖÅä¼ÇÂ¼
+        mov esi, SDA.UserStackPhysicalBase                              ; User stack physical ç©ºé—´åˆ†é…è®°å½•
         jmp do_alloc_4k_base
 
 
@@ -53,15 +53,15 @@ alloc_user_stack_physical_base:
 ; input:
 ;       none
 ; output:
-;       eax - 4K stack base£¨ĞéÄâµØÖ·£© 
-; ÃèÊö£º
-;       1)·ÖÅäÒ»¸ö4KÒ³Ãæ´óĞ¡µÄ kernel stack baseµÄ¿ÉÓÃÖµ         
-;       2)²¢¸üĞÂµ±Ç° kernel stack base ¼ÇÂ¼
-;       3) X64 ÏÂ·µ»Ø 64 Î»Öµ
+;       eax - 4K stack baseï¼ˆè™šæ‹Ÿåœ°å€ï¼‰ 
+; æè¿°ï¼š
+;       1)åˆ†é…ä¸€ä¸ª4Ké¡µé¢å¤§å°çš„ kernel stack baseçš„å¯ç”¨å€¼         
+;       2)å¹¶æ›´æ–°å½“å‰ kernel stack base è®°å½•
+;       3) X64 ä¸‹è¿”å› 64 ä½å€¼
 ;-----------------------------------------------------------------------
 alloc_kernel_stack_4k_base:
 alloc_kernel_stack_base:
-        mov esi, SDA.KernelStackBase                                    ; kernel stack ¿Õ¼ä·ÖÅä¼ÇÂ¼
+        mov esi, SDA.KernelStackBase                                    ; kernel stack ç©ºé—´åˆ†é…è®°å½•
         jmp do_alloc_4k_base
 
 
@@ -72,15 +72,15 @@ alloc_kernel_stack_base:
 ; input:
 ;       none
 ; output:
-;       eax - 4K stack base£¨ÎïÀíµØÖ·£©   
-; ÃèÊö£º
-;       1)·ÖÅäÒ»¸ö4KÒ³Ãæ´óĞ¡µÄ kernel stack baseµÄ¿ÉÓÃÖµ         
-;       2)²¢¸üĞÂµ±Ç° kernel stack base ¼ÇÂ¼
-;       3) X64 ÏÂ·µ»Ø 64 Î»Öµ
+;       eax - 4K stack baseï¼ˆç‰©ç†åœ°å€ï¼‰   
+; æè¿°ï¼š
+;       1)åˆ†é…ä¸€ä¸ª4Ké¡µé¢å¤§å°çš„ kernel stack baseçš„å¯ç”¨å€¼         
+;       2)å¹¶æ›´æ–°å½“å‰ kernel stack base è®°å½•
+;       3) X64 ä¸‹è¿”å› 64 ä½å€¼
 ;-----------------------------------------------------------------------
 alloc_kernel_stack_4k_physical_base:
 alloc_kernel_stack_physical_base:
-        mov esi, SDA.KernelStackPhysicalBase                            ; kernel stack ÎïÀí¿Õ¼ä·ÖÅä¼ÇÂ¼
+        mov esi, SDA.KernelStackPhysicalBase                            ; kernel stack ç‰©ç†ç©ºé—´åˆ†é…è®°å½•
         jmp do_alloc_4k_base
 
 
@@ -91,11 +91,11 @@ alloc_kernel_stack_physical_base:
 ; input:
 ;       none
 ; output:
-;       eax - 4K pool base£¨ĞéÄâµØÖ·£©
+;       eax - 4K pool baseï¼ˆè™šæ‹Ÿåœ°å€ï¼‰
 ;-----------------------------------------------------------------------
 alloc_user_pool_4k_base:      
 alloc_user_pool_base:
-        mov esi, SDA.UserPoolBase                                       ; user pool ¿Õ¼ä·ÖÅä¼ÇÂ¼
+        mov esi, SDA.UserPoolBase                                       ; user pool ç©ºé—´åˆ†é…è®°å½•
         jmp do_alloc_4k_base
         
 
@@ -105,11 +105,11 @@ alloc_user_pool_base:
 ; input:
 ;       none
 ; output:
-;       eax - 4K pool base£¨ÎïÀíµØÖ·£© 
+;       eax - 4K pool baseï¼ˆç‰©ç†åœ°å€ï¼‰ 
 ;-----------------------------------------------------------------------
 alloc_user_pool_4k_physical_base:      
 alloc_user_pool_physical_base:
-        mov esi, SDA.UserPoolPhysicalBase                               ; user pool ÎïÀí¿Õ¼ä·ÖÅä¼ÇÂ¼
+        mov esi, SDA.UserPoolPhysicalBase                               ; user pool ç‰©ç†ç©ºé—´åˆ†é…è®°å½•
         jmp do_alloc_4k_base
         
                         
@@ -119,11 +119,11 @@ alloc_user_pool_physical_base:
 ; input:
 ;       none
 ; output:
-;       eax - 4K pool base£¨ĞéÄâµØÖ·£©
+;       eax - 4K pool baseï¼ˆè™šæ‹Ÿåœ°å€ï¼‰
 ;-----------------------------------------------------------------------
 alloc_kernel_pool_4k_base:      
 alloc_kernel_pool_base:
-        mov esi, SDA.KernelPoolBase                                     ; kernel pool ¿Õ¼ä·ÖÅä¼ÇÂ¼
+        mov esi, SDA.KernelPoolBase                                     ; kernel pool ç©ºé—´åˆ†é…è®°å½•
         jmp do_alloc_4k_base
         
        
@@ -134,11 +134,11 @@ alloc_kernel_pool_base:
 ; input:
 ;       none
 ; output:
-;       eax - 4K pool base£¨ÎïÀíµØÖ·£© 
+;       eax - 4K pool baseï¼ˆç‰©ç†åœ°å€ï¼‰ 
 ;-----------------------------------------------------------------------
 alloc_kernel_pool_4k_physical_base:      
 alloc_kernel_pool_physical_base:
-        mov esi, SDA.KernelPoolPhysicalBase                             ; kernel pool ÎïÀí¿Õ¼ä·ÖÅä¼ÇÂ¼
+        mov esi, SDA.KernelPoolPhysicalBase                             ; kernel pool ç‰©ç†ç©ºé—´åˆ†é…è®°å½•
         jmp do_alloc_4k_base
 
 
@@ -148,13 +148,13 @@ alloc_kernel_pool_physical_base:
 ;       esi - size
 ; output:
 ;       eax - vritual address of kernel pool
-; ÃèÊö£º
-;       1) ÔÚ kernel pool Àï·ÖÅä n Ò³¿Õ¼ä
+; æè¿°ï¼š
+;       1) åœ¨ kernel pool é‡Œåˆ†é… n é¡µç©ºé—´
 ;-----------------------------------------------------------------------
 alloc_kernel_pool_base_n:
         mov eax, esi
         shl eax, 12
-        mov esi, SDA.KernelPoolBase                                     ; kernel pool ¿Õ¼ä·ÖÅä¼ÇÂ¼
+        mov esi, SDA.KernelPoolBase                                     ; kernel pool ç©ºé—´åˆ†é…è®°å½•
         jmp do_alloc_base
         
 ;-----------------------------------------------------------------------
@@ -163,13 +163,13 @@ alloc_kernel_pool_base_n:
 ;       esi - size
 ; output:
 ;       eax - physical address of pool
-; ÃèÊö£º
-;       1£©ÔÚ pool Àï·ÖÅä n Ò³ÎïÀí¿Õ¼ä
+; æè¿°ï¼š
+;       1ï¼‰åœ¨ pool é‡Œåˆ†é… n é¡µç‰©ç†ç©ºé—´
 ;-----------------------------------------------------------------------
 alloc_kernel_pool_physical_base_n:
         mov eax, esi
         shl eax, 12
-        mov esi, SDA.KernelPoolPhysicalBase                             ; kernel pool ÎïÀí¿Õ¼ä·ÖÅä¼ÇÂ¼
+        mov esi, SDA.KernelPoolPhysicalBase                             ; kernel pool ç‰©ç†ç©ºé—´åˆ†é…è®°å½•
         jmp do_alloc_base
         
 
@@ -178,15 +178,15 @@ alloc_kernel_pool_physical_base_n:
 ;-----------------------------------------------------------------------
 ; do_alloc_4k_base()
 ; input:
-;       esi - ¿Õ¼ä·ÖÅä¼ÇÂ¼ºÅ
+;       esi - ç©ºé—´åˆ†é…è®°å½•å·
 ; output:
-;       eax - ·µ»ØÒ»¸ö 4k ¿Õ¼ä base Öµ
-; ÃèÊö:
-;       1) ÕâÊÇÄÚ²¿Ê¹ÓÃµÄÊµÏÖº¯Êı£¬ÓÃÀ´ÔÚ¿Õ¼ä·ÖÅä¼ÇÂ¼½øĞĞ·ÖÅä¿Õ¼ä
+;       eax - è¿”å›ä¸€ä¸ª 4k ç©ºé—´ base å€¼
+; æè¿°:
+;       1) è¿™æ˜¯å†…éƒ¨ä½¿ç”¨çš„å®ç°å‡½æ•°ï¼Œç”¨æ¥åœ¨ç©ºé—´åˆ†é…è®°å½•è¿›è¡Œåˆ†é…ç©ºé—´
 ;-----------------------------------------------------------------------
 do_alloc_4k_base:
 
-        mov eax, 4096                                                   ; ·ÖÅäÁ£¶ÈÎª 4K 
+        mov eax, 4096                                                   ; åˆ†é…ç²’åº¦ä¸º 4K 
 
 do_alloc_base:
 
@@ -206,40 +206,40 @@ do_alloc_base:
 
 
 ;-----------------------------------------------------------------------
-; get_kernel_stack_4k_pointer()£º¶¯Ì¬»ñµÃÈ¡Ò»¸ö kernel stack pointer Öµ
+; get_kernel_stack_4k_pointer()ï¼šåŠ¨æ€è·å¾—å–ä¸€ä¸ª kernel stack pointer å€¼
 ; input:
 ;       none
 ; output:
 ;       eax - stack pointer
-; ÃèÊö£º
-;       1) ·ÖÅäÒ»¸ö 4K µÄ kernel stack ¿Õ¼ä£¬Ó³Éäµ½ÎïÀíµØÖ·
-;       2) eax ·µ»Ø stack ¿Õ¼äµÄ¶¥²¿£¨16×Ö½Ú±ß½ç£©
+; æè¿°ï¼š
+;       1) åˆ†é…ä¸€ä¸ª 4K çš„ kernel stack ç©ºé—´ï¼Œæ˜ å°„åˆ°ç‰©ç†åœ°å€
+;       2) eax è¿”å› stack ç©ºé—´çš„é¡¶éƒ¨ï¼ˆ16å­—èŠ‚è¾¹ç•Œï¼‰
 ;-----------------------------------------------------------------------
 get_kernel_stack_4k_pointer:
 get_kernel_stack_pointer:
         push ebx
         ;;
-        ;; ·ÖÅä stack ¿Õ¼ä
+        ;; åˆ†é… stack ç©ºé—´
         ;;
-        call alloc_kernel_stack_4k_base                         ; ·ÖÅäĞéÄâµØÖ·
+        call alloc_kernel_stack_4k_base                         ; åˆ†é…è™šæ‹Ÿåœ°å€
         REX.Wrxb
         mov ebx, eax
-        call alloc_kernel_stack_4k_physical_base                ; ·ÖÅäÎïÀíµØÖ·
+        call alloc_kernel_stack_4k_physical_base                ; åˆ†é…ç‰©ç†åœ°å€
 
 
         ;;
-        ;; ÏÂÃæÓ³ÉäĞéÄâµØÖ·
+        ;; ä¸‹é¢æ˜ å°„è™šæ‹Ÿåœ°å€
         ;;
         REX.Wrxb
-        mov esi, ebx                                            ; ĞéÄâµØÖ·
+        mov esi, ebx                                            ; è™šæ‹Ÿåœ°å€
         REX.Wrxb
-        mov edi, eax                                            ; ÎïÀíµØÖ·
+        mov edi, eax                                            ; ç‰©ç†åœ°å€
         REX.wrxB
-        mov eax, XD | RW | P                                    ; Ò³ÊôĞÔ
+        mov eax, XD | RW | P                                    ; é¡µå±æ€§
         call do_virtual_address_mapping
 
         REX.Wrxb
-        add ebx, 0FF0h                                          ; ·µ»Ø stack ¶¥²¿
+        add ebx, 0FF0h                                          ; è¿”å› stack é¡¶éƒ¨
         REX.Wrxb
         mov eax, ebx
         pop ebx
@@ -249,40 +249,40 @@ get_kernel_stack_pointer:
         
 
 ;-----------------------------------------------------------------------
-; get_user_stack_4k_pointer()£º¶¯Ì¬»ñµÃÈ¡Ò»¸ö user stack pointer Öµ
+; get_user_stack_4k_pointer()ï¼šåŠ¨æ€è·å¾—å–ä¸€ä¸ª user stack pointer å€¼
 ; input:
 ;       none
 ; output:
 ;       eax - stack pointer
-; ÃèÊö£º
-;       1) ·ÖÅäÒ»¸ö 4K µÄ user stack ¿Õ¼ä£¬Ó³Éäµ½ÎïÀíµØÖ·
-;       2) eax ·µ»Ø stack ¿Õ¼äµÄ¶¥²¿£¨16×Ö½Ú±ß½ç£©
+; æè¿°ï¼š
+;       1) åˆ†é…ä¸€ä¸ª 4K çš„ user stack ç©ºé—´ï¼Œæ˜ å°„åˆ°ç‰©ç†åœ°å€
+;       2) eax è¿”å› stack ç©ºé—´çš„é¡¶éƒ¨ï¼ˆ16å­—èŠ‚è¾¹ç•Œï¼‰
 ;-----------------------------------------------------------------------
 get_user_stack_4k_pointer:
 get_user_stack_pointer:
         push ebx
         
         ;;
-        ;; ·ÖÅä stack ¿Õ¼ä
+        ;; åˆ†é… stack ç©ºé—´
         ;;
-        call alloc_user_stack_4k_base                                   ; ·ÖÅäĞéÄâµØÖ·
+        call alloc_user_stack_4k_base                                   ; åˆ†é…è™šæ‹Ÿåœ°å€
         REX.Wrxb
         mov ebx, eax
-        call alloc_user_stack_4k_physical_base                          ; ·ÖÅäÎïÀíµØÖ·
+        call alloc_user_stack_4k_physical_base                          ; åˆ†é…ç‰©ç†åœ°å€
         
         ;;
-        ;; Ó³ÉäĞéÄâµØÖ·
+        ;; æ˜ å°„è™šæ‹Ÿåœ°å€
         ;;
         REX.Wrxb
-        mov esi, ebx                                                    ; ĞéÄâµØÖ·
+        mov esi, ebx                                                    ; è™šæ‹Ÿåœ°å€
         REX.Wrxb
-        mov edi, eax                                                    ; ÎïÀíµØÖ·
+        mov edi, eax                                                    ; ç‰©ç†åœ°å€
         REX.wrxB
         mov eax, XD | US | RW | P   
         call do_virtual_address_mapping
 
         REX.Wrxb
-        add ebx, 0FF0h                                                  ; ·µ»Ø stack ¶¥²¿
+        add ebx, 0FF0h                                                  ; è¿”å› stack é¡¶éƒ¨
         REX.Wrxb
         mov eax, ebx
         pop ebx
@@ -298,17 +298,17 @@ get_user_stack_pointer:
 ;       none
 ; output:
 ;       pool if successful, 0 if failure
-; ÃèÊö£º
-;       1) ¶¯Ì¬·ÖÅäÒ»¸ö 4K µÄ pool ¿Õ¼ä
+; æè¿°ï¼š
+;       1) åŠ¨æ€åˆ†é…ä¸€ä¸ª 4K çš„ pool ç©ºé—´
 ;----------------------------------------------------------------------------        
 alloc_kernel_pool_4k:
 alloc_kernel_pool:
         push ebx
         
-        call alloc_kernel_pool_4k_physical_base                 ; ·ÖÅä pool ÎïÀíµØÖ·¿Õ¼ä
+        call alloc_kernel_pool_4k_physical_base                 ; åˆ†é… pool ç‰©ç†åœ°å€ç©ºé—´
         REX.Wrxb
         mov edi, eax
-        call alloc_kernel_pool_4k_base                          ; ·ÖÅä pool virtual address
+        call alloc_kernel_pool_4k_base                          ; åˆ†é… pool virtual address
         REX.Wrxb
         mov ebx, eax
 
@@ -319,14 +319,14 @@ alloc_kernel_pool:
         call do_virtual_address_mapping
         
         ;;
-        ;; Çå kernel pool 
+        ;; æ¸… kernel pool 
         ;;
         REX.Wrxb
         mov esi, ebx
         call clear_4k_buffer
         
         REX.Wrxb       
-        mov eax, ebx                                            ; ·µ»Ø kernel pool ¿Õ¼ä
+        mov eax, ebx                                            ; è¿”å› kernel pool ç©ºé—´
         pop ebx
         ret
 
@@ -337,21 +337,21 @@ alloc_kernel_pool:
 ; input:
 ;       esi - n
 ; output:
-;       eax - ĞéÄâµØÖ·
-;       edx - ÎïÀíµØÖ·
-; ÃèÊö£º
-;       1) ¶¯Ì¬·ÖÅä n Ò³µÄ pool ¿Õ¼ä
+;       eax - è™šæ‹Ÿåœ°å€
+;       edx - ç‰©ç†åœ°å€
+; æè¿°ï¼š
+;       1) åŠ¨æ€åˆ†é… n é¡µçš„ pool ç©ºé—´
 ;----------------------------------------------------------------------------        
 alloc_kernel_pool_n:
         push ebx
         push ecx
         mov ecx, esi
 
-        call alloc_kernel_pool_physical_base_n                  ; ·ÖÅä N Ò³ÎïÀíµØÖ·¿Õ¼ä
+        call alloc_kernel_pool_physical_base_n                  ; åˆ†é… N é¡µç‰©ç†åœ°å€ç©ºé—´
         REX.Wrxb
         mov edx, eax                                            ; edi = physical address
-        mov esi, ecx                                            ; N Ò³        
-        call alloc_kernel_pool_base_n                           ; ·ÖÅä N Ò³ĞéÄâµØÖ·¿Õ¼ä
+        mov esi, ecx                                            ; N é¡µ        
+        call alloc_kernel_pool_base_n                           ; åˆ†é… N é¡µè™šæ‹Ÿåœ°å€ç©ºé—´
         REX.Wrxb
         mov ebx, eax                                            ; ebx = virtual address
 
@@ -367,7 +367,7 @@ alloc_kernel_pool_n:
         call do_virtual_address_mapping_n
         
         ;;
-        ;; Çå kernel pool 
+        ;; æ¸… kernel pool 
         ;;
         REX.Wrxb
         mov esi, ebx
@@ -375,7 +375,7 @@ alloc_kernel_pool_n:
         call clear_4k_buffer_n
         
         REX.Wrxb       
-        mov eax, ebx                                            ; ·µ»Ø kernel pool ¿Õ¼ä
+        mov eax, ebx                                            ; è¿”å› kernel pool ç©ºé—´
         pop ecx
         pop ebx
         ret
@@ -389,8 +389,8 @@ alloc_kernel_pool_n:
 ;       none
 ; output:
 ;       pool if successful, 0 if failure
-; ÃèÊö£º
-;        1) ¶¯Ì¬»ñµÃÈ¡Ò»¸ö user pool
+; æè¿°ï¼š
+;        1) åŠ¨æ€è·å¾—å–ä¸€ä¸ª user pool
 ;-----------------------------------------------------------------------
 alloc_user_pool_4k:
 alloc_user_pool:
@@ -410,14 +410,14 @@ alloc_user_pool:
         call do_virtual_address_mapping
 
         ;;
-        ;; Çå pool 
+        ;; æ¸… pool 
         ;;
         REX.Wrxb
         mov esi, ebx
         call clear_4k_buffer
         
         REX.Wrxb
-        mov eax, ebx                                    ; ·µ»Ø pool
+        mov eax, ebx                                    ; è¿”å› pool
         pop ebx
         ret
         
@@ -427,24 +427,24 @@ alloc_user_pool:
         
         
 ;--------------------------------------------------------------------------
-; free_kernel_pool_4k_map_to_physical_address()£º
+; free_kernel_pool_4k_map_to_physical_address()ï¼š
 ; input:
 ;       esi - pool pointer
 ; output:
 ;       0 if successful, otherwis failure
-; ÃèÊö£º
-;       1) Ìá¹©µÄ pool µØÖ·£¬À´×ÔÓÚ alloc_kernel_pool_4k_map_to_physical_address µÄ·ÖÅä
-;       2) Óë alloc_kernel_pool_4k_map_to_physical_address ÅäÌ×Ê¹ÓÃ
+; æè¿°ï¼š
+;       1) æä¾›çš„ pool åœ°å€ï¼Œæ¥è‡ªäº alloc_kernel_pool_4k_map_to_physical_address çš„åˆ†é…
+;       2) ä¸ alloc_kernel_pool_4k_map_to_physical_address é…å¥—ä½¿ç”¨
 ;--------------------------------------------------------------------------
 free_kernel_pool_4k_map_to_physical_address:
         ;;
-        ;; ½øĞĞ½âÓ³Éä
+        ;; è¿›è¡Œè§£æ˜ å°„
         call do_virtual_address_unmapped
         cmp eax, UNMAPPED_SUCCESS
         je free_kernel_pool_4k.next
         
         ;;
-        ;; ½âÓ³ÉäÊ§°Ü£¬Ö±½Ó·µ»Ø
+        ;; è§£æ˜ å°„å¤±è´¥ï¼Œç›´æ¥è¿”å›
         ret
 
 
@@ -457,22 +457,22 @@ free_kernel_pool_4k_map_to_physical_address:
 ;--------------------------------------------------------------------------
 free_kernel_pool_4k:
         ;;
-        ;; ½øĞĞ½âÓ³Éä
+        ;; è¿›è¡Œè§£æ˜ å°„
         call do_virtual_address_unmapped
         cmp eax, UNMAPPED_SUCCESS
         jne free_kernel_pool_4k.done
         
         ;;
-        ;; ÊÍ·ÅÎïÀí¿Õ¼ä
+        ;; é‡Šæ”¾ç‰©ç†ç©ºé—´
         mov eax, -4096
-        lock xadd [fs: SDA.KernelPoolPhysicalBase], eax         ; ¸üĞÂÎïÀí pool base
+        lock xadd [fs: SDA.KernelPoolPhysicalBase], eax         ; æ›´æ–°ç‰©ç† pool base
 
 
 free_kernel_pool_4k.next:
         ;;
-        ;; ÊÍ·Å pool ¿Õ¼ä
+        ;; é‡Šæ”¾ pool ç©ºé—´
         mov eax, -4096
-        lock xadd [fs: SDA.KernelPoolBase], eax                 ; ¸üĞÂ¿ÉÓÃ pool base
+        lock xadd [fs: SDA.KernelPoolBase], eax                 ; æ›´æ–°å¯ç”¨ pool base
         mov eax, UNMAPPED_SUCCESS
                 
 free_kernel_pool_4k.done:        
@@ -486,10 +486,10 @@ free_kernel_pool_4k.done:
 ;       esi - physical address
 ; output:
 ;       pool if successful, 0 if failure
-; ÃèÊö£º
-;       1) ·ÖÅäÒ»¸ö 4k µÄ user pool ¿Õ¼ä
-;       2) ½« pool ¿Õ¼äÓ³Éäµ½Ìá¹©µÄÎïÀíµØÖ·ÉÏ
-;       3) ·µ»Ø pool ¿Õ¼ä
+; æè¿°ï¼š
+;       1) åˆ†é…ä¸€ä¸ª 4k çš„ user pool ç©ºé—´
+;       2) å°† pool ç©ºé—´æ˜ å°„åˆ°æä¾›çš„ç‰©ç†åœ°å€ä¸Š
+;       3) è¿”å› pool ç©ºé—´
 ;----------------------------------------------------------------------------
 alloc_user_pool_4k_map_to_physical_address:
         push ebx
@@ -509,19 +509,19 @@ alloc_user_pool_4k_map_to_physical_address:
 ;       esi - pool pointer
 ; output:
 ;       0 if successful, otherwis failure
-; ÃèÊö£º
-;       1) Ìá¹©µÄ pool µØÖ·£¬À´×ÔÓÚ alloc_user_pool_4k_map_to_physical_address µÄ·ÖÅä
-;       2) Óë alloc_user_pool_4k_map_to_physical_address ÅäÌ×Ê¹ÓÃ
+; æè¿°ï¼š
+;       1) æä¾›çš„ pool åœ°å€ï¼Œæ¥è‡ªäº alloc_user_pool_4k_map_to_physical_address çš„åˆ†é…
+;       2) ä¸ alloc_user_pool_4k_map_to_physical_address é…å¥—ä½¿ç”¨
 ;--------------------------------------------------------------------------
 free_user_pool_4k_map_to_physical_address:
         ;;
-        ;; ½øĞĞ½âÓ³Éä
+        ;; è¿›è¡Œè§£æ˜ å°„
         call do_virtual_address_unmapped
         cmp eax, UNMAPPED_SUCCESS
         je free_user_pool_4k.next
         
         ;;
-        ;; ½âÓ³ÉäÊ§°Ü£¬Ö±½Ó·µ»Ø
+        ;; è§£æ˜ å°„å¤±è´¥ï¼Œç›´æ¥è¿”å›
         ret
 
 
@@ -534,22 +534,22 @@ free_user_pool_4k_map_to_physical_address:
 ;--------------------------------------------------------------------------
 free_user_pool_4k:
         ;;
-        ;; ½øĞĞ½âÓ³Éä
+        ;; è¿›è¡Œè§£æ˜ å°„
         call do_virtual_address_unmapped
         cmp eax, UNMAPPED_SUCCESS
         jne free_user_pool_4k.done
         
         ;;
-        ;; ÊÍ·ÅÎïÀí¿Õ¼ä
+        ;; é‡Šæ”¾ç‰©ç†ç©ºé—´
         mov eax, -4096
-        lock xadd [fs: SDA.UserPoolPhysicalBase], eax         ; ¸üĞÂÎïÀí pool base
+        lock xadd [fs: SDA.UserPoolPhysicalBase], eax         ; æ›´æ–°ç‰©ç† pool base
 
 
 free_user_pool_4k.next:
         ;;
-        ;; ÊÍ·Å pool ¿Õ¼ä
+        ;; é‡Šæ”¾ pool ç©ºé—´
         mov eax, -4096
-        lock xadd [fs: SDA.UserPoolBase], eax                 ; ¸üĞÂ¿ÉÓÃ pool base
+        lock xadd [fs: SDA.UserPoolBase], eax                 ; æ›´æ–°å¯ç”¨ pool base
         mov eax, UNMAPPED_SUCCESS
                 
 free_user_pool_4k.done:        

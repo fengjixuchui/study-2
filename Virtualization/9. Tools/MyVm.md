@@ -505,6 +505,12 @@ Would you like to enter a view-only password (y/n)? n
 A view-only password is not used
 ```
 
+tigervncserver -geometry 1280x1024 -localhost no
+
+vncserver -localhost no -geometry 1280x720 :1
+
+
+
 tigervncserver -geometry 1280x1024 -localhost no -xstartup /usr/bin/xterm
 
 tigervncserver -xstartup /usr/bin/mate-session -geometry 800x600 -localhost no

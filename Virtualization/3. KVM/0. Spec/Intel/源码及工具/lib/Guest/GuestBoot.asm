@@ -1,6 +1,6 @@
 ;*************************************************
 ; GuestBoot.asm                                  *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
 
@@ -10,47 +10,47 @@
 %include "..\..\lib\Guest\Guest.inc"
 
 ;;
-;; Guest Ê¾ÀıÄ£¿éËµÃ÷£º
-;; 1) ¿ªÊ¼ÓÚ 7C00h£¨ÊµÄ£Ê½£©
-;; 2) ÇĞ»»µ½±£»¤Ä£Ê½
+;; Guest ç¤ºä¾‹æ¨¡å—è¯´æ˜ï¼š
+;; 1) å¼€å§‹äº 7C00hï¼ˆå®æ¨¡å¼ï¼‰
+;; 2) åˆ‡æ¢åˆ°ä¿æŠ¤æ¨¡å¼
 ;;
 
 
 ;;
-;; ×¢Òâ£º
-;; 1) ÏÖÔÚ´¦ÀíÆ÷´¦ÓÚ real mode ÏÂ       
-;; 2) Ä£Äâ GuestBoot ÒÑ¾­±»¼ÓÔØµ½ 7C00h Î»ÖÃÉÏ£¬GUEST_BOOT_ENTRY ¶¨ÒåÎª 7C00h
+;; æ³¨æ„ï¼š
+;; 1) ç°åœ¨å¤„ç†å™¨å¤„äº real mode ä¸‹       
+;; 2) æ¨¡æ‹Ÿ GuestBoot å·²ç»è¢«åŠ è½½åˆ° 7C00h ä½ç½®ä¸Šï¼ŒGUEST_BOOT_ENTRY å®šä¹‰ä¸º 7C00h
 ;;        
 
         [SECTION .text]
         org GUEST_BOOT_ENTRY
-        dd GUEST_BOOT_LENGTH                                    ;; GuestBoot Ä£¿é³¤¶È
+        dd GUEST_BOOT_LENGTH                                    ;; GuestBoot æ¨¡å—é•¿åº¦
           
         bits 16
         
 GuestBoot.Start:
         cli
-        NMI_DISABLE                                             ; ¹Ø±Õ NMI
-        FAST_A20_ENABLE                                         ; ¿ªÆô A20 Î»        
+        NMI_DISABLE                                             ; å…³é—­ NMI
+        FAST_A20_ENABLE                                         ; å¼€å¯ A20 ä½        
         
 ; set BOOT_SEG environment
         mov ax, cs
         mov ds, ax
         mov ss, ax
         mov es, ax
-        mov sp, GUEST_BOOT_ENTRY                                ; Éè stack µ×Îª GUEST_BOOT_ENTRY
+        mov sp, GUEST_BOOT_ENTRY                                ; è®¾ stack åº•ä¸º GUEST_BOOT_ENTRY
 
                
         
         ;**************************************
-        ;*  ÏÂÃæÇĞ»»µ½±£»¤Ä£Ê½                *
+        ;*  ä¸‹é¢åˆ‡æ¢åˆ°ä¿æŠ¤æ¨¡å¼                *
         ;**************************************
 
-        lgdt [Guest.GdtPointer]                                 ; ¼ÓÔØ GDT
-        lidt [Guest.IdtPointer]                                 ; ¼ÓÔØ IDT        
+        lgdt [Guest.GdtPointer]                                 ; åŠ è½½ GDT
+        lidt [Guest.IdtPointer]                                 ; åŠ è½½ IDT        
 
         ;;
-        ;; ÉèÖÃ TSS 
+        ;; è®¾ç½® TSS 
         ;;
         mov WORD [tss_desc], 67h
         mov WORD [tss_desc + 2], Guest.Tss
@@ -63,26 +63,26 @@ GuestBoot.Start:
         jmp GuestKernelCs32 : GuestBoot.Entry32
         
         ;;
-        ;; ÒÔÏÂÊÇ 32 Î» protected Ä£Ê½´úÂë
+        ;; ä»¥ä¸‹æ˜¯ 32 ä½ protected æ¨¡å¼ä»£ç 
         ;;
         
         bits 32
 
 GuestBoot.Entry32:
-        mov ax, GuestKernelSs32                                 ; ÉèÖÃ data segment
+        mov ax, GuestKernelSs32                                 ; è®¾ç½® data segment
         mov ds, ax
         mov es, ax
         mov ss, ax
 
         
         ;; 
-        ;; ¼ÓÔØ TSS
+        ;; åŠ è½½ TSS
         ;;
         mov ax, GuestKernelTss
         ltr ax
 
         ;;
-        ;; ÏÂÃæ×ªÈë GuestKernel Ä£¿é£¬Èë¿ÚÔÚ GUEST_KERNEL_ENTRY + 4
+        ;; ä¸‹é¢è½¬å…¥ GuestKernel æ¨¡å—ï¼Œå…¥å£åœ¨ GUEST_KERNEL_ENTRY + 4
         ;;        
         jmp GUEST_KERNEL_ENTRY + 4
 
@@ -92,7 +92,7 @@ GuestBoot.Entry32:
 
         [SECTION .data]
 ;;        
-;; Guest Ä£¿éµÄ GDT
+;; Guest æ¨¡å—çš„ GDT
 ;;
 Guest.Gdt:
 null_desc               dq 0                    ; NULL descriptor
@@ -114,15 +114,15 @@ Guest.Gdt.End:
 
 
 ;;
-;; Guest Ä£¿éµÄ IDT
+;; Guest æ¨¡å—çš„ IDT
 ;;
 Guest.Idt:
-        times 256       dq 0                    ; ±£Áô 256 ¸ö vector
+        times 256       dq 0                    ; ä¿ç•™ 256 ä¸ª vector
 Guest.Idt.End:        
 
 
 ;;
-;; Guest Ä£¿éµÄ TSS
+;; Guest æ¨¡å—çš„ TSS
 ;;
 Guest.Tss:
                         dd 0                
@@ -140,7 +140,7 @@ Guest.Tss.End:
 
 
 ;;
-;; Guest Ä£¿éµÄ Gdt pointer
+;; Guest æ¨¡å—çš„ Gdt pointer
 ;;
 Guest.GdtPointer:
 gdt_limit               dw      (Guest.Gdt.End - Guest.Gdt) - 1
@@ -148,7 +148,7 @@ gdt_base                dd      Guest.Gdt
 
 
 ;;
-;; Guest Ä£¿éµÄ Idt pointer
+;; Guest æ¨¡å—çš„ Idt pointer
 ;;
 Guest.IdtPointer:
 idt_limit               dw      (Guest.Idt.End - Guest.Idt) - 1

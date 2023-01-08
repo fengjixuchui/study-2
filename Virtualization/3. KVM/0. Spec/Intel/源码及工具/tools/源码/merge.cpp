@@ -16,13 +16,13 @@
 
 typedef struct
 {
-	TCHAR inFileName[MAX_PATH];			/* �����ļ��� */
-	DWORD inOffset;						/* �����ļ�ƫ�ƣ��� 512 �ֽ�Ϊ��λ */
-	TCHAR outFileName[MAX_PATH];		/* ����ļ��� */
-	DWORD outOffset;					/* ����ļ�ƫ��, �� 512 �ֽ�Ϊ��λ */
-	DWORD nCount;						/* ���� */
-	//HANDLE hInFile;						/* �����ļ� HANDLE */
-	//HANDLE hOutFile;					/* ����ļ� HANDLE */
+	TCHAR inFileName[MAX_PATH];			/* 输入文件名 */
+	DWORD inOffset;						/* 输入文件偏移，以 512 字节为单位 */
+	TCHAR outFileName[MAX_PATH];		/* 输出文件名 */
+	DWORD outOffset;					/* 输出文件偏移, 以 512 字节为单位 */
+	DWORD nCount;						/* 块数 */
+	//HANDLE hInFile;						/* 输入文件 HANDLE */
+	//HANDLE hOutFile;					/* 输出文件 HANDLE */
 } MERGE_CONFIG, *LPMERGE_CONFIG;
 
 
@@ -45,7 +45,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	BOOL bSuccess = TRUE;
 	TCHAR msgError[100];
 
-	/* ��ӡ������Ϣ */
+	/* 打印作者信息 */
 	_tprintf(_T("<All rights reserved! DengZhi, Bug: mik@mouseos.com>\n"));
 
 	if (argc > 1)

@@ -3,55 +3,55 @@
 ; All rights reserved.
 
 
-; ÕâÊÇÒ»¸ö¿Õ°×Ä£¿éÊ¾Àı£¬ÉèÎª setup Ä£¿é
-; ÓÃÓÚĞ´Èë´ÅÅÌµÄµÚ 2 ¸öÉÈÇø £¡
+; è¿™æ˜¯ä¸€ä¸ªç©ºç™½æ¨¡å—ç¤ºä¾‹ï¼Œè®¾ä¸º setup æ¨¡å—
+; ç”¨äºå†™å…¥ç£ç›˜çš„ç¬¬ 2 ä¸ªæ‰‡åŒº ï¼
 ;
 
 %include "..\inc\support.inc"
 %include "..\inc\protected.inc"
 
 ;
-; setup Ä£¿éÊÇÔËĞĞÔÚ 16 Î»ÊµÄ£Ê½ÏÂ
+; setup æ¨¡å—æ˜¯è¿è¡Œåœ¨ 16 ä½å®æ¨¡å¼ä¸‹
 
         bits 16
         
         
 ;
-; Ä£¿é¿ªÊ¼µãÊÇ SETUP_SEG - 2£¬¼õ 2 ÊÇÒòÎªÒªËãÉÏÄ£¿éÍ·µÄ´æ·ÅµÄ¡°Ä£¿é size¡±
-; load_module ¼ÓÔØµ½ SETUP_SEG-2£¬Êµ¼ÊĞ§¹ûÊÇ SETUP Ä£¿é»á±»¼ÓÔØµ½¡°Èë¿Úµã¡±¼´£ºsetup_entry
+; æ¨¡å—å¼€å§‹ç‚¹æ˜¯ SETUP_SEG - 2ï¼Œå‡ 2 æ˜¯å› ä¸ºè¦ç®—ä¸Šæ¨¡å—å¤´çš„å­˜æ”¾çš„â€œæ¨¡å— sizeâ€
+; load_module åŠ è½½åˆ° SETUP_SEG-2ï¼Œå®é™…æ•ˆæœæ˜¯ SETUP æ¨¡å—ä¼šè¢«åŠ è½½åˆ°â€œå…¥å£ç‚¹â€å³ï¼šsetup_entry
 ;
         org SETUP_SEG - 2
         
 ;
-; ÔÚÄ£¿éµÄ¿ªÍ· word ´óĞ¡µÄÇøÓòÀï´æ·ÅÄ£¿éµÄ´óĞ¡£¬
-; load_module »á¸ù¾İÕâ¸ö size ¼ÓÔØÄ£¿éµ½ÄÚ´æ
+; åœ¨æ¨¡å—çš„å¼€å¤´ word å¤§å°çš„åŒºåŸŸé‡Œå­˜æ”¾æ¨¡å—çš„å¤§å°ï¼Œ
+; load_module ä¼šæ ¹æ®è¿™ä¸ª size åŠ è½½æ¨¡å—åˆ°å†…å­˜
 
 SETUP_BEGIN:
 
-setup_length    dw (SETUP_END - SETUP_BEGIN)            ; SETUP_END-SETUP_BEGIN ÊÇÕâ¸öÄ£¿éµÄ size
+setup_length    dw (SETUP_END - SETUP_BEGIN)            ; SETUP_END-SETUP_BEGIN æ˜¯è¿™ä¸ªæ¨¡å—çš„ size
 
 
-setup_entry:                                            ; ÕâÊÇÄ£¿é´úÂëµÄÈë¿Úµã¡£
+setup_entry:                                            ; è¿™æ˜¯æ¨¡å—ä»£ç çš„å…¥å£ç‚¹ã€‚
 
         cli
         
         db 0x66
-        lgdt [__gdt_pointer]                      ; ¼ÓÔØ GDT
+        lgdt [__gdt_pointer]                      ; åŠ è½½ GDT
         
         db 0x66
-        lidt [__idt_pointer]                      ; ¼ÓÔØ IDT
+        lidt [__idt_pointer]                      ; åŠ è½½ IDT
 
-;;ÉèÖÃ TSS 
+;;è®¾ç½® TSS 
         mov WORD [tss32_desc], 0x68 + __io_bitmap_end - __io_bitmap
         mov WORD [tss32_desc + 2], __task_status_segment
         mov BYTE [tss32_desc + 5], 0x80 | TSS32
         
-;; ÉèÖÃÓÃÓÚ²âÊÔµÄ TSS
+;; è®¾ç½®ç”¨äºæµ‹è¯•çš„ TSS
         mov WORD [tss_test_desc], 0x68 + __io_bitmap_end - __io_bitmap
         mov WORD [tss_test_desc + 2], __test_tss
         mov BYTE [tss_test_desc + 5], 0x80 | TSS32        
 
-;; ÉèÖÃ LDT 
+;; è®¾ç½® LDT 
         mov WORD [ldt_desc], __local_descriptor_table_end - __local_descriptor_table - 1        ; limit
         mov DWORD [ldt_desc + 4], __local_descriptor_table              ; base [31:24]
         mov DWORD [ldt_desc + 2], __local_descriptor_table              ; base [23:0]
@@ -66,12 +66,12 @@ setup_entry:                                            ; ÕâÊÇÄ£¿é´úÂëµÄÈë¿Úµã¡£
         
 
 
-;;; ÒÔÏÂÊÇ 32 Î» protected Ä£Ê½´úÂë
+;;; ä»¥ä¸‹æ˜¯ 32 ä½ protected æ¨¡å¼ä»£ç 
         
         bits 32
 
 entry32:
-        mov ax, kernel_data32_sel               ; ÉèÖÃ data segment
+        mov ax, kernel_data32_sel               ; è®¾ç½® data segment
         mov ds, ax
         mov es, ax
         mov ss, ax
@@ -86,7 +86,7 @@ entry32:
   
      
 ;*        
-;* ÒÔÏÂ¶¨Òå protected mode µÄ GDT ±í segment descriptor
+;* ä»¥ä¸‹å®šä¹‰ protected mode çš„ GDT è¡¨ segment descriptor
 ;*
 __global_descriptor_table:
 
@@ -105,13 +105,13 @@ conforming_code32_desc          dq 0x00cf9e000000ffff   ; conforming, DPL=0, P=1
 tss_test_desc                   dq 0
 task_gate_desc                  dq 0
 ldt_desc                        dq 0
-                       times 10 dq 0                    ; ±£Áô 10 ¸ö
+                       times 10 dq 0                    ; ä¿ç•™ 10 ä¸ª
 __global_descriptor_table_end:
 
 
-; ÒÔÏÂ¶¨Òå protected mode µÄ IDT entry
+; ä»¥ä¸‹å®šä¹‰ protected mode çš„ IDT entry
 __interrupt_descriptor_table:
-        times 0x80 dq 0                                ; ±£Áô 0x80 ¸ö vector
+        times 0x80 dq 0                                ; ä¿ç•™ 0x80 ä¸ª vector
 __interrupt_descriptor_table_end:
 
 
@@ -120,7 +120,7 @@ __local_descriptor_table:
 __local_descriptor_table_end:
 
 ;*
-;* ÒÔÏÂ¶¨Òå TSS ¶Î½á¹¹
+;* ä»¥ä¸‹å®šä¹‰ TSS æ®µç»“æ„
 ;*
 __task_status_segment:
         dd 0                
@@ -130,13 +130,13 @@ __task_status_segment:
         dq 0                            ; ss2/esp2
 times 19 dd 0        
         dw 0
-        ;*** ÏÂÃæÊÇ IOBITMAP Æ«ÒÆÁ¿µØÖ· ***
+        ;*** ä¸‹é¢æ˜¯ IOBITMAP åç§»é‡åœ°å€ ***
         dw __io_bitmap - __task_status_segment
 
 __task_status_segment_end:
 
 
-;*** ²âÊÔÓÃ TSS ¶Î
+;*** æµ‹è¯•ç”¨ TSS æ®µ
 __test_tss:
         dd 0                
         dd 0x8f00                       ; esp0
@@ -145,32 +145,32 @@ __test_tss:
         dq 0                            ; ss2/esp2
 times 19 dd 0        
         dw 0
-        ;*** ÏÂÃæÊÇ IOBITMAP Æ«ÒÆÁ¿µØÖ· ***
+        ;*** ä¸‹é¢æ˜¯ IOBITMAP åç§»é‡åœ°å€ ***
         dw __io_bitmap - __test_tss
 __test_tss_end:
 
 
 
-;; Îª IO bit map ±£Áô 10 bytes£¨IO space ´Ó 0 - 80£©
+;; ä¸º IO bit map ä¿ç•™ 10 bytesï¼ˆIO space ä» 0 - 80ï¼‰
 __io_bitmap:
         times 10 db 0        
 __io_bitmap_end:
 
 
 
-; ¶¨Òå GDT pointer
+; å®šä¹‰ GDT pointer
 __gdt_pointer:
 gdt_limit       dw      (__global_descriptor_table_end - __global_descriptor_table) - 1
 gdt_base        dd      __global_descriptor_table
 
 
-; ¶¨Òå IDT pointer
+; å®šä¹‰ IDT pointer
 __idt_pointer:
 idt_limit       dw      (__interrupt_descriptor_table_end - __interrupt_descriptor_table) - 1
 idt_base        dd       __interrupt_descriptor_table
 
 
-;; ¶¨ÒåÊµÄ£Ê½µÄ  IVT pointer
+;; å®šä¹‰å®æ¨¡å¼çš„  IVT pointer
 __ivt_pointer:
                 dw 3FFH
                 dd 0
@@ -179,8 +179,8 @@ __ivt_pointer:
 
 
 ;
-; ÒÔÏÂÊÇÕâ¸öÄ£¿éµÄº¯Êıµ¼Èë±í
-; Ê¹ÓÃÁË lib16 ¿âµÄÀïµÄº¯Êı
+; ä»¥ä¸‹æ˜¯è¿™ä¸ªæ¨¡å—çš„å‡½æ•°å¯¼å…¥è¡¨
+; ä½¿ç”¨äº† lib16 åº“çš„é‡Œçš„å‡½æ•°
 
 
 FUNCTION_IMPORT_TABLE:

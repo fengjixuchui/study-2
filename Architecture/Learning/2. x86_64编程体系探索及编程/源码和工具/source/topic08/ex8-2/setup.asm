@@ -3,44 +3,44 @@
 ; All rights reserved.
 
 
-; ÕâÊÇÒ»¸ö¿Õ°×Ä£¿éÊ¾Àı£¬ÉèÎª setup Ä£¿é
-; ÓÃÓÚĞ´Èë´ÅÅÌµÄµÚ 2 ¸öÉÈÇø £¡
+; è¿™æ˜¯ä¸€ä¸ªç©ºç™½æ¨¡å—ç¤ºä¾‹ï¼Œè®¾ä¸º setup æ¨¡å—
+; ç”¨äºå†™å…¥ç£ç›˜çš„ç¬¬ 2 ä¸ªæ‰‡åŒº ï¼
 ;
 
 %include "..\inc\support.inc"
 %include "..\inc\protected.inc"
 
 ;
-; setup Ä£¿éÊÇÔËĞĞÔÚ 16 Î»ÊµÄ£Ê½ÏÂ
+; setup æ¨¡å—æ˜¯è¿è¡Œåœ¨ 16 ä½å®æ¨¡å¼ä¸‹
 
         bits 16
         
         
 ;
-; Ä£¿é¿ªÊ¼µãÊÇ SETUP_SEG - 2£¬¼õ 2 ÊÇÒòÎªÒªËãÉÏÄ£¿éÍ·µÄ´æ·ÅµÄ¡°Ä£¿é size¡±
-; load_module ¼ÓÔØµ½ SETUP_SEG-2£¬Êµ¼ÊĞ§¹ûÊÇ SETUP Ä£¿é»á±»¼ÓÔØµ½¡°Èë¿Úµã¡±¼´£ºsetup_entry
+; æ¨¡å—å¼€å§‹ç‚¹æ˜¯ SETUP_SEG - 2ï¼Œå‡ 2 æ˜¯å› ä¸ºè¦ç®—ä¸Šæ¨¡å—å¤´çš„å­˜æ”¾çš„â€œæ¨¡å— sizeâ€
+; load_module åŠ è½½åˆ° SETUP_SEG-2ï¼Œå®é™…æ•ˆæœæ˜¯ SETUP æ¨¡å—ä¼šè¢«åŠ è½½åˆ°â€œå…¥å£ç‚¹â€å³ï¼šsetup_entry
 ;
         org SETUP_SEG - 2
         
 ;
-; ÔÚÄ£¿éµÄ¿ªÍ· word ´óĞ¡µÄÇøÓòÀï´æ·ÅÄ£¿éµÄ´óĞ¡£¬
-; load_module »á¸ù¾İÕâ¸ö size ¼ÓÔØÄ£¿éµ½ÄÚ´æ
+; åœ¨æ¨¡å—çš„å¼€å¤´ word å¤§å°çš„åŒºåŸŸé‡Œå­˜æ”¾æ¨¡å—çš„å¤§å°ï¼Œ
+; load_module ä¼šæ ¹æ®è¿™ä¸ª size åŠ è½½æ¨¡å—åˆ°å†…å­˜
 
 SETUP_BEGIN:
 
-setup_length        dw (SETUP_END - SETUP_BEGIN)          ; SETUP_END-SETUP_BEGIN ÊÇÕâ¸öÄ£¿éµÄ size
+setup_length        dw (SETUP_END - SETUP_BEGIN)          ; SETUP_END-SETUP_BEGIN æ˜¯è¿™ä¸ªæ¨¡å—çš„ size
 
 
-setup_entry:                                             ; ÕâÊÇÄ£¿é´úÂëµÄÈë¿Úµã¡£
+setup_entry:                                             ; è¿™æ˜¯æ¨¡å—ä»£ç çš„å…¥å£ç‚¹ã€‚
 
         cli
         NMI_DISABLE
         
         db 0x66
-        lgdt [GDT_POINTER]                               ; ¼ÓÔØ GDT
+        lgdt [GDT_POINTER]                               ; åŠ è½½ GDT
         
         db 0x66
-        lidt [IDT_POINTER]                               ; ¼ÓÔØ IDT
+        lidt [IDT_POINTER]                               ; åŠ è½½ IDT
         
         mov WORD [tss32_desc], 0x68 + IOBITMAP_END - IOBITMAP
         mov WORD [tss32_desc+2], TSS32_SEG
@@ -55,12 +55,12 @@ setup_entry:                                             ; ÕâÊÇÄ£¿é´úÂëµÄÈë¿Úµã¡
         
 
 
-;;; ÒÔÏÂÊÇ 32 Î» protected Ä£Ê½´úÂë
+;;; ä»¥ä¸‹æ˜¯ 32 ä½ protected æ¨¡å¼ä»£ç 
         
         bits 32
 
 entry32:
-        mov ax, kernel_data32_sel                       ; ÉèÖÃ data segment
+        mov ax, kernel_data32_sel                       ; è®¾ç½® data segment
         mov ds, ax
         mov es, ax
         mov ss, ax
@@ -70,14 +70,14 @@ entry32:
         mov ax, tss32_sel
         ltr ax
                 
-;; *** ÊµÑé: ÔÚ realÄ£Ê½ÏÂÊ¹ÓÃ4G¶ÎÏŞ ***
+;; *** å®éªŒ: åœ¨ realæ¨¡å¼ä¸‹ä½¿ç”¨4Gæ®µé™ ***
         mov si, msg1
         call puts32
         
-;;; ÒÔÏÂÊÇ 16 Î» protected Ä£Ê½´úÂë        
+;;; ä»¥ä¸‹æ˜¯ 16 ä½ protected æ¨¡å¼ä»£ç         
 
-;; ÇĞ»»»Ø 16 Î»
-        jmp code16_sel:entry16                          ; ½øÈë16Î»±£»¤Ä£Ê½
+;; åˆ‡æ¢å› 16 ä½
+        jmp code16_sel:entry16                          ; è¿›å…¥16ä½ä¿æŠ¤æ¨¡å¼
         
         bits 16
 entry16:        
@@ -85,10 +85,10 @@ entry16:
         btr eax, 0
         mov cr0, eax         
 
-;; ÇĞ»»»Ø real Ä£Ê½                
+;; åˆ‡æ¢å› real æ¨¡å¼                
         jmp 0:back_to_real
 
-;;;  ÏÂÃæÊÇ real Ä£Ê½
+;;;  ä¸‹é¢æ˜¯ real æ¨¡å¼
 back_to_real:
         mov ax, cs
         mov ds, ax
@@ -96,7 +96,7 @@ back_to_real:
         mov ss, ax
         mov sp, 0x7ff0
         
-;; ÇĞ»»»ØÊµÄ£Ê½µÄ IVT ±í        
+;; åˆ‡æ¢å›å®æ¨¡å¼çš„ IVT è¡¨        
         lidt [IVT_POINTER]
         
         mov eax, LIB16_SEG + LIB16_CLEAR_SCREEN * 3
@@ -107,8 +107,8 @@ back_to_real:
         call eax        
         
         mov eax, 2000000H
-        mov DWORD [eax], 0x5A5AA5A5                      ; ²âÊÔĞ´ 32M ¿Õ¼ä
-        mov esi, DWORD [eax]                             ; ¶Á32M¿Õ¼ä
+        mov DWORD [eax], 0x5A5AA5A5                      ; æµ‹è¯•å†™ 32M ç©ºé—´
+        mov esi, DWORD [eax]                             ; è¯»32Mç©ºé—´
         mov edi, value_address
         mov eax, LIB16_SEG + LIB16_GET_DWORD_HEX_STRING * 3
         call eax
@@ -125,7 +125,7 @@ msg3                db 'write memory [2000000H] to: 0x'
 value_address        dq 0, 0
         
         
-; ÒÔÏÂ¶¨Òå protected mode µÄ GDT ±í segment descriptor
+; ä»¥ä¸‹å®šä¹‰ protected mode çš„ GDT è¡¨ segment descriptor
 
 GDT:
 
@@ -142,7 +142,7 @@ code16_sel                     equ  08h
 
 GDT_END:
 
-; ÒÔÏÂ¶¨Òå protected mode µÄ IDT entry
+; ä»¥ä¸‹å®šä¹‰ protected mode çš„ IDT entry
 IDT:
 vector0                                 dq 0
 vector1                                 dq 0
@@ -181,23 +181,23 @@ IOBITMAP_ADDRESS        dw        IOBITMAP - TSS32_SEG
 TSS32_END:
 
 
-;; Îª IO bit map ±£Áô 10 bytes£¨IO space ´Ó 0 - 80£©
+;; ä¸º IO bit map ä¿ç•™ 10 bytesï¼ˆIO space ä» 0 - 80ï¼‰
 IOBITMAP:
 times        10 db 0        
 IOBITMAP_END:
 
 
-; ¶¨Òå GDT pointer
+; å®šä¹‰ GDT pointer
 GDT_POINTER:
 GDT_LIMIT        dw        GDT_END - GDT
 GDT_BASE         dd        GDT
 
-; ¶¨Òå IDT pointer
+; å®šä¹‰ IDT pointer
 IDT_POINTER:
 IDT_LIMIT        dw        IDT_END - GDT
 IDT_BASE         dd        IDT
 
-;; ¶¨ÒåÊµÄ£Ê½µÄ  IVT pointer
+;; å®šä¹‰å®æ¨¡å¼çš„  IVT pointer
 IVT_POINTER:        dw 3FFH
                     dd 0
                 
@@ -205,8 +205,8 @@ IVT_POINTER:        dw 3FFH
 
 
 ;
-; ÒÔÏÂÊÇÕâ¸öÄ£¿éµÄº¯Êıµ¼Èë±í
-; Ê¹ÓÃÁË lib16 ¿âµÄÀïµÄº¯Êı
+; ä»¥ä¸‹æ˜¯è¿™ä¸ªæ¨¡å—çš„å‡½æ•°å¯¼å…¥è¡¨
+; ä½¿ç”¨äº† lib16 åº“çš„é‡Œçš„å‡½æ•°
 
         bits 16
 FUNCTION_IMPORT_TABLE:

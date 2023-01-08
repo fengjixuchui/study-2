@@ -1,12 +1,12 @@
 ;*************************************************
 ;* data.asm                                      *
-;* Copyright (c) 2009-2013 µËÖ¾                  *
+;* Copyright (c) 2009-2013 é‚“å¿—                  *
 ;* All rights reserved.                          *
 ;*************************************************
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;              ±¨¸æ CPU ×´Ì¬µÄ×Ö·û´®            ;;
+;;              æŠ¥å‘Š CPU çŠ¶æ€çš„å­—ç¬¦ä¸²            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Status.Msg                      db 'System Status = ', 0
 Status.CpusMsg                  db '[CPUs]:', 0
@@ -26,7 +26,7 @@ Status.Msg1                     db '<Esc>:reset,  <Pgup>:PageUp, <Pgdn>:PageDown
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;              long.asm Ê¹ÓÃµÄÊı¾İ              ;;
+;;              long.asm ä½¿ç”¨çš„æ•°æ®              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Stage2.Msg                      db 'AP stage2 initialize done!', 10, 0
 Stage2.Msg2			db 'enter stage2 ProtectedEntry', 10, 0
@@ -38,29 +38,29 @@ Stage3.Msg1                     db 'AP stage3 initialize done!', 10, 0
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;              crt.asm Ê¹ÓÃµÄÊı¾İ               ;;
+;;              crt.asm ä½¿ç”¨çš„æ•°æ®               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 crt.chars                       db '0123456789ABCDEF', 0
-crt.quotient                    dq 0                            ; ±£´æÉÌÖµ
-crt.remainder                   dq 0                            ; ±£´æÓàÊı
+crt.quotient                    dq 0                            ; ä¿å­˜å•†å€¼
+crt.remainder                   dq 0                            ; ä¿å­˜ä½™æ•°
 crt.digit_array:
-        times 400               db 0                            ; Êı×ÖÊı×é£¬ÈİÄÉ 400 Î»Ê®½øÖÆÊı
+        times 400               db 0                            ; æ•°å­—æ•°ç»„ï¼Œå®¹çº³ 400 ä½åè¿›åˆ¶æ•°
 
-crt.float_const10               dt 10.0                         ; ¸¡µã³£ÊıÖµ
+crt.float_const10               dt 10.0                         ; æµ®ç‚¹å¸¸æ•°å€¼
 crt.value                       dd 0
 crt.point                       dd 0
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;      system_data_manage.asm Ê¹ÓÃµÄÊı¾İ       ;;
+;;      system_data_manage.asm ä½¿ç”¨çš„æ•°æ®       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 SDA.ErrMsg1                     db '[CPU halt]: Your CPU is not support APIC !', 0
 SDA.ErrMsg2                     db '[CPU halt]: Your CPU is not support Intel64 or AMD64 !', 0
 
 ;;
-;; ÏÂÃæĞÅÏ¢ÓÃÀ´Õï¶Ï
+;; ä¸‹é¢ä¿¡æ¯ç”¨æ¥è¯Šæ–­
 ;;
 SDA.PcbInfoMsg                  db '========== PCB info ==========', 10, 0
 SDA.SdaInfoMsg                  db '========== SDA info ==========', 10, 0
@@ -75,14 +75,14 @@ SDA.TssBaseMsg                  db '[TssBase]:', 0
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;      ioapic.asm Ê¹ÓÃµÄ³£Á¿Êı¾İ               ;;
+;;      ioapic.asm ä½¿ç”¨çš„å¸¸é‡æ•°æ®               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Ioapic.WaitResetMsg             db '[[[STATUS]]]: press <ESC> for reset...', 0
 
 
 
-;*** ¼üÅÌ ASCII Âë±í *****
+;*** é”®ç›˜ ASCII ç è¡¨ *****
 Ioapic.KeyMap:
                                 db KEY_NULL, KEY_ESC, "1234567890-=", KEY_BS
                                 db KEY_TAB, "qwertyuiop[]", KEY_ENTER, KEY_CTRL
@@ -98,7 +98,7 @@ Ioapic.KeyMap:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;      services.asm Ê¹ÓÃµÄ³£Á¿Êı¾İ             ;;
+;;      services.asm ä½¿ç”¨çš„å¸¸é‡æ•°æ®             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Services.EflagsMsg              db 'EFLAGS: ', 0
@@ -145,7 +145,7 @@ Services.ExcetpionMsgTable      db '#DE', 0
 Services.Cr2Msg                 db 'CR2: ', 0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;      services64.asm Ê¹ÓÃµÄ³£Á¿Êı¾İ           ;;
+;;      services64.asm ä½¿ç”¨çš„å¸¸é‡æ•°æ®           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Services64.RegisterMsg          db 'RAX: ', 0
@@ -196,7 +196,7 @@ Lbr.ToIp                        db 'to_ip_', 0
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;      smp.asm Ê¹ÓÃµÄ³£Á¿Êı¾İ                  ;;
+;;      smp.asm ä½¿ç”¨çš„å¸¸é‡æ•°æ®                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Smp.TopologyInfoMsg             db '========= Processor Topology Info Report =========', 10, 0

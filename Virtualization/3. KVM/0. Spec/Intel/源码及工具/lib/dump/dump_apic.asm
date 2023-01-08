@@ -1,6 +1,6 @@
 ;*************************************************
 ; dump_apic.asm                                  *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
 
@@ -14,8 +14,8 @@
 ;       esi - APIC page
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´òÓ¡ TMR
+; æè¿°ï¼š
+;       1) æ‰“å° TMR
 ;------------------------------
 dump_tmr:
         push ebx        
@@ -64,8 +64,8 @@ dump_tmr:
 ;       esi - APIC page
 ; output:
 ;       none
-; ÃèÊö£º
-;       ´òÓ¡ LVT ±í¼Ä´æÆ÷
+; æè¿°ï¼š
+;       æ‰“å° LVT è¡¨å¯„å­˜å™¨
 ;--------------------------------
 dump_lvt:
         push ebx
@@ -115,8 +115,8 @@ dump_lvt:
 ;       esi - APIC page
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´òÓ¡ IRR
+; æè¿°ï¼š
+;       1) æ‰“å° IRR
 ;------------------------------
 dump_irr:
         push ebx        
@@ -165,8 +165,8 @@ dump_irr:
 ;       esi - APIC page
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´òÓ¡ ISR
+; æè¿°ï¼š
+;       1) æ‰“å° ISR
 ;------------------------------
 dump_isr:
         push ebx
@@ -218,8 +218,8 @@ dump_isr:
 ;       esi - APIC page
 ; output:
 ;       none
-; ÃèÊö£º
-;       1) ´òÓ¡ apic¼Ä´æÆ÷ĞÅÏ¢
+; æè¿°ï¼š
+;       1) æ‰“å° apicå¯„å­˜å™¨ä¿¡æ¯
 ;--------------------------------
 dump_apic:
         push ebx
@@ -271,24 +271,24 @@ dump_apic:
 	call print_dword_value	
 	call println
 
-;´òÓ¡ Interrupt Request Register
+;æ‰“å° Interrupt Request Register
         REX.Wrxb
         mov esi, ebx
 	call dump_irr
 		
-;; ´òÓ¡ In-service register	
+;; æ‰“å° In-service register	
         REX.Wrxb
         mov esi, ebx
 	call dump_isr
 
-; ´òÓ¡ tigger mode rigister
+; æ‰“å° tigger mode rigister
         REX.Wrxb
         mov esi, ebx
 	call dump_tmr
 
 	mov esi, esr
 	call puts
-	;call read_esr		; ¶Á ESR ¼Ä´æÆ÷
+	;call read_esr		; è¯» ESR å¯„å­˜å™¨
 	;mov esi, eax
         mov esi, [ebx + ESR]
 	call print_dword_value
@@ -299,12 +299,12 @@ dump_apic:
 	call print_qword_value
 	call println
 	
-; ´òÓ¡ LVT ±í¼Ä´æÆ÷
+; æ‰“å° LVT è¡¨å¯„å­˜å™¨
         REX.Wrxb
         mov esi, ebx
 	call dump_lvt
 
-; ´òÓ¡ APIC timer ¼Ä´æÆ÷
+; æ‰“å° APIC timer å¯„å­˜å™¨
 	mov esi, init_count
 	call puts
 	mov esi, [ebx + TIMER_ICR]
@@ -324,7 +324,7 @@ dump_apic:
 	
 
 
-; ¶¨Òå x2APIC ID Ïà¹Ø±äÁ¿
+; å®šä¹‰ x2APIC ID ç›¸å…³å˜é‡
 x2apic_smt_mask_width		dd	0, 0, 0, 0, 0, 0, 0, 0
 x2apic_smt_select_mask		dd	0, 0, 0, 0, 0, 0, 0, 0
 x2apic_core_mask_width		dd	0, 0, 0, 0, 0, 0, 0, 0
@@ -338,7 +338,7 @@ x2apic_core_id			dd 	0, 0, 0, 0, 0, 0, 0, 0
 x2apic_smt_id			dd	0, 0, 0, 0, 0, 0, 0, 0
 
 
-;;; ¶¨Òå xAPIC ID Ïà¹Ø±äÁ¿
+;;; å®šä¹‰ xAPIC ID ç›¸å…³å˜é‡
 xapic_smt_mask_width		dd	0, 0, 0, 0, 0, 0, 0, 0
 xapic_smt_select_mask		dd	0, 0, 0, 0, 0, 0, 0, 0
 xapic_core_mask_width		dd	0, 0, 0, 0, 0, 0, 0, 0
@@ -353,7 +353,7 @@ xapic_smt_id			dd 	0, 0, 0, 0, 0, 0, 0, 0
 
 
 
-;**** Êı¾İ *****
+;**** æ•°æ® *****
 apicid				db	'apic ID: 0x', 0
 apicver				db	'    apic version: 0x', 0
 tpr					db	'TPR: 0x', 0

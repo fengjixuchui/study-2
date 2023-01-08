@@ -1,16 +1,16 @@
 ;*************************************************
 ; sse64.asm                                      *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
 
 
 ;;
-;; 64-bit Ä£Ê½ÏÂµÄ SSE ÏµÁĞÖ¸Áî»·¾³¿â
+;; 64-bit æ¨¡å¼ä¸‹çš„ SSE ç³»åˆ—æŒ‡ä»¤ç¯å¢ƒåº“
 ;;
 
 ;-----------------------------
-; sse4_strlen64(): µÃµ½×Ö·û´®³¤¶È
+; sse4_strlen64(): å¾—åˆ°å­—ç¬¦ä¸²é•¿åº¦
 ; input:
 ;       rsi - string
 ; output:
@@ -18,7 +18,7 @@
 ;-----------------------------
 sse4_strlen64:
         push rcx
-        pxor xmm0, xmm0                 ; Çå XMM0 ¼Ä´æÆ÷
+        pxor xmm0, xmm0                 ; æ¸… XMM0 å¯„å­˜å™¨
         mov rax, rsi
         sub rax, 16
 sse4_strlen64.loop:        
@@ -32,30 +32,30 @@ sse4_strlen64.loop:
 
 
 ;----------------------------------------------------------
-; substr_search64(str1, str2): ²éÕÒ´®str2 ÔÚ str1´®³öÏÖµÄÎ»ÖÃ
+; substr_search64(str1, str2): æŸ¥æ‰¾ä¸²str2 åœ¨ str1ä¸²å‡ºç°çš„ä½ç½®
 ; input:
 ;       rsi - str1 
 ;       rdi - str2
 ; outpu:
-;       -1: ÕÒ²»µ½£¬·ñÔò rax = ·µ»Ø str2 ÔÚ str1 µÄÎ»ÖÃ
+;       -1: æ‰¾ä¸åˆ°ï¼Œå¦åˆ™ rax = è¿”å› str2 åœ¨ str1 çš„ä½ç½®
 ;----------------------------------------------------------
 substr_search64:
         push rcx
         push rbx
         lea rax, [rsi - 16]
-        movdqu xmm0, [rdi]              ; str2 ´®
+        movdqu xmm0, [rdi]              ; str2 ä¸²
 	mov ecx, 16
         xor ebx, ebx
         dec rbx                         ; rbx = -1
 substr_search64.loop:
-	add rax, rcx                    ; str1 ´®
+	add rax, rcx                    ; str1 ä¸²
         test ecx, ecx
         jz substr_search64.found
 	pcmpistri xmm0, [rax], 0Ch      ; unsigned byte, substring search, LSB index
 	jnz substr_search64.loop   
 substr_search64.found:
         add rax, rcx
-	sub rax, rsi                    ; rax = Î»ÖÃ
+	sub rax, rsi                    ; rax = ä½ç½®
         cmp rcx, 16
         cmovz rax, rbx
         pop rbx

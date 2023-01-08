@@ -1,12 +1,12 @@
 ;*************************************************
 ; dump_sse.asm                                   *
-; Copyright (c) 2009-2013 µËÖ¾                   *
+; Copyright (c) 2009-2013 é‚“å¿—                   *
 ; All rights reserved.                           *
 ;*************************************************
 
 
 ;-------------------------------------
-; ´òÓ¡ MXCSR ¼Ä´æÆ÷
+; æ‰“å° MXCSR å¯„å­˜å™¨
 ;-------------------------------------
 dump_mxcsr:
         push ebx
@@ -22,7 +22,7 @@ dump_mxcsr:
         and esi, 3
         call print_dword_decimal
         call printblank
-        bt ebx, 15              ; FZ Î»
+        bt ebx, 15              ; FZ ä½
         setc al
         shl ebx, 19
         shrd ebx, eax, 1
@@ -36,9 +36,9 @@ dump_mxcsr:
         ret
 
 ;----------------------------------------
-; dump_xmm(start, end)£º´òÓ¡ XMM ¼Ä´æÆ÷
+; dump_xmm(start, end)ï¼šæ‰“å° XMM å¯„å­˜å™¨
 ; input:
-;       esi: ÆğÊ¼¼Ä´æÆ÷£¬¡¡edi: ÖÕÖ¹¼Ä´æÆ÷
+;       esi: èµ·å§‹å¯„å­˜å™¨ï¼Œã€€edi: ç»ˆæ­¢å¯„å­˜å™¨
 ;----------------------------------------
 dump_xmm:
         push ecx
@@ -86,7 +86,7 @@ dump_xmm_loop:
         ret
 
 ;-------------------------------
-; ´òÓ¡ sse »·¾³
+; æ‰“å° sse ç¯å¢ƒ
 ;------------------------------
 dump_sse:
         call dump_mxcsr

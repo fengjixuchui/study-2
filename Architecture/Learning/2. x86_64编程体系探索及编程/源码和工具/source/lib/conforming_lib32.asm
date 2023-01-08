@@ -3,18 +3,18 @@
 ; All rights reserved.
 
 
-;; Õâ¸ö¿âÔÚ conforming ¶ÎÀïÖ´ĞĞ£¬ÔÊĞí±»ÈÎºÎÈ¨ÏŞµÄ´úÂëÖ´ĞĞ
+;; è¿™ä¸ªåº“åœ¨ conforming æ®µé‡Œæ‰§è¡Œï¼Œå…è®¸è¢«ä»»ä½•æƒé™çš„ä»£ç æ‰§è¡Œ
 
         bits 32
 
 
 ;-----------------------------------------------
-; conforming_lib32_service_enter(): conforming´úÂë¿âµÄ stubº¯Êı
+; conforming_lib32_service_enter(): conformingä»£ç åº“çš„ stubå‡½æ•°
 ; input:
-;       esi: clib32 ¿âº¯Êı·şÀı³ÌºÅ
-; ÃèÊö£º
-;       conforming_lib32_service_enter()µÄ×÷ÓÃÊÇÇĞ»»µ½ conforming¶ÎÀï,
-;       È»ºóµ÷ÓÃ conforming lib32 ¿âÀïµÄ·şÎñÀı³Ì, ËüÏàµ±ÓÚÒ»¸ö gate µÄ×÷ÓÃ¡£
+;       esi: clib32 åº“å‡½æ•°æœä¾‹ç¨‹å·
+; æè¿°ï¼š
+;       conforming_lib32_service_enter()çš„ä½œç”¨æ˜¯åˆ‡æ¢åˆ° conformingæ®µé‡Œ,
+;       ç„¶åè°ƒç”¨ conforming lib32 åº“é‡Œçš„æœåŠ¡ä¾‹ç¨‹, å®ƒç›¸å½“äºä¸€ä¸ª gate çš„ä½œç”¨ã€‚
 ; -----------------------------------------------
 __clib32_service_enter:
 __conforming_lib32_service_enter:
@@ -22,13 +22,13 @@ __conforming_lib32_service_enter:
 conforming_lib32_service_pointer        dd __conforming_lib32_service
                                         dw conforming_sel        
 do_conforming_lib32_service:        
-        call DWORD far [conforming_lib32_service_pointer]        ; Ê¹ÓÃ conforming ¶Î½øĞĞµ÷ÓÃ
+        call DWORD far [conforming_lib32_service_pointer]        ; ä½¿ç”¨ conforming æ®µè¿›è¡Œè°ƒç”¨
         ret
 
 ;--------------------------------------------
 ; clib32_service()
 ; input:
-;       eax: clib32 ¿âº¯·şÎñ±àºÅ
+;       eax: clib32 åº“å‡½æœåŠ¡ç¼–å·
 ;--------------------------------------------
 __conforming_lib32_service:
         mov eax, [__clib32_service_table + eax * 4]
@@ -39,7 +39,7 @@ __conforming_lib32_service:
 ;---------------------------------------------
 ; set_clib32_service_table
 ; input:
-;       esi-·şÎñºÅ, edi-·şÎñÀı³Ì
+;       esi-æœåŠ¡å·, edi-æœåŠ¡ä¾‹ç¨‹
 ;---------------------------------------------
 __set_clib32_service_table:
         lea eax, [__clib32_service_table + esi * 4]
@@ -48,9 +48,9 @@ __set_clib32_service_table:
 
 
 ;----------------------------------------------------------
-; get_cpl(): µÃµ½ CPL Öµ
+; get_cpl(): å¾—åˆ° CPL å€¼
 ; output:
-;       eax: CPL Öµ
+;       eax: CPL å€¼
 ;----------------------------------------------------------
 __get_cpl:
         mov ax, cs
@@ -114,7 +114,7 @@ __check_null_selector:
         ret        
         
 ;------------------------------------------------------------
-; load_ss_reg(): ¼ÓÔØ SS ¼Ä´æÆ÷
+; load_ss_reg(): åŠ è½½ SS å¯„å­˜å™¨
 ; input:
 ;       esi: selector
 ;-----------------------------------------------------------
@@ -133,7 +133,7 @@ do_load_ss_reg:
         push edx
         mov ecx, esi
         
-; ¼ì²é selector
+; æ£€æŸ¥ selector
         call __check_null_selector
         test eax, eax
         jz check_privilege
@@ -141,7 +141,7 @@ do_load_ss_reg:
         call puts
         jmp load_ss_reg_done
         
-; ¼ì²éÈ¨ÏŞ        
+; æ£€æŸ¥æƒé™        
 check_privilege:
         call __get_cpl
         mov esi, ecx
@@ -162,7 +162,7 @@ check_privilege_next:
         call puts
         jmp load_ss_reg_done
         
-; ¼ì²é selector ÊÇ·ñ³¬ GDT/LDT limits
+; æ£€æŸ¥ selector æ˜¯å¦è¶… GDT/LDT limits
 check_limit:        
         mov esi, ecx
         bt esi, 2
@@ -180,29 +180,29 @@ check_limit_next:
         call puts
         jmp load_ss_reg_done
 
-; ¼ì²é data segment descriptor ÀàĞÍ                
+; æ£€æŸ¥ data segment descriptor ç±»å‹                
 check_descriptor:
         mov esi, ecx
         call __read_gdt_descriptor
-        bt edx, 12                                        ; S ±êÖ¾                
+        bt edx, 12                                        ; S æ ‡å¿—                
         jc check_cd                        
         mov esi, lsr_msg5
         call puts
         jmp load_ss_reg_done
 check_cd:
-        bt edx, 11                                        ; Code/Data ±êÖ¾
+        bt edx, 11                                        ; Code/Data æ ‡å¿—
         jnc check_w
         mov esi, lsr_msg6
         call puts
         jmp load_ss_reg_done        
 check_w:
-        bt edx, 9                                        ; W ±êÖ¾
+        bt edx, 9                                        ; W æ ‡å¿—
         jc check_p
         mov esi, lsr_msg7
         call puts
         jmp load_ss_reg_done
 check_p:
-        bt edx, 15                                        ; P ±êÖ¾
+        bt edx, 15                                        ; P æ ‡å¿—
         jc load_ss
         mov esi, lsr_msg8                 
         call puts
@@ -216,23 +216,23 @@ load_ss_reg_done:
 
 
 
-;*** conforming ¿âÊı¾İ *****
+;*** conforming åº“æ•°æ® *****
 
 ;
-; conforming lib32 ¿â·şÎñÀı³Ì±í
+; conforming lib32 åº“æœåŠ¡ä¾‹ç¨‹è¡¨
 __clib32_service_table:
-        dd __get_cpl                            ; 0 ºÅ
-        dd __get_dpl                            ; 1 ºÅ
-        dd __get_gdt_limit                      ; 2 ºÅ
-        dd __get_ldt_limit                      ; 3 ºÅ
-        dd __check_null_selector                ; 4 ºÅ
-        dd __load_ss_reg                        ; 5 ºÅ
+        dd __get_cpl                            ; 0 å·
+        dd __get_dpl                            ; 1 å·
+        dd __get_gdt_limit                      ; 2 å·
+        dd __get_ldt_limit                      ; 3 å·
+        dd __check_null_selector                ; 4 å·
+        dd __load_ss_reg                        ; 5 å·
         dd 0
         dd 0
         dd 0
         dd 0
 
-; ÏÂÃæ±£Áô 5 ¸ö·şÎñºÅ¸øÓÃ»§¶¨Òå
+; ä¸‹é¢ä¿ç•™ 5 ä¸ªæœåŠ¡å·ç»™ç”¨æˆ·å®šä¹‰
         dd 0                                    ; CLIB32_SERVICE_USER0
         dd 0                                    ; CLIB32_SERVICE_USER1
         dd 0                                    ; CLIB32_SERVICE_USER2
