@@ -130,22 +130,38 @@ ARM的Idle-state 级别情况比较复杂一些, 更多的是和具体的芯片�
 
 通过**启动参数**, 我们可以指定 cpu的 **idle 进程**并**不调用**硬件提供的 idle 功能而仅仅是 **polling**, 这种情况主要用于需要极低的 CPU 从 idle 状态返回时延的场景。那么如果压根没有进入实际的idle状态，当然时延是极低的，同时也能融入到idle整体的框架，不至于破坏规矩开特例。
 
-## halt-polling
-
-在打开虚拟化的场景下, 事情就变得更加有趣了。大多数情况下, qemu 会缺省的只对guest 提供 HLT 指令作为 idle 的唯一机制，但是 HLT 指令毫无悬念的会触发 VMEXIT。虽然说大多数情况下 kvm 看到exit reason 是 HLT 也只是执行 poll 而已, 但是 VMEXIT/VM_RESUME 还是如此的痛，毕竟几千个 cycles 已经无谓流逝, 追求极致的我们怎么能放任资源浪费。于是 Redhat 在 Guest 端引入了halt poll 机制, 也就是说如果 matrix 中的 CPU 首先开始假摸鱼(poll), 如果假摸鱼时间超过了阈值才真的去触发HLT指令。如果很快就被从假模鱼状态拉回去搬砖, 则省去了出入matrix的费用(经理得意的笑了)。
-
 相关细节参考内核文档
 
 Documentation/admin-guide/pm/cpuidle.rst:
 
-以及：
+## halt-polling
+
+在打开虚拟化的场景下, 事情就变得更加有趣了。大多数情况下, qemu 会缺省的只对guest 提供 HLT 指令作为 idle 的唯一机制，但是 HLT 指令毫无悬念的会触发 VMEXIT。虽然说大多数情况下 kvm 看到exit reason 是 HLT 也只是执行 poll 而已, 但是 VMEXIT/VM_RESUME 还是如此的痛，毕竟几千个 cycles 已经无谓流逝, 追求极致的我们怎么能放任资源浪费。于是 Redhat 在 Guest 端引入了halt poll 机制, 也就是说如果 matrix 中的 CPU 首先开始假摸鱼(poll), 如果假摸鱼时间超过了阈值才真的去触发HLT指令。如果很快就被从假模鱼状态拉回去搬砖, 则省去了出入matrix的费用(经理得意的笑了)。
+
+相关细节参考内核文档:
 
 Documentation/virt/guest-halt-polling.rst:
 
 # CPU idle driver/governor
 
-最后软件硬件各路躺平姿势花样繁多, 内核无奈又祭出了抽象大法把idle的时长与返回时延的选择与具体执行idle的机制分离开来。
+最后软件硬件各路躺平姿势花样繁多, 内核无奈又祭出了抽象大法把 idle 的时长与返回时延的选择与具体执行 idle 的机制分离开来。
 
 * idle governor 就负责做时长与时延的选择，也可以称为 idle -select。
-* idle driver 则是负责通过我们上面描述的各种软硬件机制来实现governor指定的目标。同时向governor menu 经理提供各种不同机制的性能参数,以供menu经理选择， 就是所谓的idle-enter。
+
+* idle driver 则是负责通过我们上面描述的各种软硬件机制来实现 governor 指定的目标。同时向 governor menu 经理提供各种不同机制的性能参数, 以供 menu 经理选择， 就是所谓的 idle-enter。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
