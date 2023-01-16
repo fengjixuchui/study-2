@@ -140,28 +140,40 @@ Documentation/admin-guide/pm/cpuidle.rst:
 
 相关细节参考内核文档:
 
-Documentation/virt/guest-halt-polling.rst:
+Documentation/virt/guest-halt-polling.rst
+
+Documentation/translations/zh_CN/virt/guest-halt-polling.rst
 
 # CPU idle driver/governor
 
-最后软件硬件各路躺平姿势花样繁多, 内核无奈又祭出了抽象大法把 idle 的时长与返回时延的选择与具体执行 idle 的机制分离开来。
+最后软件硬件各种方式很多, 内核无奈又祭出了抽象大法把 idle 的时长与返回时延的选择与具体执行 idle 的机制分离开来。
 
 * idle governor 就负责做时长与时延的选择，也可以称为 idle -select。
 
 * idle driver 则是负责通过我们上面描述的各种软硬件机制来实现 governor 指定的目标。同时向 governor menu 经理提供各种不同机制的性能参数, 以供 menu 经理选择， 就是所谓的 idle-enter。
 
+![2023-01-09-15-23-48.png](./images/2023-01-09-15-23-48.png)
 
+idle governor 缺省的算法只有一个就是menu, 还有3个候选的ladder/TEO/haltpoll 算法但是一般需要重新编译内核来激活。
 
+* ladder 算法故名意思, 是首先从能耗较高/返回时延较小的状态开始，当系统idle超过了阈值再进入更深的节能状态，从而逐步升级节能状态。俗称添油战术也可以美其名曰“快速迭代”。
 
+* menu 算法单从名字看则有点让人摸不到头脑,其内部机制也确实颇为复杂，menu算法主要是要在节能状态的停留时间与系统能容忍的返回时延之间做权衡以达到最佳效果。
 
+请原谅我非常不精确地描述一下menu。menu仿佛一个非常敬业的经理凡事都要精算做出最优选择，CPU工人一旦休息再想打起精神干活这个转换是有一个代价的, 往往需要口头鼓励(画饼)+物质鼓励(肉夹馍)。那么经理就要考虑如果工人休息时间太短,休息的好处远低于让CPU工人重新振作的代价,那么这个休息就是不合理的(无情啊)。而且休息也有好些种类, 从假休息到完全躺平, 到底哪一种休息状态才是收益比最佳的? menu会无情的选择那个休息带来好处大于重新振作代价的方案。同时menu经理还会受到来自客户的压力, 时延也是要满足的。客户的耐心大抵上都是不好的, menu经理会疯狂试探客户的底线。它选择的方案是满足客户耐心上限的情况下CPU工人消耗能耗最少的方案。同时做到以上两点 menu经理大约才能有希望完成OKR/KPI。
 
+# 参考文献
 
+https://www.51cto.com/article/665543.html
 
+[1] https://www.kernel.org/doc/Documentation/devicetree/bindings/arm/idle-states.txt
 
+[2] https://www.dell.com/support/kbdoc/en-ie/000060621/what-is-the-c-state
 
+[3] Intel SDM latest version
 
+[4] https://www.kernel.org/doc/html/latest/virt/guest-halt-polling.html
 
+[5] https://www.kernel.org/doc/html/latest/admin-guide/pm/cpuidle.html
 
-
-
-
+[6] https://www.programmersought.com/article/13982556297/
