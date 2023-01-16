@@ -26,7 +26,21 @@ int main(int argc, char *argvO, char *envp0) {
 }
 ```
 
-`fio_server_create_sk_key()` 函数是为线程创建私有数据，关于线程私有数据的概念可以参考该链接 - https://www.cnblogs.com/smarty/p/4046215.html;
+`fio_server_create_sk_key()` 函数是为线程创建私有数据，关于线程私有数据的概念可以参考 TSD池
+
+```cpp
+// server.c
+int fio_server_create_sk_key(void)
+{
+    if (pthread_key_create(&sk_out_key, NULL)) {
+            log_err("fio: can't create sk_out backend key\n");
+            return 1;
+    }
+
+    pthread_setspecific(sk_out_key, NULL);
+    return 0;
+}
+```
 
 `fio_backend()` 函数—— `backend.c` 文件：
 
