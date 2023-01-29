@@ -35,7 +35,9 @@ int main(int argc, char *argvO, char *envp0) {
 int initialize_fio(char *envp[])
 {
     endian_check(); // 大小端模式检查
-    arch_init(envp); // 架构相关初始化, 主要是检查 tsc 支持, 
+    arch_init(envp); // 架构相关初始化, 主要是检查 tsc 支持, invariant tsc, 以及 rdrand 的支持
+    sinit(); // 
+
 
 ```
 
