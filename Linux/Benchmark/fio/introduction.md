@@ -30,6 +30,15 @@ int main(int argc, char *argvO, char *envp0) {
 }
 ```
 
+```cpp
+// libfio.c
+int initialize_fio(char *envp[])
+{
+    endian_check(); // 大小端模式检查
+    arch_init(envp); // 架构相关初始化, 主要是检查 tsc 支持, 
+
+```
+
 `fio_server_create_sk_key()` 函数是为线程创建私有数据，关于线程私有数据的概念可以参考 TSD池
 
 ```cpp
