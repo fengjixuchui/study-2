@@ -96,19 +96,19 @@ void * pthread_getspecific(pthread_key_t key);
 ```cpp
 #include <pthread.h>
 #include <stdio.h>
- 
+
 pthread_key_t key;
 pthread_t thid1;
 pthread_t thid2;
- 
+
 void* thread2(void* arg)
 {
     printf("thread:%lu is running\n", pthread_self());
     
     int key_va = 3 ;
- 
+    // 为一个键设置线程私有数据
     pthread_setspecific(key, (void*)key_va);
-    
+    // 从一个键读取线程私有数据
     printf("thread:%lu return %d\n", pthread_self(), (int)pthread_getspecific(key));
 }
  
@@ -118,11 +118,11 @@ void* thread1(void* arg)
     printf("thread:%lu is running\n", pthread_self());
     
     int key_va = 5;
-    
+    // 为一个键设置线程私有数据
     pthread_setspecific(key, (void*)key_va);
- 
+    // 创建线程 thid2
     pthread_create(&thid2, NULL, thread2, NULL);
- 
+    // 从一个键读取线程私有数据
     printf("thread:%lu return %d\n", pthread_self(), (int)pthread_getspecific(key));
 }
  
@@ -130,21 +130,23 @@ void* thread1(void* arg)
 int main()
 {
     printf("main thread:%lu is running\n", pthread_self());
- 
+    // 创建一个 键
     pthread_key_create(&key, NULL);
- 
+    // 创建线程 thid1
     pthread_create(&thid1, NULL, thread1, NULL);
  
     pthread_join(thid1, NULL);
     pthread_join(thid2, NULL);
  
     int key_va = 1;
+    // 为一个键设置线程私有数据
     pthread_setspecific(key, (void*)key_va);
     
+    // 从一个键读取线程私有数据
     printf("thread:%lu return %d\n", pthread_self(), (int)pthread_getspecific(key));
- 
+    // 删除 键
     pthread_key_delete(key);
-        
+    
     printf("main thread exit\n");
     return 0;
 }
@@ -208,7 +210,9 @@ int main(int argc,char* argv[])
 {    char* res;
     pthread_t th1,th2;
     res=str_accumulate("Result of ");
+    // 创建线程
     pthread_create(&th1,NULL,process,(void*)"first");
+    // 创建线程
     pthread_create(&th2,NULL,process,(void*)"second");
     res=str_accumulate("initial thread");
     printf("Thread %lx: \"%s\"\n",pthread_self(),res);
