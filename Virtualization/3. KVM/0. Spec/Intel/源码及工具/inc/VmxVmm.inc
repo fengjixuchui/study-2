@@ -86,7 +86,7 @@ endstruc
 ;       %2 - VM-exit reason
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 注册VM-exit处理例程
 ;-------------------------------------------------------------------
 %macro REGISTER_VMEXIT_ROUTINE  2
@@ -102,7 +102,7 @@ endstruc
 ;       %2 - exception vector
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 注册异常处理例程
 ;-------------------------------------------------------------------
 %macro REGISTER_EXCEPTION_ROUTINE  2

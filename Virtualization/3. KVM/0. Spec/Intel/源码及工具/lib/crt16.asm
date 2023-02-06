@@ -85,7 +85,7 @@ lba_mode:
 chs_mode:       
 
         ;
-        ; 如果一次读超过 63 个扇区则分批读取，每次最多个63扇区
+        ; 如果一次读超过 63 个扇区则分批读取, 每次最多个63扇区
         ;
         movzx cx, BYTE [read_sectors]
         mov bx, cx
@@ -145,7 +145,7 @@ check_int13h_extension:
         setz al                                 ; nz = 不支持
         jnz do_check_int13h_extension_done
         test cx, 1
-        setnz al                                ; z = 不支持扩展功能号：AH=42h-44h,47h,48h
+        setnz al                                ; z = 不支持扩展功能号: AH=42h-44h,47h,48h
 do_check_int13h_extension_done:        
         pop bx
         movzx ax, al
@@ -183,7 +183,7 @@ read_sector_with_chs:
         push bx
         push cx
         ;
-        ; 将 LBA 转换为 CHS，使用 int 13h, ax = 02h 读
+        ; 将 LBA 转换为 CHS, 使用 int 13h, ax = 02h 读
         ;
         call do_lba_to_chs
         mov dl, [driver_number]                 ; driver number
@@ -211,7 +211,7 @@ read_sector_with_chs_done:
 ;       cl - [5:0] sector, [7:6] cylinder 高 2 位
 ;       dh - header
 ;
-; 描述：
+; 描述: 
 ;       
 ; 1) 
 ;       eax = LBA / (head_maximum * sector_maximum),  cylinder = eax
@@ -259,7 +259,7 @@ get_driver_parameters:
         push dx
         push cx
         push bx
-        mov ah, 08h                             ; 08h 功能号，读 driver parameters
+        mov ah, 08h                             ; 08h 功能号, 读 driver parameters
         mov dl, [driver_number]                 ; driver number
         mov di, [parameter_table]               ; es:di = address of parameter table
         int 13h
@@ -288,7 +288,7 @@ get_driver_parameters_done:
 ;       使用 disk_address_packet 结构中提供的参数
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 加载模块到 buf 缓冲区
 ;-------------------------------------------------------------------
 load_module:
@@ -296,7 +296,7 @@ load_module:
         push cx
         
         ;;
-        ;; 将读 1 个扇区，得到模块的 size 值，然后根据这个 size 进行整个模块读取
+        ;; 将读 1 个扇区, 得到模块的 size 值, 然后根据这个 size 进行整个模块读取
         ;;
         mov WORD [read_sectors], 1
 	    call read_sector
@@ -313,7 +313,7 @@ load_module:
         ;; size 向上调整到 512 倍数
         ;;
         add ecx, 512 - 1
-        shr ecx, 9							; 计算 block（sectors）
+        shr ecx, 9							; 计算 block(sectors)
         mov WORD [read_sectors], cx                                     ; 
         call read_sector
 do_load_module_done:  
@@ -328,7 +328,7 @@ do_load_module_done:
 ;       si - 字符
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       打印一个字符
 ;------------------------------------------------------
 putc16:
@@ -346,7 +346,7 @@ putc16:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       打印换行
 ;------------------------------------------------------
 println16:
@@ -362,7 +362,7 @@ println16:
 ;       si - 字符串
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       打印字符串信息
 ;------------------------------------------------------
 puts16:
@@ -402,10 +402,10 @@ hex_to_char16:
 ;------------------------------------------------------
 ; convert_word_into_buffer()
 ; input:
-;       si - 需转换的数（word size)
-;       di - 目标串 buffer（最短需要 5 bytes，包括 0)
-; 描述：
-;       将一个WORD转换为字符串，放入提供的 buffer 内
+;       si - 需转换的数(word size)
+;       di - 目标串 buffer(最短需要 5 bytes, 包括 0)
+; 描述: 
+;       将一个WORD转换为字符串, 放入提供的 buffer 内
 ;------------------------------------------------------
 convert_word_into_buffer:
 	push cx
@@ -426,10 +426,10 @@ convert_word_into_buffer.loop:
 ;------------------------------------------------------
 ; convert_dword_into_buffer()
 ; input:
-;       esi - 需转换的数（dword size)
-;       di - 目标串 buffer（最短需要 9 bytes，包括 0)
-; 描述：
-;       将一个WORD转换为字符串，放入提供的 buffer 内
+;       esi - 需转换的数(dword size)
+;       di - 目标串 buffer(最短需要 9 bytes, 包括 0)
+; 描述: 
+;       将一个WORD转换为字符串, 放入提供的 buffer 内
 ;------------------------------------------------------
 convert_dword_into_buffer:
 	push cx
@@ -473,7 +473,7 @@ check_cpuid:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       检查是否支持 x64
 ;------------------------------------------------------
 check_cpu_environment:
@@ -510,8 +510,8 @@ check_cpu_environment.done:
 ;       none
 ; output:
 ;       none
-; 描述：
-;       1) 得到内存 size，保存在 MMap.Size 里
+; 描述: 
+;       1) 得到内存 size, 保存在 MMap.Size 里
 ;------------------------------------------------------
 get_system_memory:
         push ebx
@@ -573,9 +573,9 @@ get_system_memory.done:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 在 16 位 real mode 环境下使用
-;       2) 函数返回后，进入 32位 unreal mode，使用 4G 段限
+;       2) 函数返回后, 进入 32位 unreal mode, 使用 4G 段限
 ;------------------------------------------------------
 unreal_mode_enter:
         push ebp
@@ -671,7 +671,7 @@ _TARGET  EQU     $
         mov cr0, eax
         
         ;;
-        ;; 转入保护模式（此处 operand size = 16)
+        ;; 转入保护模式(此处 operand size = 16)
         ;;
         push 10h
         push bx
@@ -707,8 +707,8 @@ _ENTER_TARGET   EQU     $
         mov cr0, eax
         
         ;;
-        ;; 返回到实模式（此处 operand size = 32)
-        ;; 因此：使用 66h 来调整到 16 位 operand
+        ;; 返回到实模式(此处 operand size = 32)
+        ;; 因此: 使用 66h 来调整到 16 位 operand
         ;;
         DB 66h
         retf
@@ -739,7 +739,7 @@ _RETURN_TARGET  EQU     $
         
         ;;
         ;; 此处是 32-bit operand size
-        ;; 因此：需使用 16 位的返回地址
+        ;; 因此: 需使用 16 位的返回地址
         ;;
         DB 66h
         ret
@@ -751,7 +751,7 @@ _RETURN_TARGET  EQU     $
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 函数将切换到保护模式
 ;       2) 加载为 FS 设置的描述符
 ;------------------------------------------------------
@@ -791,7 +791,7 @@ _TARGET1 EQU $
         lea ebp, [esp+eax]
 
 	    ;;
-        ;; 设置临时的 GDT 表，并加载 GDT   
+        ;; 设置临时的 GDT 表, 并加载 GDT   
 	    ;;
 	    mov esi, [CpuIndex]
         shl esi, 7
@@ -863,7 +863,7 @@ _TARGET2  EQU     $
 get_spin_lock16:
         ;;
         ;; 自旋锁操作方法说明:
-        ;; 1) 使用 bts 指令，如下面指令序列
+        ;; 1) 使用 bts 指令, 如下面指令序列
         ;;    lock bts DWORD [esi], 0
         ;;    jnc AcquireLockOk
         ;;
@@ -883,9 +883,9 @@ get_spink_lock16.acquire:
         je get_spink_lock16.done
 
         ;;
-        ;; 获取失败后，检查 lock 是否开放（未上锁）
-        ;; 1) 是，则再次执行获取锁，并上锁
-        ;; 2) 否，继续不断地检查 lock，直到 lock 开放
+        ;; 获取失败后, 检查 lock 是否开放(未上锁)
+        ;; 1) 是, 则再次执行获取锁, 并上锁
+        ;; 2) 否, 继续不断地检查 lock, 直到 lock 开放
         ;;
 get_spink_lock16.check:        
         mov eax, [esi]
@@ -911,7 +911,7 @@ driver_parameters_table:
         parameter_table         DW      0               ; address of parameter table 
                 
 ;;
-;; 定义 int 13h 使用的 disk address packet，用于 int 13h 读/写
+;; 定义 int 13h 使用的 disk address packet, 用于 int 13h 读/写
 ;;        
 disk_address_packet:
         size                    DW      10h             ; size of packet

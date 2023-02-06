@@ -45,7 +45,7 @@ crt.chars                       db '0123456789ABCDEF', 0
 crt.quotient                    dq 0                            ; 保存商值
 crt.remainder                   dq 0                            ; 保存余数
 crt.digit_array:
-        times 400               db 0                            ; 数字数组，容纳 400 位十进制数
+        times 400               db 0                            ; 数字数组, 容纳 400 位十进制数
 
 crt.float_const10               dt 10.0                         ; 浮点常数值
 crt.value                       dd 0

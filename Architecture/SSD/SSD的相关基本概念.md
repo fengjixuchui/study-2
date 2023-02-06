@@ -1,4 +1,15 @@
-[TOC]
+
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [1 硬盘接口/插槽类型](#1-硬盘接口插槽类型)
+- [2 总线类型](#2-总线类型)
+- [3 协议标准](#3-协议标准)
+- [4 兼容问题](#4-兼容问题)
+
+<!-- /code_chunk_output -->
+
 
 **SSD**拥有比**HDD**更快的读写速度但**SATA总线标准**却**拖累了SSD性能**的发挥. 越来越多的笔记本都配备了**支持PCI\-E总线标准的M.2插槽**这就让**更高速的NVMe SSD**有了用武之地. 
 

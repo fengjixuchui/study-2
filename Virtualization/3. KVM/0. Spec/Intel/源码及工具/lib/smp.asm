@@ -27,7 +27,7 @@
 ;       edi - routine 入口
 ; output:
 ;       eax - status code
-; 描述：
+; 描述: 
 ;       1) 使用 NMI delivery 方式发送 IPI
 ;       2) 将忽略目标处理器的 eflags.IF 标志位
 ;-----------------------------------------------------
@@ -44,9 +44,9 @@ force_dispatch_to_processor:
 ;       edi - entry
 ; output:
 ;       eax - status code 
-; 描述：
+; 描述: 
 ;       1) 转到目标处理器的入口点执行
-;       2) 输入参数 esi 提供目标处理器的 index 值（从0开始）
+;       2) 输入参数 esi 提供目标处理器的 index 值(从0开始)
 ;       3) 输入参数 edi 提供目标代码入口地址
 ;       4) 这个函数无须等待直接返回       
 ;       5) 可以给自己调度执行！
@@ -64,9 +64,9 @@ goto_processor:
 ;       edi - routine 入口
 ; output:
 ;       eax - status code
-; 描述：
+; 描述: 
 ;       1) 将一段 routine 调度到某个处理器执行
-;       2) 输入参数 esi 提供目标处理器的 index 值（从0开始）
+;       2) 输入参数 esi 提供目标处理器的 index 值(从0开始)
 ;       3) 输入参数 edi 提供目标代码入口地址
 ;       4) 这个函数无须等待直接返回       
 ;       5) 不能自己给自己调度任务执行！
@@ -107,7 +107,7 @@ dispatch_to_processor.Entry:
         
 
         ;;
-        ;; 置处理器为 busy 状态（去掉 usable processor 列表）
+        ;; 置处理器为 busy 状态(去掉 usable processor 列表)
         ;;
         mov eax, SDA.UsableProcessorMask
         lock btr DWORD [fs: eax], ecx                                   ; 处理器为 unusable 状态
@@ -135,7 +135,7 @@ dispatch_to_processor.@0:
 dispatch_to_processor.@1:
         
         ;;
-        ;; 使用物理ID方式，发送 IPI 到目标处理器
+        ;; 使用物理ID方式, 发送 IPI 到目标处理器
         ;;
         mov esi, [ebx + PCB.ApicId]                     ; 处理器 ID 值        
         SEND_IPI_TO_PROCESSOR   esi, edx
@@ -159,9 +159,9 @@ dispatch_to_processor.done:
 ;       edi - routine 入口
 ; output:
 ;       eax - status code
-; 描述：
+; 描述: 
 ;       1) 将一段 routine 调度到某个处理器执行
-;       2) 输入参数 esi 提供目标处理器的 index 值（从0开始）
+;       2) 输入参数 esi 提供目标处理器的 index 值(从0开始)
 ;       3) 输入参数 edi 提供目标代码入口地址
 ;       4) 这个函数等 dispatch routine 完成后返回
 ;-----------------------------------------------------
@@ -177,7 +177,7 @@ dispatch_to_processor_with_waitting:
         call dispatch_to_processor
         
         ;;
-        ;; 等待信号有效，等待目标处理器执行完毕
+        ;; 等待信号有效, 等待目标处理器执行完毕
         ;;
         WAIT_FOR_INTERNAL_SIGNAL        
         ret
@@ -190,7 +190,7 @@ dispatch_to_processor_with_waitting:
 ;       esi - routine 入口
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 以 NMI delivery 方式广播 IPI
 ;       2) 不包括自己
 ;-----------------------------------------------------
@@ -236,7 +236,7 @@ broadcast_message_exclude_self:
 ;       esi - signal
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 获取信号量
 ;       2) 输入参数 esi 提供信号地址       
 ;-----------------------------------------------------
@@ -253,7 +253,7 @@ get_for_signal:
 ;       esi - Signal
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 等待 signal
 ;-----------------------------------------------------
 wait_for_signal:
@@ -267,9 +267,9 @@ wait_for_signal.acquire:
         je wait_for_signal.done
 
         ;;
-        ;; 获取失败后，检查 lock 是否开放（未上锁）
-        ;; 1) 是，则再次执行获取锁，并上锁
-        ;; 2) 否，继续不断地检查 lock，直到 lock 开放
+        ;; 获取失败后, 检查 lock 是否开放(未上锁)
+        ;; 1) 是, 则再次执行获取锁, 并上锁
+        ;; 2) 否, 继续不断地检查 lock, 直到 lock 开放
         ;;
 wait_for_signal.check:        
         mov eax, [esi]
@@ -288,8 +288,8 @@ wait_for_signal.done:
 ;       esi - 处理器 Index 值
 ; output:
 ;       eax - 该处理器的 PCB 基址
-; 描述：
-;       1) 根据提供的处理器Index值（从0开始），得到该处理器对应的 PCB 块
+; 描述: 
+;       1) 根据提供的处理器Index值(从0开始), 得到该处理器对应的 PCB 块
 ;       2) 出错时返回 0 值
 ;-----------------------------------------------------
 get_processor_pcb:
@@ -329,8 +329,8 @@ get_processor_pcb.done:
 ;       esi - 处理器 Index 值
 ; output:
 ;       eax - local APIC ID
-; 描述：
-;       1) 根据提供的处理器Index值（从0开始），得到该处理器 LAPIC ID
+; 描述: 
+;       1) 根据提供的处理器Index值(从0开始), 得到该处理器 LAPIC ID
 ;       2) 出错时返回 -1 值
 ;-----------------------------------------------------
 get_processor_id:
@@ -352,7 +352,7 @@ get_processor_id.FoundNot:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 处理器的 IPI 服务例程
 ;-----------------------------------------------------        
 dispatch_routine:
@@ -364,7 +364,7 @@ dispatch_routine:
         ;;
         ;; 构造 BottomHalf 例程 0 级中断栈
         ;;
-        push 02 | FLAGS_IF                      ; eflags，可中断
+        push 02 | FLAGS_IF                      ; eflags, 可中断
         push KernelCsSelector32                 ; cs
         push dispatch_routine.BottomHalf        ; eip       
        
@@ -374,7 +374,7 @@ dispatch_routine:
         mov ebx, [gs: PCB.IpiRoutinePointer]
         
         ;;
-        ;; IPI routine 返回，目标任务由 BottomHalf 处理
+        ;; IPI routine 返回, 目标任务由 BottomHalf 处理
         ;;
         LAPIC_EOI_COMMAND                       ; 发送 EOI 命令
         iret                                    ; 转入执行 BottomHalf 例程
@@ -384,12 +384,12 @@ dispatch_routine:
 
 ;-----------------------------------------------------
 ; dispatch_routine.BottomHalf
-; 描述：
+; 描述: 
 ;       dispatch_routine 的下半部分处理
 ;-----------------------------------------------------
 dispatch_routine.BottomHalf:
         ;;
-        ;; 当前栈中数据：
+        ;; 当前栈中数据: 
         ;; 1) 8 个 GPRs
         ;; 2) 被中断者的返回参数
         ;;
@@ -421,7 +421,7 @@ dispatch_routine.BottomHalf:
         mov [fs: SDA.LastStatusCode], eax
          
         ;;
-        ;; 如果提供了 IPI routine 下半部分处理，则执行
+        ;; 如果提供了 IPI routine 下半部分处理, 则执行
         ;;
         mov eax, [gs: PCB.IpiRoutineBottomHalf]
         test eax, eax
@@ -430,7 +430,7 @@ dispatch_routine.BottomHalf:
         
 dispatch_routine.BottomHalf.@1:
         ;;
-        ;; 目标处理器已完成工作，置为 usable 状态
+        ;; 目标处理器已完成工作, 置为 usable 状态
         ;;
         mov eax, [gs: PCB.ProcessorIndex]
         lock bts DWORD [fs: SDA.UsableProcessorMask], eax
@@ -459,9 +459,9 @@ dispatch_routine.BottomHalf.@1:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 强制让处理器跳到入口点代码
-;       2) 注意，这种方式不能返回！
+;       2) 注意, 这种方式不能返回！
 ;-----------------------------------------------------
 goto_entry:
         push eax
@@ -477,7 +477,7 @@ goto_entry:
         jz goto_entry.@0
         
         ;;
-        ;; 属于非0级，改写为 0 级中断栈
+        ;; 属于非0级, 改写为 0 级中断栈
         ;;
         add esp, 16                                             ; 指向未压入返回参数前
         push 02 | FLAGS_IF                                      ; 压入 EFLAGS
@@ -507,8 +507,8 @@ goto_entry.@0:
 ;       esi -处理器 index
 ; output:
 ;       none
-; 描述：
-;       1) 按下功能键，进行当前处理器切换
+; 描述: 
+;       1) 按下功能键, 进行当前处理器切换
 ;-----------------------------------------------------
 do_schedule:
         push esi
@@ -534,7 +534,7 @@ do_schedule:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 切换当前处理器
 ;-----------------------------------------------------
 switch_to_processor:
@@ -566,8 +566,8 @@ switch_to_processor:
         
         ;;
         ;; 检查当前处理器是否已经拥有焦点 ?
-        ;; 1) 是：则 XOR CPU_STATUS_GUEST 标志位
-        ;; 2) 否：则清 CPU_STATUS_GUEST 标志位
+        ;; 1) 是: 则 XOR CPU_STATUS_GUEST 标志位
+        ;; 2) 否: 则清 CPU_STATUS_GUEST 标志位
         ;;
         mov edi, esi
         and esi, ~CPU_STATUS_GUEST_FOCUS

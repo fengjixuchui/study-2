@@ -16,10 +16,10 @@
 ; input:
 ;       esi - IO port
 ; output:
-;       eax - IO VTE（value table entry）地址
-; 描述：
+;       eax - IO VTE(value table entry)地址
+; 描述: 
 ;       1) 返回 IO 端口对应的 VTE 表项地址
-;       2) 不存在相应的 IO Vte 时，返回 0 值　
+;       2) 不存在相应的 IO Vte 时, 返回 0 值　
 ;-----------------------------------------------------------------------
 GetIoVte:
         push ebp
@@ -63,7 +63,7 @@ GetIoVte.Done:
 ;       edi - value
 ; output:
 ;       eax - VTE 地址
-; 描述：
+; 描述: 
 ;       1) 根据 IO 端口值向 IoVteBuffer 里写入 IO VTE
 ;-----------------------------------------------------------------------
 AppendIoVte:
@@ -106,10 +106,10 @@ AppendIoVte.WriteVte:
 ; input:
 ;       esi - Processor index
 ; output:
-;       eax - ExtInt RTE（route table entry）地址
-; 描述：
+;       eax - ExtInt RTE(route table entry)地址
+; 描述: 
 ;       1) 返回 processor index 对应的 EXTINT_RTE 表项地址
-;       2) 不存在相应的 EXTINT_RTE 表项时，返回 0 值　
+;       2) 不存在相应的 EXTINT_RTE 表项时, 返回 0 值　
 ;-----------------------------------------------------------------------
 GetExtIntRte:
         push ebp
@@ -147,10 +147,10 @@ GetExtIntRte.Done:
 ; input:
 ;       esi - vector
 ; output:
-;       eax - ExtInt RTE（route table entry）地址
-; 描述：
+;       eax - ExtInt RTE(route table entry)地址
+; 描述: 
 ;       1) 返回 vector 对应的 EXTINT_RTE 表项地址
-;       2) 不存在相应的 EXTINT_RTE 表项时，返回 0 值　
+;       2) 不存在相应的 EXTINT_RTE 表项时, 返回 0 值　
 ;-----------------------------------------------------------------------
 GetExtIntRteWithVector:
         push ebp
@@ -189,7 +189,7 @@ GetExtIntRteWithVector.Done:
 ;       esi - vector
 ; output:
 ;       eax - EXTINT_RTE 地址
-; 描述：
+; 描述: 
 ;       1) 根据 processor ID 向 ExtIntRteBuffer 写入 ITE 
 ;-----------------------------------------------------------------------
 AppendExtIntRte:
@@ -240,7 +240,7 @@ AppendExtIntRte.WriteRte:
 ;       none
 ; output:
 ;       eax - status code
-; 描述：
+; 描述: 
 ;       1) 进行 guest IO 指令的相应处理
 ;-----------------------------------------------------------------------
 do_guest_io_process:
@@ -272,7 +272,7 @@ do_guest_io_process.Out:
         DEBUG_RECORD    "processing OUT instruciton ..."
 
         ;;
-        ;; #### 作为示例，保留实现串指令的处理 ####
+        ;; #### 作为示例, 保留实现串指令的处理 ####
         ;;
         test edx, IO_FLAGS_STRING
         jnz do_guest_io_process.Done
@@ -288,8 +288,8 @@ do_guest_io_process.Out:
         ;;
         ;; 检查 guest 是否处于 8259 初始化工作流程!
         ;; 1) 检查是否写 MASTER_ICW1_PORT 端口
-        ;;    a) 是，则检查下一个是否为 MASTER_ICW2_PORT 端口
-        ;;    b) 否，则忽略
+        ;;    a) 是, 则检查下一个是否为 MASTER_ICW2_PORT 端口
+        ;;    b) 否, 则忽略
         ;;
 
        
@@ -301,9 +301,9 @@ do_guest_io_process.Out:
 
         movzx eax, BYTE [ebp + PCB.GuestExitInfo + IO_INSTRUCTION_INFO.Value]       
         ;;
-        ;; 检查写入值：
-        ;; 1) bit 4 = 1 时：写入 ICW 字
-        ;; 2) bit 5 = 1 时，写入 EOI 字
+        ;; 检查写入值: 
+        ;; 1) bit 4 = 1 时: 写入 ICW 字
+        ;; 2) bit 5 = 1 时, 写入 EOI 字
         ;;
         test eax, (1 << 4)
         jnz do_guest_io_process.Out.20h.ICW1
@@ -311,7 +311,7 @@ do_guest_io_process.Out:
         jz do_guest_io_process.Done
         
         ;;
-        ;; 属于 EOI 命令，则由 VMM 向 local APIC 写入 EOI
+        ;; 属于 EOI 命令, 则由 VMM 向 local APIC 写入 EOI
         ;;
         LAPIC_EOI_COMMAND
         jmp do_guest_io_process.Done        
@@ -401,7 +401,7 @@ do_guest_io_process.In.Word:
         
 do_guest_io_process.In.String:
         ;;
-        ;; #### 作为示例，保留实现对串指令的处理 ####
+        ;; #### 作为示例, 保留实现对串指令的处理 ####
         ;; 
         jmp do_guest_io_process.Done
         
@@ -448,7 +448,7 @@ do_guest_io_process.Done:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 设置 8259 相关的 IO bitmap
 ;-----------------------------------------------------------------------
 set_io_bitmap_for_8259:

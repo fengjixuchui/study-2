@@ -17,7 +17,7 @@
 
 
 ;-------------------------------------------------------------
-; clear_8m_for_pae(): 清 8M 区域（PAE 模式使用的页转换表）
+; clear_8m_for_pae(): 清 8M 区域(PAE 模式使用的页转换表)
 ; input:
 ;       esi - address
 ;-------------------------------------------------------------
@@ -192,7 +192,7 @@ map_pae_page_transition_table.loop:
 ;       0 - succssful, 否则返回错误码
 ;
 ; desciption:
-;       eax 传递过来的 attribute 由下面标志位组成：
+;       eax 传递过来的 attribute 由下面标志位组成: 
 ;       [0] - P
 ;       [1] - R/W
 ;       [2] - U/S
@@ -204,8 +204,8 @@ map_pae_page_transition_table.loop:
 ;       [8] - G
 ;       [12] - ingore
 ;       [28] - ingore
-;       [29] - FORCE，置位时，强制进行映射
-;       [30] - PHYSICAL，置位时，表示基于物理地址进行映射（用于初始化时）
+;       [29] - FORCE, 置位时, 强制进行映射
+;       [30] - PHYSICAL, 置位时, 表示基于物理地址进行映射(用于初始化时)
 ;       [31] - XD
 ;----------------------------------------------------------
 do_virtual_address_mapping32:
@@ -221,7 +221,7 @@ do_virtual_address_mapping32:
         
                 
         ;;
-        ;; PT_BASE - PT_TOP 区域已经初始化映射，不能再进行映射
+        ;; PT_BASE - PT_TOP 区域已经初始化映射, 不能再进行映射
         ;; 假如映射到 PT_BASE - PT_TOP 区域内就失败返回
         ;;
         cmp esi, [fs: SDA.PtBase]
@@ -293,7 +293,7 @@ do_virtual_address_mapping32.done:
 ;       ecx - n 个页面
 ; output:
 ;       0 - succssful, 否则返回错误码
-; 描述：
+; 描述: 
 ;       1) 映射 n 个 页面
 ;-----------------------------------------------------------
 do_virtual_address_mapping32_n:
@@ -322,10 +322,10 @@ do_virtual_address_mapping32_n.loop:
 ; input:
 ;       esi - va
 ; output:
-;       edx:eax - 物理页面，失败时，返回 -1
-; 描述：
+;       edx:eax - 物理页面, 失败时, 返回 -1
+; 描述: 
 ;       1) 查询虚拟地址映射的物理页面
-;       2) 当虚拟地址无映射页面时，返回 -1 值
+;       2) 当虚拟地址无映射页面时, 返回 -1 值
 ;-----------------------------------------------------------
 query_physical_page:
         push ebx

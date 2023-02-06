@@ -36,9 +36,9 @@ dump_mxcsr:
         ret
 
 ;----------------------------------------
-; dump_xmm(start, end)：打印 XMM 寄存器
+; dump_xmm(start, end): 打印 XMM 寄存器
 ; input:
-;       esi: 起始寄存器，　edi: 终止寄存器
+;       esi: 起始寄存器, 　edi: 终止寄存器
 ;----------------------------------------
 dump_xmm:
         push ecx

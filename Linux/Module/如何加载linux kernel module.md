@@ -69,8 +69,8 @@ kernel/arch/x86/kvm/kvm-intel.ko: kernel/arch/x86/kvm/kvm.ko
 ```
 
 选项: 
-* -a: 扫描所有模块；
-* -A: 扫描新模块, 只有有新模块时, 才会更新modules.dep文件；
+* -a: 扫描所有模块; 
+* -A: 扫描新模块, 只有有新模块时, 才会更新modules.dep文件; 
 * -n: 把扫描结果不写入modules.dep文件, 而是输出到屏幕上
 
 

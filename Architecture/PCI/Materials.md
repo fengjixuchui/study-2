@@ -16,7 +16,7 @@ summay:
 
 不要直接看 spec, spec 没有任何计算机体系结构相关内容(看《PCI Experss体系结构导读》前言)
 
-先看 《深入浅出SSD》, 这个更通俗简单
+先看 《深入浅出SSD》, 这个更通俗简单(在 SSD 目录下)
 
 再看 《PCI Experss体系结构导读》
 

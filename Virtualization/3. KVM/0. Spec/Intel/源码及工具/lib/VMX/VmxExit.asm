@@ -13,7 +13,7 @@
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 收集由 exception 或者 NMI 引发的 vector 信息
 ;-----------------------------------------------------------------------
 GetExceptionInfo:
@@ -28,7 +28,7 @@ GetExceptionInfo:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 收集由于 MOV-CR 引起 VM-exit 的信息
 ;-----------------------------------------------------------------------
 GetMovCrInfo:
@@ -142,7 +142,7 @@ GetMovCrInfo.Lmsw:
         jz GetMovCrInfo.Done
         
         ;;
-        ;; 属于内存操作数时，读取线性地址值
+        ;; 属于内存操作数时, 读取线性地址值
         ;;
         REX.Wrxb
         mov esi, [ebp + PCB.ExitInfoBuf + EXIT_INFO.GuestLinearAddress]
@@ -165,7 +165,7 @@ GetMovCrInfo.Done:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 收集由 exception 或者 NMI 引发的 vector 信息
 ;-----------------------------------------------------------------------
 GetTaskSwitchInfo:
@@ -252,7 +252,7 @@ GetTaskSwitchInfo:
 
         ;;
         ;; 读取 new-task TSS 地址
-        ;; *** 注意，不需要读取 64 位 TSS 地址。在 longmode 下不支持任务切换！***        
+        ;; *** 注意, 不需要读取 64 位 TSS 地址. 在 longmode 下不支持任务切换！***        
         ;;
         REX.Wrxb
         mov eax, [ebx + TASK_SWITCH_INFO.NewTaskTssDesc]
@@ -284,7 +284,7 @@ GetTaskSwitchInfo:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 收集由访问描述符表寄存器引发的 vector 信息
 ;-----------------------------------------------------------------------
 GetDescTableRegisterInfo:
@@ -349,8 +349,8 @@ GetDescTableRegisterInfo:
         
         ;;
         ;; 分析 operand size
-        ;; 1) SGDT/SIDT：在非 64-bit 下是 32位，在 64-bit 下是 64位
-        ;; 2) LGDT/LIDT：16位，32位，64位
+        ;; 1) SGDT/SIDT: 在非 64-bit 下是 32位, 在 64-bit 下是 64位
+        ;; 2) LGDT/LIDT: 16位, 32位, 64位
         ;;             
         GetVmcsField    GUEST_CS_ACCESS_RIGHTS
         mov esi, INSTRUCTION_OPS_DWORD
@@ -384,7 +384,7 @@ GetDescTableRegisterInfo.Ops.@1:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 收集中断处理相关信息
 ;-----------------------------------------------------------------------
 get_interrupt_info:
@@ -401,8 +401,8 @@ get_interrupt_info:
         
         ;;
         ;; 根据 IDT-vectoring information 字段分析中断类型
-        ;; 1) IDT-vectoring information [31] = 0 时，不需要处理
-        ;; 2) 从 IDT-vectoring informating 读取中断向量号及类型，并保存
+        ;; 1) IDT-vectoring information [31] = 0 时, 不需要处理
+        ;; 2) 从 IDT-vectoring informating 读取中断向量号及类型, 并保存
         ;;
         mov BYTE [ebp + PCB.GuestExitInfo + INTERRUPT_INFO.InterruptType], INTERRUPT_TYPE_NONE
         mov eax, [ebp + PCB.ExitInfoBuf + EXIT_INFO.IdtVectoringInfo]
@@ -532,7 +532,7 @@ get_interrupt_info.Done:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 收集由 IO 指令引起 VM-exit 的相关信息
 ;-----------------------------------------------------------------------
 get_io_instruction_info:

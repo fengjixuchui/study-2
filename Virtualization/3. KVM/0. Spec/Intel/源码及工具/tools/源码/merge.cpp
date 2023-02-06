@@ -17,7 +17,7 @@
 typedef struct
 {
 	TCHAR inFileName[MAX_PATH];			/* 输入文件名 */
-	DWORD inOffset;						/* 输入文件偏移，以 512 字节为单位 */
+	DWORD inOffset;						/* 输入文件偏移, 以 512 字节为单位 */
 	TCHAR outFileName[MAX_PATH];		/* 输出文件名 */
 	DWORD outOffset;					/* 输出文件偏移, 以 512 字节为单位 */
 	DWORD nCount;						/* 块数 */

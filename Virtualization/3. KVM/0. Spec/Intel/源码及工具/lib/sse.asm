@@ -46,7 +46,7 @@ restore_xmm:
         ret
 
 ;---------------------------------------
-; store_sse(image)： 保存 SSEx 环境 state
+; store_sse(image):  保存 SSEx 环境 state
 ; input:
 ;       esi: image
 ;---------------------------------------
@@ -92,7 +92,7 @@ sse4_strlen_loop:
 ; input:
 ;       esi: str1, edi: str2
 ; outpu:
-;       -1: 找不到，否则 eax = 返回 str2 在 str1 的位置
+;       -1: 找不到, 否则 eax = 返回 str2 在 str1 的位置
 ;----------------------------------------------------------
 substr_search:
         push ecx

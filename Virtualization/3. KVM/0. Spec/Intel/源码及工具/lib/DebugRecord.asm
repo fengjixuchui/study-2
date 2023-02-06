@@ -13,7 +13,7 @@
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 更新当前 debug reocrd 链表尾部的 context 信息
 ;-------------------------------------------------
 update_guest_context:
@@ -152,7 +152,7 @@ update_guest_context.done:
 ;       eax - address
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 更新当前 debug reocrd 链表尾部的附加信息
 ;-------------------------------------------------
 update_append_msg:
@@ -189,7 +189,7 @@ update_append_msg:
 ;       esi - DRS 指针
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 打印 debug 记录
 ;-------------------------------------------------
 print_debug_record:
@@ -325,14 +325,14 @@ print_debug_record.done:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 打印附注信息列表
 ;-------------------------------------------------
 dump_append_msg_list:
 
 %ifndef DEBUG_RECORD_ENABLE
         ;;
-        ;; 如果没有定义 DEBUG_RECORD_ENABLE 符号，则显示： *** NO RECORD ***
+        ;; 如果没有定义 DEBUG_RECORD_ENABLE 符号, 则显示:  *** NO RECORD ***
         ;;
         mov esi, 2
         mov edi, 0
@@ -430,7 +430,7 @@ dump_append_msg_list.loop:
 
 dump_append_msg_list.loop.@0:
         ;;
-        ;; 如果有前缀信息，则打印
+        ;; 如果有前缀信息, 则打印
         ;;
         REX.Wrxb
         mov esi, [ebx + DRS.PrefixMsg]
@@ -449,7 +449,7 @@ dump_append_msg_list.loop.@1:
         call puts
         
         ;;
-        ;; 如果有后缀信息，则打印
+        ;; 如果有后缀信息, 则打印
         ;;
         REX.Wrxb
         mov esi, [ebx + DRS.PostfixMsg]
@@ -479,10 +479,10 @@ dump_append_msg_list.next:
         
         ;;
         ;; 处理按键
-        ;; 1) <Up>：向上翻行
+        ;; 1) <Up>: 向上翻行
         ;; 2) <Down>: 向下翻行
-        ;; 3) <SPACE>：更新信息
-        ;; 4) <ENTER>：切换回 dump_debug_record 模式
+        ;; 3) <SPACE>: 更新信息
+        ;; 4) <ENTER>: 切换回 dump_debug_record 模式
         ;;
         cmp al, SC_UP
         jne dump_append_msg_list.next.@1
@@ -542,14 +542,14 @@ dump_append_msg_list.done:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 打印 debug 点记录
 ;-------------------------------------------------
 dump_debug_record:
 
 %ifndef DEBUG_RECORD_ENABLE
         ;;
-        ;; 如果没有定义 DEBUG_RECORD_ENABLE 符号，则显示： *** NO RECORD ***
+        ;; 如果没有定义 DEBUG_RECORD_ENABLE 符号, 则显示:  *** NO RECORD ***
         ;;
         mov esi, 2
         mov edi, 0

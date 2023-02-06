@@ -14,4 +14,6 @@
 
 
 
+1. 一文看得 Linux 性能分析｜perf 原理: https://mp.weixin.qq.com/s/Vj418ZwVe6PxE1erDu8bkg
+2. 一文看懂 Linux 性能分析｜perf 源码实现: https://mp.weixin.qq.com/s/nfJDX-_aO765KPqseoygpA
 

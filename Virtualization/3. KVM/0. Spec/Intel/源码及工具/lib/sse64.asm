@@ -37,7 +37,7 @@ sse4_strlen64.loop:
 ;       rsi - str1 
 ;       rdi - str2
 ; outpu:
-;       -1: 找不到，否则 rax = 返回 str2 在 str1 的位置
+;       -1: 找不到, 否则 rax = 返回 str2 在 str1 的位置
 ;----------------------------------------------------------
 substr_search64:
         push rcx

@@ -3,7 +3,7 @@
 ; All rights reserved.
 
 
-; 这是一个空白模块示例，设为 setup 模块
+; 这是一个空白模块示例, 设为 setup 模块
 ; 用于写入磁盘的第 2 个扇区 ！
 ;
 
@@ -17,13 +17,13 @@
         
         
 ;
-; 模块开始点是 SETUP_SEG - 2，减 2 是因为要算上模块头的存放的“模块 size”
-; load_module 加载到 SETUP_SEG-2，实际效果是 SETUP 模块会被加载到“入口点”即：setup_entry
+; 模块开始点是 SETUP_SEG - 2, 减 2 是因为要算上模块头的存放的"模块 size"
+; load_module 加载到 SETUP_SEG-2, 实际效果是 SETUP 模块会被加载到"入口点"即: setup_entry
 ;
         org SETUP_SEG - 2
         
 ;
-; 在模块的开头 word 大小的区域里存放模块的大小，
+; 在模块的开头 word 大小的区域里存放模块的大小, 
 ; load_module 会根据这个 size 加载模块到内存
 
 SETUP_BEGIN:
@@ -31,7 +31,7 @@ SETUP_BEGIN:
 setup_length        dw (SETUP_END - SETUP_BEGIN)        ; SETUP_END-SETUP_BEGIN 是这个模块的 size
 
 
-setup_entry:                            ; 这是模块代码的入口点。
+setup_entry:                            ; 这是模块代码的入口点. 
 
         cli
         NMI_DISABLE
@@ -184,7 +184,7 @@ TSS_TEST_END:
 
 
 
-;; 为 IO bit map 保留 10 bytes（IO space 从 0 - 80）
+;; 为 IO bit map 保留 10 bytes(IO space 从 0 - 80)
 IOBITMAP:
 times        10 db 0        
 IOBITMAP_END:
@@ -210,7 +210,7 @@ IVT_POINTER:     dw     3FFH
 ;; 初始化 page 
 init_page:
         ;; virtual address 0 到 1FFFFFh
-        ;; 映射到 physical address 0 到 1FFFFFh，使用 2M 页
+        ;; 映射到 physical address 0 到 1FFFFFh, 使用 2M 页
 
         ; PML4T[0]
         mov DWORD [0x5000], 0x6000 | RW | US | P

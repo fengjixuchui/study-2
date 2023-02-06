@@ -3,7 +3,7 @@
 ; All rights reserved.
 
 
-;; 这个库在 conforming 段里执行，允许被任何权限的代码执行
+;; 这个库在 conforming 段里执行, 允许被任何权限的代码执行
 
         bits 32
 
@@ -12,9 +12,9 @@
 ; conforming_lib32_service_enter(): conforming代码库的 stub函数
 ; input:
 ;       esi: clib32 库函数服例程号
-; 描述：
+; 描述: 
 ;       conforming_lib32_service_enter()的作用是切换到 conforming段里,
-;       然后调用 conforming lib32 库里的服务例程, 它相当于一个 gate 的作用。
+;       然后调用 conforming lib32 库里的服务例程, 它相当于一个 gate 的作用. 
 ; -----------------------------------------------
 __clib32_service_enter:
 __conforming_lib32_service_enter:

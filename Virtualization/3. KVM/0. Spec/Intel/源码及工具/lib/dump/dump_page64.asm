@@ -15,7 +15,7 @@ dump_long_page:
         push r12
         push rbx
         push rdx
-; 使用 r10来保存 virtual address，以防在调用 32位 lib32 库里冲掉寄存器值        
+; 使用 r10来保存 virtual address, 以防在调用 32位 lib32 库里冲掉寄存器值        
         mov r10, rsi                                
         
         call get_maxphyaddr_select_mask
@@ -29,7 +29,7 @@ dump_long_page:
         shr rax, 39                                
         and rax, 1FFh                       ; PML4E index
         
-; 使用 r12 来保存 table entry，以防在调用 32位 lib32 库里冲掉64位的寄存器
+; 使用 r12 来保存 table entry, 以防在调用 32位 lib32 库里冲掉64位的寄存器
         mov r12, [rbx + rax * 8]            ; 读 pml4e
         
 ; 判断 P 标志        

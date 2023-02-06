@@ -16,16 +16,16 @@
 ;       none
 ; 
 ; 系统页表结构:
-;       * 0xc0000000-0xc07fffff（共8M）映射到物理页面 0x200000-0x9fffff 上，使用 4K 页面
+;       * 0xc0000000-0xc07fffff(共8M)映射到物理页面 0x200000-0x9fffff 上, 使用 4K 页面
 ;
 ; 初始化区域描述:
-;       1) 0x7000-0x1ffff 分别映射到 0x8000-0x1ffff 物理页面，用于一般的运作
-;       2) 0xb8000 - 0xb9fff 分映射到　0xb8000-0xb9fff 物理地址，使用 4K 页面，用于 VGA 显示区域
-;       3) 0x80000000-0x8000ffff（共64K）映射到物理地址 0x100000-0x10ffff 上，用于系统数据结构        
-;       4) 0x400000-0x400fff 映射到 1000000h page frame 使用 4K 页面，用于 DS store 区域
-;       5) 0x600000-0x7fffff 映射到 0FEC00000h 物理页面上，使用 2M 页面，用于 LPC 控制器区域（I/O APIC）
-;       6) 0x800000-0x9fffff 映射到 0FEE00000h 物理地址上，使用 2M 页面，用于 local APIC 区域
-;       7) 0xb0000000 开始映射到物理地址 0x1100000 开始，使用 4K 页面，用于 VMX 数据空间
+;       1) 0x7000-0x1ffff 分别映射到 0x8000-0x1ffff 物理页面, 用于一般的运作
+;       2) 0xb8000 - 0xb9fff 分映射到　0xb8000-0xb9fff 物理地址, 使用 4K 页面, 用于 VGA 显示区域
+;       3) 0x80000000-0x8000ffff(共64K)映射到物理地址 0x100000-0x10ffff 上, 用于系统数据结构        
+;       4) 0x400000-0x400fff 映射到 1000000h page frame 使用 4K 页面, 用于 DS store 区域
+;       5) 0x600000-0x7fffff 映射到 0FEC00000h 物理页面上, 使用 2M 页面, 用于 LPC 控制器区域(I/O APIC)
+;       6) 0x800000-0x9fffff 映射到 0FEE00000h 物理地址上, 使用 2M 页面, 用于 local APIC 区域
+;       7) 0xb0000000 开始映射到物理地址 0x1100000 开始, 使用 4K 页面, 用于 VMX 数据空间
 ;---------------------------------------------------------------------------------------------
 init_global_page:
         push ecx
@@ -56,7 +56,7 @@ init_global_page:
 %endif        
         
         ;;
-        ;; 映射 protected 模块区域，使用 4K 页
+        ;; 映射 protected 模块区域, 使用 4K 页
         ;;
         mov esi, PROTECTED_SEGMENT
         mov edi, PROTECTED_SEGMENT
@@ -68,7 +68,7 @@ init_global_page:
         call do_virtual_address_mapping_n
         
         ;;
-        ;; 0xb8000 - 0xb9fff 分映射到　0xb8000-0xb9fff 物理地址，使用 4K 页面
+        ;; 0xb8000 - 0xb9fff 分映射到　0xb8000-0xb9fff 物理地址, 使用 4K 页面
         ;;
         mov esi, 0B8000h
         mov edi, 0B8000h
@@ -101,7 +101,7 @@ init_global_page:
 
        
         ;;
-        ;; 映射 System service routine table 区域（4K）
+        ;; 映射 System service routine table 区域(4K)
         ;;
         mov esi, [fs: SRT.Base]
         mov edi, [fs: SRT.PhysicalBase]
@@ -157,7 +157,7 @@ init_global_page:
         call do_virtual_address_mapping
         
         ;;              
-        ;; 0x600000-0x600fff 映射到 0FEC00000h 物理地址上，使用 4K 页面
+        ;; 0x600000-0x600fff 映射到 0FEC00000h 物理地址上, 使用 4K 页面
         ;;
         mov esi, IOAPIC_BASE
         mov edi, 0FEC00000h
@@ -165,7 +165,7 @@ init_global_page:
         call do_virtual_address_mapping
         
         ;;
-        ;; 0x800000-0x800fff 映射到 0FEE00000h 物理地址上，使用 4k 页面
+        ;; 0x800000-0x800fff 映射到 0FEE00000h 物理地址上, 使用 4k 页面
         ;;
         mov esi, LAPIC_BASE
         mov edi, 0FEE00000h
@@ -174,7 +174,7 @@ init_global_page:
            
         
         ;;
-        ;; 0xb0000000 开始映射到物理地址 0x1100000 开始，使用 4K 页面
+        ;; 0xb0000000 开始映射到物理地址 0x1100000 开始, 使用 4K 页面
         ;;
         mov esi, VMX_REGION_VIRTUAL_BASE                        ; VMXON region virtual address
         mov edi, VMX_REGION_PHYSICAL_BASE                       ; VMXON region physical address
@@ -192,7 +192,7 @@ init_global_page:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 初始环 stage2 环境
 ;-----------------------------------------------------------------------
 init_global_environment:
@@ -214,7 +214,7 @@ init_global_environment:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 切入 stage2 阶段运行环境
 ;-----------------------------------------------------------------------
 enter_stage2:
@@ -244,7 +244,7 @@ enter_stage2:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 发送 INIT-SIPI-SIPI 消息序给 AP
 ;       2) 等待 AP 完成第2阶段工作
 ;-----------------------------------------------------
@@ -264,8 +264,8 @@ wait_for_ap_stage2_done:
         ;;
         ;; 等待 AP 完成 stage2 工作:
         ;; 检查处理器计数 ApInitDoneCount 是否等于 LocalProcessorCount 值
-        ;; 1)是，所有 AP 完成 stage2 工作
-        ;; 2)否，继续等待
+        ;; 1)是, 所有 AP 完成 stage2 工作
+        ;; 2)否, 继续等待
         ;;
 wait_for_ap_stage2_done.@0:        
         xor eax, eax
@@ -293,7 +293,7 @@ wait_for_ap_stage2_done.ok:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 将所有处理器放入 VMX root 状态
 ;-----------------------------------------------------                
 put_processor_to_vmx:

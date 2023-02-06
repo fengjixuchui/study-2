@@ -25,7 +25,7 @@ a20_test.loop:
     xor ax, [gs:0x210]          ; 检查 ffff:0210 的值是否相等
     jnz a20_test.done
     dec esi
-    jnz a20_test.loop           ; 相等时，继续测试
+    jnz a20_test.loop           ; 相等时, 继续测试
 a20_test.done:
     pop WORD [fs:0x200]
     ret

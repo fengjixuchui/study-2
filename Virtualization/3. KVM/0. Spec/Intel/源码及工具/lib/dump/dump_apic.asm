@@ -14,7 +14,7 @@
 ;       esi - APIC page
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 打印 TMR
 ;------------------------------
 dump_tmr:
@@ -64,7 +64,7 @@ dump_tmr:
 ;       esi - APIC page
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       打印 LVT 表寄存器
 ;--------------------------------
 dump_lvt:
@@ -115,7 +115,7 @@ dump_lvt:
 ;       esi - APIC page
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 打印 IRR
 ;------------------------------
 dump_irr:
@@ -165,7 +165,7 @@ dump_irr:
 ;       esi - APIC page
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 打印 ISR
 ;------------------------------
 dump_isr:
@@ -218,7 +218,7 @@ dump_isr:
 ;       esi - APIC page
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 打印 apic寄存器信息
 ;--------------------------------
 dump_apic:

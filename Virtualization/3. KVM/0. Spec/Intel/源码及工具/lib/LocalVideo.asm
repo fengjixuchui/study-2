@@ -13,7 +13,7 @@
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 刷 local video buffer 数据到 video
 ;-------------------------------------------------        
 flush_video_buffer:
@@ -56,7 +56,7 @@ do_flush_video_buffer:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 刷新整个 local video buffer
 ;-------------------------------------------------        
 flush_local_video_buffer:
@@ -127,7 +127,7 @@ do_flush_local_video_buffer:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 将整个屏幕保存在当前的 local video buffer
 ;-------------------------------------------------  
 store_local_video_buffer:
@@ -192,7 +192,7 @@ store_local_video_buffer:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 刷 local video buffer 数据到 video
 ;-------------------------------------------------        
 flush_video_buffer:
@@ -237,7 +237,7 @@ do_flush_video_buffer:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 刷新整个 VM video buffer
 ;-------------------------------------------------        
 flush_vm_video_buffer:
@@ -313,7 +313,7 @@ do_flush_vm_video_buffer:
 ;       none
 ; output:
 ;       none
-; 描述：
+; 描述: 
 ;       1) 将整个屏幕保存在当前的 local video buffer
 ;-------------------------------------------------  
 store_local_video_buffer:

@@ -97,7 +97,7 @@ __get_current_column:
 ; input:
 ;                esi: string
 ; output:
-;                eax: 1(需要), 0(不需要）
+;                eax: 1(需要), 0(不需要)
 ;--------------------------------------------
 __test_println:
         push ecx
@@ -330,7 +330,7 @@ do_print_point:
         lea ebx, [digit_array + 98]
         mov BYTE [ebx], '.'
 print_point_loop:        
-;; 当前：
+;; 当前: 
 ;; st(3) = 10.0
 ;; st(2) = 1.0
 ;; st(1) = 余数值
@@ -376,7 +376,7 @@ do_print_float:
         call __print_point
         
         mov DWORD [point], 0                
-;; 当前：
+;; 当前: 
 ;; st(2) = 10.0
 ;; st(1) = 1.0
 ;; st(0) = 余数值        
@@ -474,7 +474,7 @@ __print_qword_value:
 ; input:
 ;                esi: char
 ; output:
-;                eax: 1(是字母), 0(不是字母）
+;                eax: 1(是字母), 0(不是字母)
 ;-------------------------------------------
 __letter:
         and esi, 0xff
@@ -498,7 +498,7 @@ test_letter_done:
 ; input:
 ;                esi: char
 ; output:
-;                1: 是， 0不是
+;                1: 是,  0不是
 ;----------------------------------------
 __lowercase:
         and esi, 0xff
@@ -516,7 +516,7 @@ test_lowercase_done:
 ; input:
 ;                esi: char
 ; output:
-;                1: 是， 0不是
+;                1: 是,  0不是
 ;----------------------------------------
 __uppercase:
         and esi, 0xff
@@ -552,7 +552,7 @@ test_digit_done:
 ;----------------------------------------------------------------------
 ; lower_upper():        大小写字母的转换
 ; input:
-;                esi:需要转换的字母,  edi: 1 (小字转换为大写)，0 (大写转换为小写)
+;                esi:需要转换的字母,  edi: 1 (小字转换为大写), 0 (大写转换为小写)
 ; output:
 ;                eax: result letter
 ;---------------------------------------------------------------------
@@ -564,7 +564,7 @@ __lower_upper:
         jz do_lower_upper_done                   ; 如果不是字母
         bt edi, 0
         jnc set_lower_upper                      ; 1?
-        neg ecx                                 ; 小写转大写：减
+        neg ecx                                 ; 小写转大写: 减
 set_lower_upper:                
         add esi, ecx
 do_lower_upper_done:                
@@ -608,7 +608,7 @@ do_lower_to_upper_done:
 ;---------------------------------------------------
 ; lowers_to_uppers(): 小写串转换为大写串
 ; input:
-;                esi: 源串， edi:目标串        
+;                esi: 源串,  edi:目标串        
 ;---------------------------------------------------
 __lowers_to_uppers:
         push ecx
@@ -639,7 +639,7 @@ do_lowers_to_uppers_done:
 ;---------------------------------------------------
 ; uppers_to_lowers(): 大写串转换为小写串
 ; input:
-;                esi: 源串， edi:目标串        
+;                esi: 源串,  edi:目标串        
 ;---------------------------------------------------
 __uppers_to_lowers:
         push ecx
@@ -670,7 +670,7 @@ do_uppers_to_lowers_done:
 ;--------------------------------------------------------------
 ; get_qword_hex_string(): 将 QWORD 转换为字符串
 ; input:
-;                esi: 指令 QWORD 值的指针, edi: buffer（最少需要17bytes)
+;                esi: 指令 QWORD 值的指针, edi: buffer(最少需要17bytes)
 ;--------------------------------------------------------------
 __get_qword_hex_string:
         push ecx
@@ -687,8 +687,8 @@ __get_qword_hex_string:
 ;-------------------------------------------------
 ; get_dword_hex_string(): 将数 (DWORD) 转换为字符串
 ; input:
-;                esi: 需转换的数（dword size)
-;                edi: 目标串 buffer（最短需要 9 bytes，包括 0)
+;                esi: 需转换的数(dword size)
+;                edi: 目标串 buffer(最短需要 9 bytes, 包括 0)
 ;---------------------------------------------------
 __get_dword_hex_string:
         push ecx
@@ -709,7 +709,7 @@ do_get_dword_hex_string_loop:
 ;----------------------------------------------------
 ; get_byte_hex_string(): 将 BYTE 转换为字符串
 ; input:
-;                esi: BYTE 值, edi: buffer（最短需要3个)
+;                esi: BYTE 值, edi: buffer(最短需要3个)
 ;----------------------------------------------------
 __get_byte_hex_string:
         push ecx
@@ -787,7 +787,7 @@ opcode          dw 0
 op_offset       dd 0
 op_selector     dd 0
 
-;; FSAVE/FNSAVE，FRSTOR 指令的附加映像
+;; FSAVE/FNSAVE, FRSTOR 指令的附加映像
 ;; 定义 8 个 80 位的内存地址保存 data 寄存器值
 r0_value        dt 0.0
 r1_value        dt 0.0

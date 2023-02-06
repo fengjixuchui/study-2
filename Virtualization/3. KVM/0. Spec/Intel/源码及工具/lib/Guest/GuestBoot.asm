@@ -10,16 +10,16 @@
 %include "..\..\lib\Guest\Guest.inc"
 
 ;;
-;; Guest 示例模块说明：
-;; 1) 开始于 7C00h（实模式）
+;; Guest 示例模块说明: 
+;; 1) 开始于 7C00h(实模式)
 ;; 2) 切换到保护模式
 ;;
 
 
 ;;
-;; 注意：
+;; 注意: 
 ;; 1) 现在处理器处于 real mode 下       
-;; 2) 模拟 GuestBoot 已经被加载到 7C00h 位置上，GUEST_BOOT_ENTRY 定义为 7C00h
+;; 2) 模拟 GuestBoot 已经被加载到 7C00h 位置上, GUEST_BOOT_ENTRY 定义为 7C00h
 ;;        
 
         [SECTION .text]
@@ -82,7 +82,7 @@ GuestBoot.Entry32:
         ltr ax
 
         ;;
-        ;; 下面转入 GuestKernel 模块，入口在 GUEST_KERNEL_ENTRY + 4
+        ;; 下面转入 GuestKernel 模块, 入口在 GUEST_KERNEL_ENTRY + 4
         ;;        
         jmp GUEST_KERNEL_ENTRY + 4
 
