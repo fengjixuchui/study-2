@@ -12,6 +12,8 @@ PCI Express Technology(2012年, 好像更好): Mike Jackson, Ravi Budruk
 
 PCI Express System Architecture(2008年): Ravi Budruk, Don Anderson, Tom Shanley
 
+存储随笔《PCIe科普教程》: https://mp.weixin.qq.com/s?__biz=MzIwNTUxNDgwNg==&mid=2247484352&idx=1&sn=2ac7ca9c6f745256734aa5d8e2c0f615&chksm=972ef299a0597b8f1224432f8d65094a20d2bde20aa7b46f9ef9710b8a003c08976ddb9c0083&scene=21
+
 summay:
 
 不要直接看 spec, spec 没有任何计算机体系结构相关内容(看《PCI Experss体系结构导读》前言)
