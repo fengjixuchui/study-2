@@ -26,4 +26,6 @@ bus 和 pci bus 的一些函数操作可以看 `NVMe` 目录下的代码分析
 
 linux设备驱动 device add详解: https://blog.csdn.net/u012787604/article/details/122310671
 
+内核驱动开发记录: https://blog.csdn.net/freedom1523646952/category_11767829.html
+
 在分析一个 driver 时, 最好先看这个 driver 相关的 Kconfig 及 Makefile 文件，了解其文件架构，再阅读相关的 source code
