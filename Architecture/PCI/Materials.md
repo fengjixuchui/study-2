@@ -57,3 +57,13 @@ IOMMU是如何划分PCI device group的?: https://zhuanlan.zhihu.com/p/341895948
 PCIe初始化枚举和资源分配流程分析: `Linux\Device Driver\PCIe\pcie初始化枚举和资源分配流程代码分析`
 
 PCI Express Port Bus Driver: https://zhuanlan.zhihu.com/p/380414834
+
+# 工具
+
+PCIe 工具:
+
+(better)TeleScan PE(Windows & Linux): 扫描系统中的PCI/PCIe设备，并提供了读写其配置空间中的寄存器的功能, https://teledynelecroy.com/protocolanalyzer/pci-express/telescan-pe-software/resources/analysis-software
+
+Mindshare Arbor, 主要用于 PCI/PCI-X/PCIe/Hyper Transport 系统的分析与调试。支持主流的 Windows 和 Linux 系统(最新的已经不支持 Linux 了). https://www.mindshare.com/software/?section=132B0BA21710
+
+

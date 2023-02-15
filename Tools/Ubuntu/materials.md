@@ -1,1 +1,0 @@
-Ubuntu安装识别不了固态硬盘: https://blog.csdn.net/a850565178/article/details/106493495
