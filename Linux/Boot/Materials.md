@@ -21,3 +21,4 @@ Linux如何定位BIOS提供的SMBIOS表 - 河马的文章 - https://zhuanlan.zhi
 
 Linux的启动过程中, 满足什么条件可以不用initramfs而直接挂载/? - https://www.zhihu.com/question/30599860
 
+Linux查看系统开机时间: http://www.cnblogs.com/kerrycode/p/3759395.html
