@@ -840,8 +840,8 @@ index 000000000000..1cf4f57b7817
 
 ```cpp
 bus_set_iommu()
- ├─ bus->iommu_ops = ops;, 设置 bus 的 iommu ops
- └─ iommu_bus_init(bus, ops);, iommu 的总线相关初始化.
+ ├─ bus->iommu_ops = ops; 设置 bus 的 iommu ops
+ └─ iommu_bus_init(bus, ops); iommu 的总线相关初始化.
    ├─ nb->notifier_call = iommu_bus_notifier;
    ├─ bus_register_notifier(bus, nb); 注册 bus notifier, 回调是 `iommu_bus_notifier()`
    └─ bus_for_each_dev(bus, NULL, &group_list, add_iommu_group); 遍历总线下所有设备, 给每个设备调用 `add_iommu_group()`, 将设备添加到 iommu group 中
@@ -1107,7 +1107,7 @@ viommu_handle_map(struct viommu_dev *viommu, struct virtio_iommu_req_map *map)
     ├─ struct vfio_iommu_type1_dma_map map = { .iova = virt_addr, .size	= size, };
     ├─ map.vaddr = (u64)guest_flat_to_host(container->kvm, phys_addr); 获取 hva
     ├─ if (irq__addr_is_msi_doorbell(container->kvm, phys_addr)) iommu_map(container->msi_doorbells, virt_addr, phys_addr, size, prot); hva 不存在则需要 map msi doorbell 的 virt_addr -> phys_addr
-    └─ return ioctl(container->fd, VFIO_IOMMU_MAP_DMA, &map); GVA -> GPA
+    └─ return ioctl(container->fd, VFIO_IOMMU_MAP_DMA, &map); IOVA -> HPA?
 ```
 
 ```cpp
@@ -1123,7 +1123,7 @@ viommu_handle_map(viommu, *req_map)
     ├─ struct vfio_guest_container *container = priv;
     ├─ map = { .iova = virt_addr, .size	= size, };
     ├─ map.vaddr = (u64)guest_flat_to_host(container->kvm, phys_addr);
-    └─ return ioctl(container->fd, VFIO_IOMMU_MAP_DMA, &map); GVA -> GPA
+    └─ return ioctl(container->fd, VFIO_IOMMU_MAP_DMA, &map); IOVA -> HPA?
 ```
 
 
@@ -1418,7 +1418,7 @@ vfio__init()
   * 找不到则创建一个新的 group 并将其加入到 container 中, `vfio_group_create(kvm, group_id)` -> `group->fd = open(group_node, O_RDWR);` && `ioctl(group->fd, VFIO_GROUP_SET_CONTAINER, &vfio_container)`, `group->fd` 是 `/dev/vfio/XX(ID)`
   * 将 vfio_group 添加到 `vfio_groups` 链表, `	list_add(&group->list, &vfio_groups)`
 * 设置 iommu type 到 container, `ioctl(vfio_container, VFIO_SET_IOMMU, iommu_type)`
-* 将虚拟机中所有 `KVM_MEM_TYPE_RAM` 类型的内存块 map 用来 DMA (`iova<gpa> -> hva`), `ioctl(vfio_container, VFIO_IOMMU_MAP_DMA, &dma_map)`
+* 将虚拟机中所有 `KVM_MEM_TYPE_RAM` 类型(也就是vm内存)的内存块 map 用来 DMA (`iova<gpa> -> hva`), `ioctl(vfio_container, VFIO_IOMMU_MAP_DMA, &dma_map)`
 2. vfio_configure_groups() 配置 vfio groups, 遍历每一个 vfio group
 * 将 `/sys/kernel/iommu_groups/ID/reserved_regions` 中每一行内存地址范围(gpa)进行保留, `ioctl(kvm->vm_fd, KVM_SET_USER_MEMORY_REGION, &mem)`
 3. vfio_configure_devices() 配置所有 devices, 遍历每一个 vfio device

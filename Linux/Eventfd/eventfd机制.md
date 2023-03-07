@@ -6,7 +6,7 @@
 - [1. 背景](#1-背景)
   - [1.1. 事件驱动](#11-事件驱动)
   - [1.2. eventfd](#12-eventfd)
-- [2. eventfd初始化](#2-eventfd初始化)
+- [2. 创建eventfd](#2-创建eventfd)
   - [2.1. 系统调用的定义](#21-系统调用的定义)
   - [2.2. eventfd_ctx](#22-eventfd_ctx)
     - [2.2.1. count和wqh](#221-count和wqh)
@@ -18,8 +18,9 @@
   - [3.1. eventfd操作方法](#31-eventfd操作方法)
   - [3.2. 读eventfd](#32-读eventfd)
   - [3.3. 写eventfd](#33-写eventfd)
-  - [3.4. Poll eventfd](#34-poll-eventfd)
+  - [3.4. poll eventfd](#34-poll-eventfd)
   - [3.5. eventfd的通知方案](#35-eventfd的通知方案)
+- [demo](#demo)
 - [4. reference](#4-reference)
 
 <!-- /code_chunk_output -->
@@ -42,7 +43,21 @@ eventfd **本质**上是一个**系统调用**, 创建一个**事件通知 fd**,
 
 > 系统调用都是从**用户态**到**内核态**的访问
 
-# 2. eventfd初始化
+
+eventfd 可以用于线程或者父子进程间通信，内核通过 eventfd 也可以向用户空间进程发消息。
+
+其核心实现是在**内核空间**维护一个**计数器**，向**用户空间**暴露一个与之关联的**匿名fd**。
+
+不同线程通过读写该 fd 通知或等待对方，内核通过写该 fd 通知用户程序
+
+https://blog.csdn.net/huang987246510/article/details/103751172
+
+
+
+
+# 2. 创建eventfd
+
+`int eventfd(unsigned int initval, int flags)`：创建一个eventfd，它的返回值是一个文件fd，可以读写。该接口传入一个初始值initval用于内核初始化计数器，flags用于控制返回的eventfd的read行为。flags如果包含EFD_NONBLOCK，read eventfd将不会阻塞，如果包含EFD_SEMAPHORE，read eventfd每次读之后内核计数器都减1。
 
 ## 2.1. 系统调用的定义
 
@@ -193,6 +208,8 @@ static const struct file_operations eventfd_fops = {
 
 ## 3.2. 读eventfd
 
+`ssize_t read(int fd, void *buf, size_t count)`：读eventfd，如果计数器非0，信号量方式返回1，否则返回计数器的值。如果计数器为0，读失败，阻塞模式下会阻塞直到计数器非0，非阻塞模式下返回EAGAIN错误。
+
 读 eventfd 动作由 `eventfd_read` 函数提供支持, 只有在 `eventfd_ctx->count` **大于0** 的情况下, eventfd **才是可读的**, 然后调用 `eventfd_ctx_do_read` 对 `eventfd_ctx` 的 **count** 进行处理:
 
 * 如果 `eventfd_ctx->flags` 中的 `EFD_SEMAPHORE` **置位**, 就将 `eventfd_ctx->count` **减一**(因为 semaphore 只有 0 和 1 **两个值**, 因此该操作即为**置 0 操作**);
@@ -206,11 +223,15 @@ static const struct file_operations eventfd_fops = {
 
 ## 3.3. 写eventfd
 
+`ssize_t write(int fd, const void *buf, size_t count)`：写eventfd，传入一个8字节的buffer，buffer的值增加到内核维护的计数器中。
+
 写 eventfd 动作由 eventfd_write 函数提供支持, 该函数中, **ucnt** 获得了想要写入 eventfd 的值, 通过判断 `ULLONG_MAX - eventfd_ctx->count` 与 ucnt 的值大小, 确认 eventfd 中还有足够空间用于写入, 如果有足够空间用于写入, 就在 `eventfd_ctx->count` 的基础上**加上** ucnt 变为新的 `eventfd_ctx->count`, 并**激活**在等待队列中等待的 读/POLLIN 进程.
 
 如果没有足够空间用于写入, 则将写进程放入属于 `eventfd_ctx` 的等待队列.
 
-## 3.4. Poll eventfd
+## 3.4. poll eventfd
+
+`int poll(struct pollfd *fds, nfds_t nfds, int timeout)`：监听eventfd是否可读
 
 Poll(查询) eventfd 动作由 `eventfd_poll` 函数提供支持, 该函数中定义了一个 poll 结构的 events, 如果 eventfd 的 count 大于 0, 则 eventfd 可读, 且 events 中的 POLLIN 置位. 如果 eventfd 的 count 与 ULLONG_MAX 之间的差使 eventfd 至少能写入 1, 则该 eventfd 可写, 且 events 中的 POLLOUT 置位.
 
@@ -219,9 +240,125 @@ Poll(查询) eventfd 动作由 `eventfd_poll` 函数提供支持, 该函数中�
 从上面的 eventfd 操作方法可以看出有两种通知方案:
 
 1. 进程 poll eventfd 的 POLLIN 事件, 如果在某个时间点, 其它进程或内核向 eventfd 写入一个值, 即可让 poll eventfd 的进程返回.
+
 2. 进程 poll eventfd 的 POLLOUT 事件, 如果在某个时间点, 其它进程或内核读取 eventfd, 即可让 poll eventfd 的进程返回.
 
 Linux 内核使用第一种通知方案, 即进程 poll eventfd 的 POLLIN 事件, Linux 提供了功能与 `eventfd_write` 类似的 `eventfd_signal` 函数, 用于触发对 poll eventfd 的进程的通知.
+
+# demo
+
+```cpp
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/eventfd.h>
+#include <pthread.h>
+#include <unistd.h>
+
+int efd;
+
+void *threadFunc()
+{
+    uint64_t buffer;
+    int rc;
+    int i = 0;
+    while(i++ < 2){
+        /* 如果计数器非0，read成功，buffer返回计数器值。成功后有两种行为：信号量方式计数器每次减，其它每次清0。
+         * 如果计数器0，read失败，由两种返回方式：EFD_NONBLOCK方式会阻塞，反之返回EAGAIN 
+         */
+        rc = read(efd, &buffer, sizeof(buffer));
+
+        if (rc == 8) {
+            printf("notify success, eventfd counter = %lu\n", buffer);
+        } else {
+            perror("read");
+        }
+    }
+}
+
+static void
+open_eventfd(unsigned int initval, int flags)
+{
+    efd = eventfd(initval, flags);
+    if (efd == -1) {
+        perror("eventfd");
+    }
+}
+
+static void
+close_eventfd(int fd)
+{
+    close(fd);
+}
+/* counter表示写eventfd的次数，每次写入值为2 */
+static void test(int counter)
+{
+    int rc;
+    pthread_t tid;
+    void *status;
+    int i = 0;
+    uint64_t buf = 2;
+
+    /* create thread */
+    if(pthread_create(&tid, NULL, threadFunc, NULL) < 0){
+        perror("pthread_create");
+    }
+
+    while(i++ < counter){
+        rc = write(efd, &buf, sizeof(buf));
+        printf("signal to subscriber success, value = %lu\n", buf);
+
+        if(rc != 8){
+            perror("write");
+        }
+        sleep(2);
+    }
+
+    pthread_join(tid, &status);
+}
+
+int main()
+{
+    unsigned int initval;
+
+    printf("NON-SEMAPHORE BLOCK way\n");
+    /* 初始值为4， flags为0，默认blocking方式读取eventfd */
+    initval = 4;
+    open_eventfd(initval, 0);
+    printf("init counter = %lu\n", initval);
+
+    test(2);
+
+    close_eventfd(efd);
+
+    printf("change to SEMAPHORE way\n");
+
+    /* 初始值为4， 信号量方式维护counter */
+    initval = 4;
+    open_eventfd(initval, EFD_SEMAPHORE);
+    printf("init counter = %lu\n", initval);
+
+    test(2);
+
+    close_eventfd(efd);
+
+    printf("change to NONBLOCK way\n");
+
+    /* 初始值为4， NONBLOCK方式读eventfd */
+    initval = 4;
+    open_eventfd(initval, EFD_NONBLOCK);
+    printf("init counter = %lu\n", initval);
+
+    test(2);
+
+    close_eventfd(efd);
+
+    return 0;
+}
+```
+
+demo中创建eventfd使用了三种方式，分别如下：
+
+
 
 # 4. reference
 
@@ -230,3 +367,5 @@ source: https://www.cnblogs.com/haiyonghao/p/14440737.html
 关于文件描述符的close-on-exec标志位: https://blog.csdn.net/Leeds1993/article/details/52724428
 
 IDA原理: https://biscuitos.github.io/blog/IDA/
+
+eventfd——用法与原理(有demo): https://blog.csdn.net/huang987246510/article/details/103751172 (none)

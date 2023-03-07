@@ -5927,7 +5927,7 @@ malloc()函数是C语言中内存分配函数
 
 ## 23.1. 概述
 
-**mmap/munmap**接口是**用户空间最常用的一个系统调用接口**, 无论是在**用户程序**中**分配内存**、**读写大文件**、**链接动态库文件**, 还是**多进程间共享内存**, 都可以看到mmap/munmap的身影. 
+**mmap/munmap** 接口是**用户空间最常用的一个系统调用接口**, 无论是在**用户程序**中**分配内存**、**读写大文件**、**链接动态库文件**, 还是**多进程间共享内存**, 都可以看到 mmap/munmap 的身影. 
 
 mmap/munmap函数声明如下: 
 
@@ -5974,7 +5974,7 @@ int munmap(void *addr, size_t length);
 
 ### 23.1.1. 私有匿名映射
 
-当使用参数 **fd=-1** 且 **flags=MAP_ANONYMOUS | MAP_PRIVATE**时, 创建的mmap映射是**私有匿名映射**. 
+当使用参数 **fd=-1** 且 `flags=MAP_ANONYMOUS | MAP_PRIVATE` 时, 创建的mmap映射是**私有匿名映射**. 
 
 私有匿名映射**最常见的用途**是在**glibc分配大块的内存**中, 当需要分配的**内存大于MMAP_THREASHOLD(128KB**)时, glibc会默认使用**mmap代替brk来分配内存**. 
 
@@ -5984,7 +5984,7 @@ int munmap(void *addr, size_t length);
 
 创建**共享匿名映射**有如下**两种方式**. 
 
-(1) fd=-1且flags=MAP_ANONYMOUS | MAP_SHARED. 在这种情况下, do_mmap_pgoff()->mmap_region()函数最终会调用shmem_zero_setup()来打开一个 "/dev/zero" 特殊的设备文件. 
+(1) `fd=-1` 且 flags=MAP_ANONYMOUS | MAP_SHARED. 在这种情况下, do_mmap_pgoff()->mmap_region()函数最终会调用shmem_zero_setup()来打开一个 "`/dev/zero`" 特殊的设备文件. 
 
 (2) 另外一种是**直接打开"/dev/zero"设备文件**, 然后使用这个文件句柄来创建mmap. 
 

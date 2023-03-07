@@ -31,6 +31,7 @@ VirtIO实现原理——PCI基础: https://blog.csdn.net/huang987246510/article/
 浅析qemu iothread: https://blog.csdn.net/huang987246510/article/details/93912197
 
 
+虚拟化 VirtIO 专栏: https://blog.csdn.net/huang987246510/category_9626816.html
 
 
 ---
