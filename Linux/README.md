@@ -1,4 +1,3 @@
-Linux相关的领域知识, 非工具、软件、网站使用
 
 - 《Linux 鸟哥的私房菜》在线网站: http://cn.linux.vbird.org/
 
@@ -15,3 +14,11 @@ Linux相关的领域知识, 非工具、软件、网站使用
 - 陈莉君老师课程: http://www.osforce.cn/user/7668
 
 - 各个模块, 2021: https://zhikunhuo.blog.csdn.net/category_10382170_2.html
+
+ebizzy benchmark
+
+http://blog.chinaunix.net/uid/14528823.html
+
+Linux源码分析: https://zhuanlan.zhihu.com/c_1094189343643652096
+
+Linux 和对称多处理: https://www.ibm.com/developerworks/cn/linux/l-linux-smp/

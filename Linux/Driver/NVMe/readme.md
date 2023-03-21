@@ -20,3 +20,5 @@ nvme协议详解: https://zhuanlan.zhihu.com/p/347599423
 
 nvme kernel driver 阅读笔记: https://www.dazhuanlan.com/karenchan/topics/1006006
 
+nvme命令中prp_Linux 4.4.220 NVMe驱动及其BIOLayer数据流分析: https://blog.csdn.net/weixin_33398033/article/details/112538368
+
