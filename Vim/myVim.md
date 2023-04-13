@@ -282,6 +282,19 @@ Bear 的用法比较简单, 直接在构建命令前面加 bear 即可
 bear -- make -j16
 ```
 
+如果报错:
+
+```
+# bear -- make -j16
+wrapper: failed with: gRPC call failed: Socket closed
+```
+
+则
+
+```
+export no_proxy=localhost
+```
+
 除了 Bear, 还有其它工具也能生成 `compile_commands.json`: 
 
 ninja build 也支持生成, 如: 
