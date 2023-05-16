@@ -18,7 +18,7 @@
 
 # 1. 异步IO
 
-在 Direct IO 模式下, 异步是非常有必要的（因为绕过了 pagecache, 直接和磁盘交互）。linux Native AIO 正是基于这种场景设计的, 具体的介绍见: [KernelAsynchronousI/O (AIO)SupportforLinux](https://lse.sourceforge.net/io/aio.html)。
+在 Direct IO 模式下, 异步是非常有必要的(因为绕过了 pagecache, 直接和磁盘交互). linux Native AIO 正是基于这种场景设计的, 具体的介绍见: [KernelAsynchronousI/O (AIO)SupportforLinux](https://lse.sourceforge.net/io/aio.html). 
 
 下面我们就来分析一下 AIO 编程的相关知识.
 
@@ -31,9 +31,9 @@ ssize_t pwrite(int fd, const void *buf, size_t count, off_t offset);
 int close(int fd);
 ```
 
-因为整个过程会等待 read/write 的返回, 所以不需要任何额外的数据结构。
+因为整个过程会等待 read/write 的返回, 所以不需要任何额外的数据结构. 
 
-但异步 IO 的思想是: 应用程序不能阻塞在昂贵的系统调用上让 CPU 睡大觉, 而是将 IO 操作抽象成一个个的任务单元提交给内核, 内核完成 IO 任务后将结果放在应用程序可以取到的地方。这样在底层做 I/O 的这段时间内, CPU 可以去干其他的计算任务。但异步的 IO 任务批量的提交和完成, 必须有自身可描述的结构, 最重要的两个就是 iocb 和 `io_event`
+但异步 IO 的思想是: 应用程序不能阻塞在昂贵的系统调用上让 CPU 睡大觉, 而是将 IO 操作抽象成一个个的任务单元提交给内核, 内核完成 IO 任务后将结果放在应用程序可以取到的地方. 这样在底层做 I/O 的这段时间内, CPU 可以去干其他的计算任务. 但异步的 IO 任务批量的提交和完成, 必须有自身可描述的结构, 最重要的两个就是 iocb 和 `io_event`
 
 # 2. libaio中的结构体
 
@@ -87,7 +87,7 @@ iocb 是提交 IO 任务时用到的, 可以完整地描述一个IO请求:
 
 * `aio_fildes` 是要操作的文件: fd；
 
-`io_iocb_common` 中的 buf, nbytes, offset 分别记录的 IO 请求的 mem buffer, 大小和偏移。
+`io_iocb_common` 中的 buf, nbytes, offset 分别记录的 IO 请求的 mem buffer, 大小和偏移. 
 
 ```cpp
 struct io_event {
@@ -102,7 +102,7 @@ io_event 是用来描述返回结果的:
 
 obj 就是之前提交 IO 任务时的 iocb；
 
-res 和 res2 来表示 IO 任务完成的状态。
+res 和 res2 来表示 IO 任务完成的状态. 
 
 # 3. libaio提供的API
 
@@ -152,7 +152,7 @@ void io_prep_pwrite(struct iocb *iocb, int fd, void *buf, size_t count, long lon
 }
 ```
 
-这里注意读写的 buf 都必须是按扇区对齐的, 可以用 `posix_memalign` 来分配。
+这里注意读写的 buf 都必须是按扇区对齐的, 可以用 `posix_memalign` 来分配. 
 
 ## 3.3. 获取完成的IO
 
@@ -162,9 +162,9 @@ int io_getevents(io_context_t ctx, long nr, struct io_event *events[], struct ti
 
 `io_getevents` 获得已完成的异步 IO 事件. 其中参数 ctx 是上下文的句柄, nr 表示期望获得异步 IO 事件个数, events 用来存放已经完成的异步事件的数据, timeout 为超时事件.
 
-这里最重要的就是提供一个 `io_event` 数组给内核来 copy 完成的 IO 请求到这里, 数组的大小是 `io_setup` 时指定的 `maxevents`。
+这里最重要的就是提供一个 `io_event` 数组给内核来 copy 完成的 IO 请求到这里, 数组的大小是 `io_setup` 时指定的 `maxevents`. 
 
-timeout 是指等待 IO 完成的超时时间, 设置为 NULL 表示一直等待所有到 IO 的完成。
+timeout 是指等待 IO 完成的超时时间, 设置为 NULL 表示一直等待所有到 IO 的完成. 
 
 ## 3.4. 取消未完成的IO
 
@@ -184,7 +184,7 @@ int io_destroy(aio_context_t ctx);
 
 # 4. libaio和epoll的结合
 
-在异步编程中, 任何一个环节的阻塞都会导致整个程序的阻塞, 所以一定要**避免**在 `io_getevents` 调用时**阻塞式的等待**。
+在异步编程中, 任何一个环节的阻塞都会导致整个程序的阻塞, 所以一定要**避免**在 `io_getevents` 调用时**阻塞式的等待**. 
 
 还记得 `io_iocb_common` 中的 `flags` 和 `resfd` 吗? 看看 libaio 是如何提供 `io_getevents` 和事件循环的结合
 
@@ -196,13 +196,13 @@ void io_set_eventfd(struct iocb *iocb, int eventfd)
 }
 ```
 
-这里的 resfd 是通过系统调用 eventfd 生成的。
+这里的 resfd 是通过系统调用 eventfd 生成的. 
 
 ```cpp
 int eventfd(unsigned int initval, int flags);
 ```
 
-eventfd 是 linux 2.6.22 内核之后加进来的 syscall, 作用是**内核**用来**通知应用程序**发生的事件的数量, 从而使应用程序不用频繁地去轮询内核是否有时间发生, 而是由**内核**将发生事件的**数量写入到该 fd**, 应用程序发现 fd 可读后, 从 fd 读取该数值, 并马上去内核读取。
+eventfd 是 linux 2.6.22 内核之后加进来的 syscall, 作用是**内核**用来**通知应用程序**发生的事件的数量, 从而使应用程序不用频繁地去轮询内核是否有时间发生, 而是由**内核**将发生事件的**数量写入到该 fd**, 应用程序发现 fd 可读后, 从 fd 读取该数值, 并马上去内核读取. 
 
 有了 eventfd, 就可以很好地将 libaio 和 epoll 事件循环结合起来: 
 

@@ -1,9 +1,9 @@
 
 ACPI Table 与 Windows 的关系 犹如 Device Tree 与 embedded-Linux 的关系. 
 
-ACPI SPEC定义了`ACPI-compatible OS`与**BIOS**之间的**接口****ACPI Tables就是BIOS提供给OS的硬件配置数据**包括系统硬件的电源管理和配置管理. 
+ACPI SPEC定义了`ACPI-compatible OS`与 **BIOS** 之间的**接口 ACPI Tables 就是 BIOS 提供给 OS 的硬件配置数据**包括系统硬件的电源管理和配置管理. 
 
-BIOS在**POST过程**中将RSDP存在0xE0000--0xFFFFF的内存空间中然后Move RSDT/XSDT, FADT, DSDT到ACPI Recleam Area, Move FACS到ACPI NVS Area最后填好表的Entry链接和Checksum. 
+BIOS 在 **POST 过程**中将 RSDP 存在 0xE0000--0xFFFFF 的内存空间中然后Move RSDT/XSDT, FADT, DSDT到ACPI Recleam Area, Move FACS到ACPI NVS Area最后填好表的Entry链接和Checksum. 
 
 控制权交给OS之后由OS来开启ACPI Mode首先在内存中搜寻ACPI Table然后写ACPI_Enable到SMI_CMDSCI_EN也会被HW置起来. 
 

@@ -25,9 +25,9 @@
 
 ## BIOS设置
 
-下面以一台Intel Haswell\-UP平台的服务器为例, 来说明在BIOS中的设置. 
+下面以一台 Intel Haswell-UP 平台的服务器为例, 来说明在BIOS中的设置. 
 
-BIOS中Enabled的**VT**和**VT\-d**选项, 如图3-2所示. 
+BIOS 中 Enabled 的 **VT** 和 **VT-d** 选项, 如图3-2所示. 
 
 ![](./images/2019-05-15-09-02-49.png)
 

@@ -4,7 +4,7 @@ I am interested in Kernel/KVM/Virtualization and much more fields. We can get co
 
 * Name: Haiwei Li
 * Email: haiwei-li@outlook.com
-* WeChat: LHWXJTU
+* WeChat: LHWonline
 
 You can scan the QR code below to add friends by using wechat.
 

@@ -25,7 +25,7 @@ const __initconst struct hypervisor_x86 x86_hyper_kvm = {
 pv的feature大多数给超卖用的, 会有大量kick, 让出cpu或抢占cpu, 造成vm-exit, 但是有些的vm-exit减少, 比如virtio.
 
 
-通过cpuid判断feature
+通过 cpuid 判断 feature
 
 Documentation/virtual/kvm/cpuid.rst
 

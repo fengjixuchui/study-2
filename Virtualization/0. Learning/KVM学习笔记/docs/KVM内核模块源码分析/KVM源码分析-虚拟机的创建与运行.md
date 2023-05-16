@@ -144,8 +144,8 @@ DEFINE_PC_MACHINE注册的函数pc_init_##suffix在DEFINE_I440FX_MACHINE中定�
 * 它前面的修饰是**__attribute__((constructor))**,这个**导致machine_init或者type_init等会在main()之前就被执行**. 
 * 所有type_init(kvm_type_init)-> kvm_accel_type -> kvm_accel_class_init -> kvm_init依次完成了函数注册, 所有说module_call_init(MODULE_INIT_QOM)函数已经完成了kvm_init的执行, 所有这样就清楚KVM调用关系了. 
 * 如此就先去看kvm_init函数, 前面主要干了一件事, 填充**KVMState *s结构体**, 
-* 然后通过kvm_ioctl(s, KVM_GET_API_VERSION, 0)判断内核KVM驱动和当前QEMU版本是否兼容, 
-* 再下面则是执行kvm_ioctl(s, KVM_CREATE_VM, type)进行虚拟机的创建活动, 创建了KVM虚拟机, 获取虚拟机句柄. 具体KVM_CREATE_VM在内核态做了什么, ioctl的工作等另外再说
+* 然后通过 `kvm_ioctl(s, KVM_GET_API_VERSION, 0)` 判断内核KVM驱动和当前QEMU版本是否兼容, 
+* 再下面则是执行 `kvm_ioctl(s, KVM_CREATE_VM, type)` 进行虚拟机的创建活动, 创建了KVM虚拟机, 获取虚拟机句柄. 具体 `KVM_CREATE_VM` 在内核态做了什么, ioctl的工作等另外再说
 * 现在假定KVM_CREATE_VM所代表的虚拟机创建成功, 下面通过检查kvm_check_extension结果**填充KVMState**
   - **kvm_arch_init**初始化KVMState, 其中有IDENTITY_MAP_ADDR, TSS_ADDR, NR_MMU_PAGES等
   - **cpu_register_phys_memory_client**注册qemu对内存管理的函数集, 
@@ -671,7 +671,7 @@ memory_region_transaction_commit中引入了新的结构address_spaces(AS), 注�
         qemu_kvm_wait_io_event(cpu);
     }
 ```
-判断条件就是cpu_can_run函数, 即cpu->stop && cpu->stopped && current_run_state ！= running 都是false, 而这几个参数都是由vm_start函数决定的
+判断条件就是 `cpu_can_run` 函数, 即 `cpu->stop && cpu->stopped && current_run_state ！= running` 都是 false, 而这几个参数都是由 `vm_start` 函数决定的
 ```
 void vm_start(void)
 {
