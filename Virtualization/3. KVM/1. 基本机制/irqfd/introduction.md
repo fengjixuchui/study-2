@@ -4,9 +4,9 @@
 <!-- code_chunk_output -->
 
 - [1. 介绍](#1-介绍)
-- [2. QEMU注册irqfd](#2-qemu注册irqfd)
-- [3. 向kvm发送注册中断irqfd请求](#3-向kvm发送注册中断irqfd请求)
-- [4. kvm注册irqfd](#4-kvm注册irqfd)
+- [2. QEMU 注册 irqfd](#2-qemu-注册-irqfd)
+- [3. 向 kvm 发送注册中断 irqfd 请求](#3-向-kvm-发送注册中断-irqfd-请求)
+- [4. kvm 注册 irqfd](#4-kvm-注册-irqfd)
 - [5. 总结](#5-总结)
 - [6. reference](#6-reference)
 
@@ -16,17 +16,17 @@
 
 irqfd 机制与 ioeventfd 机制类似, 其基本原理都是基于 eventfd.
 
-> Linux\Eventfd\Linux的eventfd机制.md
+> Linux\Eventfd\Linux 的 eventfd 机制.md
 
 ioeventfd 机制为 Guest 提供了向 qemu-kvm 发送通知的快捷通道, 对应地, irqfd 机制提供了 qemu-kvm 向 Guest 发送通知的快捷通道.
 
 irqfd 机制将一个 eventfd 与一个全局中断号联系起来, 当向这个 eventfd 发送信号时, 就会导致对应的中断注入到虚拟机中.
 
-# 2. QEMU注册irqfd
+# 2. QEMU 注册 irqfd
 
 与 ioeventfd 类似, irqfd 在使用前必须先初始化一个 EventNotifier 对象(利用 `event_notifier_init` 函数初始化), 初始化 EventNotifier 对象完成之后获得了一个 eventfd.
 
-# 3. 向kvm发送注册中断irqfd请求
+# 3. 向 kvm 发送注册中断 irqfd 请求
 
 获得一个 eventfd 之后, QEMU 通过 `kvm_irqchip_add_irqfd_notifier_gsi => kvm_irqchip_assign_irqfd` 构造 `kvm_irqchip` 结构, 并向 kvm 发送 `ioctl(KVM_IRQFD)`.
 
@@ -65,9 +65,9 @@ static int kvm_irqchip_assign_irqfd(KVMState *s, int fd, int rfd, int virq,
 
 `kvm_irqchip_assign_irqfd` 最后调用 `kvm_vm_ioctl(s, KVM_IRQFD, &irqfd)`, 向 kvm 请求注册包含上面构造的 `kvm_irqfd` 信息的 irqfd.
 
-# 4. kvm注册irqfd
+# 4. kvm 注册 irqfd
 
-收到 `ioctl(KVM_IRQFD)` 之后, kvm首先获取传入的数据结构 `kvm_irqfd` 的信息, 然后调用 `kvm_irqfd` 函数.
+收到 `ioctl(KVM_IRQFD)` 之后, kvm 首先获取传入的数据结构 `kvm_irqfd` 的信息, 然后调用 `kvm_irqfd` 函数.
 
 ```cpp
 	case KVM_IRQFD: {
@@ -96,7 +96,7 @@ kvm_irqfd(struct kvm *kvm, struct kvm_irqfd *args)
 }
 ```
 
-> `kvm_irqfd_assign` 的分析中省略定义了 `CONFIG_HAVE_KVM_IRQ_BYPASS` 和水平中断的注册情况. 这样分析便于理清irqfd的注册框架.
+> `kvm_irqfd_assign` 的分析中省略定义了 `CONFIG_HAVE_KVM_IRQ_BYPASS` 和水平中断的注册情况. 这样分析便于理清 irqfd 的注册框架.
 
 在 `kvm_irqfd_assign` 中, 首先申请了一个 `kvm_kernel_irqfd` 结构类型的变量 irqfd, 并为之分配空间, 之后对 irqfd 的各子域进行赋值.
 
@@ -171,7 +171,7 @@ static void irqfd_inject(struct work_struct *work)
 }
 ```
 
-在 `irqfd_inject` 函数中, 如果该 irqfd 配置的中断为边沿触发, 则调用 2 次 `kvm_set_irq`, 形成一个中断脉冲, 以便 kvm 中的中断芯片(irqchip)能够感知到这个中断. 如果该irqfd配置的中断为电平触发, 则调用一次 `kvm_set_irq`, 将中断拉至高电平, 使 irqchip 感知到, 电平触发的中断信号拉低动作会由后续的 irqchip 的 EOI 触发.
+在 `irqfd_inject` 函数中, 如果该 irqfd 配置的中断为边沿触发, 则调用 2 次 `kvm_set_irq`, 形成一个中断脉冲, 以便 kvm 中的中断芯片(irqchip)能够感知到这个中断. 如果该 irqfd 配置的中断为电平触发, 则调用一次 `kvm_set_irq`, 将中断拉至高电平, 使 irqchip 感知到, 电平触发的中断信号拉低动作会由后续的 irqchip 的 EOI 触发.
 
 # 5. 总结
 

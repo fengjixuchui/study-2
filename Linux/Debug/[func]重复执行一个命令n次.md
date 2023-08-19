@@ -5,7 +5,7 @@ for i in {1..10}; do echo "Hello, World"; done
 
 方法二
 
-在`~/.bashrc`文件中创建一个run函数(函数名字随意): 
+在`~/.bashrc`文件中创建一个 run 函数(函数名字随意):
 
 ```sh
 function run() {

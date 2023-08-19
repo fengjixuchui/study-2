@@ -2,24 +2,24 @@
 
 <!-- code_chunk_output -->
 
-- [1. 查看NBD(Network Block Device)信息](#1-查看nbdnetwork-block-device信息)
+- [1. 查看 NBD(Network Block Device)信息](#1-查看-nbdnetwork-block-device信息)
 - [2. 将镜像映射为网络设备(NBD)](#2-将镜像映射为网络设备nbd)
 - [3. 挂载镜像中的分区](#3-挂载镜像中的分区)
-- [4. umount分区, 解除镜像与nbd设备的关联](#4-umount分区-解除镜像与nbd设备的关联)
+- [4. umount 分区, 解除镜像与 nbd 设备的关联](#4-umount-分区-解除镜像与-nbd-设备的关联)
 - [5. 参考](#5-参考)
 
 <!-- /code_chunk_output -->
 
-# 1. 查看NBD(Network Block Device)信息
+# 1. 查看 NBD(Network Block Device)信息
 
 ```
 [root@localhost ~]# modinfo nbd
 filename:       /lib/modules/3.11.10-301.fc20.x86_64/kernel/drivers/block/nbd.ko
 license:        GPL
 description:    Network Block Device
-depends:        
+depends:
 intree:         Y
-vermagic:       3.11.10-301.fc20.x86_64 SMP mod_unload 
+vermagic:       3.11.10-301.fc20.x86_64 SMP mod_unload
 signer:         Fedora kernel signing key
 sig_key:        03:59:1D:C5:7A:69:07:41:40:1A:1C:20:2E:2B:3D:9F:4F:ED:2A:0E
 sig_hashalgo:   sha256
@@ -30,7 +30,7 @@ parm:           debugflags:flags for controlling debug output (int)
 [root@localhost ~]# modprobe nbd max_part=16
 
 [root@localhost ~]# lsmod | grep nbd
-nbd                    17554  0 
+nbd                    17554  0
 ```
 
 # 2. 将镜像映射为网络设备(NBD)
@@ -41,7 +41,7 @@ nbd0                nbd11               nbd14               nbd3                
 nbd1                nbd12               nbd15               nbd4                nbd7                net/                null
 nbd10               nbd13               nbd2                nbd5                nbd8                network_latency     nvram
 
-[root@localhost ~]# qemu-nbd -c /dev/nbd0 /var/lib/libvirt/images/ubuntu.img 
+[root@localhost ~]# qemu-nbd -c /dev/nbd0 /var/lib/libvirt/images/ubuntu.img
 
 [root@localhost ~]# ll /dev/nbd0*
 brw-rw----. 1 root disk 43, 0 Jun 23 15:16 /dev/nbd0
@@ -80,10 +80,10 @@ drwxr-xr-x. 12 root root  4096 May 27 08:55 var
 lrwxrwxrwx.  1 root root    30 May 26 18:25 vmlinuz -> boot/vmlinuz-3.13.0-24-generic
 ```
 
-# 4. umount分区, 解除镜像与nbd设备的关联
+# 4. umount 分区, 解除镜像与 nbd 设备的关联
 
 ```
-[root@localhost ~]# umount /imgage 
+[root@localhost ~]# umount /imgage
 [root@localhost ~]# qemu-nbd -d /dev/nbd0
 /dev/nbd0 disconnected
 ```

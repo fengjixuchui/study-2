@@ -1,21 +1,21 @@
-1. QOM模型
+1. QOM 模型
 
-启动QEMU 增加参数: 
+启动 QEMU 增加参数:
 
 ```
 -qmp unix:/tmp/qmp.socket,server,nowait
 ```
 
-在QEMU源码中, 动态dump qom模型
+在 QEMU 源码中, 动态 dump qom 模型
 
 ```
 # cd scripts/qmp/
 # ./qom-tree -s /tmp/qmp.socket
 ```
 
-2. VMX硬件支持情况
+2. VMX 硬件支持情况
 
-这是CPU支持的情况, 里面每一项都涉及到体系结构信息, 每个都是一个技术点
+这是 CPU 支持的情况, 里面每一项都涉及到体系结构信息, 每个都是一个技术点
 
 ```
 # cd scripts/kvm/
@@ -24,13 +24,13 @@
 
 源码分析: https://blog.csdn.net/u011364612/article/category/6219019
 
-address_space_init源码分析(GPA的生成): https://blog.csdn.net/sinat_38205774/article/details/104312303
+address_space_init 源码分析(GPA 的生成): https://blog.csdn.net/sinat_38205774/article/details/104312303
 
-Qemu内存管理代码分析: https://blog.csdn.net/shirleylinyuer/article/details/83592758
+Qemu 内存管理代码分析: https://blog.csdn.net/shirleylinyuer/article/details/83592758
 
 qemu 各个模块: https://richardweiyang.gitbooks.io/understanding_qemu/address_space/08-commit_mr.html
 
-qemu 2019: https://www.shangmayuan.com/a/b5d230757e6c49aa8868099d.html , https://juejin.cn/post/6844903844455907335 , 
+qemu 2019: https://www.shangmayuan.com/a/b5d230757e6c49aa8868099d.html , https://juejin.cn/post/6844903844455907335 ,
 
 重要: https://www.cnblogs.com/ck1020/category/905469.html
 
@@ -38,7 +38,7 @@ qemu 2019: https://www.shangmayuan.com/a/b5d230757e6c49aa8868099d.html , https:/
 
 重要: https://richardweiyang-2.gitbook.io/understanding_qemu/
 
-qemu源码: 《QEMU/KVM源码解析与应用》, 李强, https://item.jd.com/12720957.html
+qemu 源码: 《QEMU/KVM 源码解析与应用》, 李强, https://item.jd.com/12720957.html
 
 
 

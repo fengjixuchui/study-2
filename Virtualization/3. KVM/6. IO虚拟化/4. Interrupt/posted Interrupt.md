@@ -6,15 +6,15 @@ https://zhuanlan.zhihu.com/p/51018597
 https://kernelgo.org/posted-interrupt.html
 
 
-Posted Interrupt 允许APIC中断直接注入到guest而不需要VM-Exit
+Posted Interrupt 允许 APIC 中断直接注入到 guest 而不需要 VM-Exit
 
--  需要给guest传递中断的时候, 如果vcpu正在运行, 那么更新posted-intrrupt请求位图, 并向vcpu发送通知, vcpu自动处理该中断, 不需要软件干预
+-  需要给 guest 传递中断的时候, 如果 vcpu 正在运行, 那么更新 posted-intrrupt 请求位图, 并向 vcpu 发送通知, vcpu 自动处理该中断, 不需要软件干预
 
--  如果vcpu没有在运行或者已经有通知事件pending, 那么什么都不做, 中断会在下次VM-Entry的时候处理
+-  如果 vcpu 没有在运行或者已经有通知事件 pending, 那么什么都不做, 中断会在下次 VM-Entry 的时候处理
 
--  Posted Interrupt需要一个特别的IPI来给Guest传递中断, 并且有较高的优先级, 不能被阻塞
+-  Posted Interrupt 需要一个特别的 IPI 来给 Guest 传递中断, 并且有较高的优先级, 不能被阻塞
 
--  "acknowledge interrupt on exit"允许中断CPU运行在non-root模式产生时, 可以被VMX的handler处理, 而不是IDT的handler处理
+-  "acknowledge interrupt on exit"允许中断 CPU 运行在 non-root 模式产生时, 可以被 VMX 的 handler 处理, 而不是 IDT 的 handler 处理
 
 
 KVM: x86: add method to test PIR bitmap vector
@@ -23,7 +23,7 @@ KVM: x86: add method to test PIR bitmap vector
 
 
 
-`vcpu_vmx`是vcpu的一个运行环境
+`vcpu_vmx`是 vcpu 的一个运行环境
 
 ```cpp
 // arch/x86/kvm/vmx/vmx.h

@@ -6,7 +6,7 @@
 arch/x86/include/uapi/asm/kvm_para.h
 
 
-pv的入口和相关数据结构在 arch/x86/kernel/kvm.c , 很明显, 这不是kvm模块的范畴, 因为这也是pv下的虚拟机操作系统部分
+pv 的入口和相关数据结构在 arch/x86/kernel/kvm.c , 很明显, 这不是 kvm 模块的范畴, 因为这也是 pv 下的虚拟机操作系统部分
 
 ```cpp
 const __initconst struct hypervisor_x86 x86_hyper_kvm = {
@@ -22,7 +22,7 @@ const __initconst struct hypervisor_x86 x86_hyper_kvm = {
 可以看到重新的几个初始化函数
 
 
-pv的feature大多数给超卖用的, 会有大量kick, 让出cpu或抢占cpu, 造成vm-exit, 但是有些的vm-exit减少, 比如virtio.
+pv 的 feature 大多数给超卖用的, 会有大量 kick, 让出 cpu 或抢占 cpu, 造成 vm-exit, 但是有些的 vm-exit 减少, 比如 virtio.
 
 
 通过 cpuid 判断 feature
@@ -32,10 +32,10 @@ Documentation/virtual/kvm/cpuid.rst
 qemu-system-x86_64 -cpu ?
 
 
-PV很多都是可以通过启动参数控制的
+PV 很多都是可以通过启动参数控制的
 
 
-xen的smp pv操作在
+xen 的 smp pv 操作在
 
 ```cpp
 // arch/x86/xen/smp_pv.c

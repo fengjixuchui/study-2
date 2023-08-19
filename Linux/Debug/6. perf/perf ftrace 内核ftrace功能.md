@@ -3,7 +3,7 @@
 
 # 用途
 
-简单的包装内核的ftrace功能
+简单的包装内核的 ftrace 功能
 
 不过当前仅仅支持单线程, 并且仅仅是从 `trace_pipe` 以文本方式读然后写到标准输出.
 
@@ -74,8 +74,8 @@ perf ftrace [<options>] -- <command> [<options>]
     Set max depth for function graph tracer to follow
 ```
 
-* 
-* 
+*
+*
 
 ##
 
@@ -87,7 +87,7 @@ perf ftrace -t function_graph usleep 123456
 perf ftrace -t function_graph -a -- insmod ipi_benchmark.ko > after_perf_ftrace
 
 
-参考: 
+参考:
 
 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d01f4e8db22cf4d04f6c86351d959b584eb1f5f7
 

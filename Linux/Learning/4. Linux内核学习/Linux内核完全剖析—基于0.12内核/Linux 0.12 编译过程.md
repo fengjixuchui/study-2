@@ -1,7 +1,7 @@
-- 问题1: 
+- 问题 1:
 
 ```
-[root@tsinghua-pcm boot]# as -o head.o head.s 
+[root@tsinghua-pcm boot]# as -o head.o head.s
 head.s: Assembler messages:
 head.s:43: Error: unsupported instruction `mov'
 head.s:47: Error: unsupported instruction `mov'
@@ -30,15 +30,15 @@ head.s:217: Error: unsupported instruction `mov'
 head.s:231: Error: alignment not a power of 2
 ```
 
-出错原因: 
+出错原因:
 
-这是由于在64位机器上编译的原因, 需要告诉编译器, 我们要编译32位的code, 在所有Makefile的AS后面添加 --32, CFLAGS中加-m32
+这是由于在 64 位机器上编译的原因, 需要告诉编译器, 我们要编译 32 位的 code, 在所有 Makefile 的 AS 后面添加 --32, CFLAGS 中加-m32
 
-解决办法: 
+解决办法:
 
-修改head.s, 在文件前加.code32
+修改 head.s, 在文件前加.code32
 
-- 问题2: 
+- 问题 2:
 
 ```
 gas -c -o boot/head.o boot/head.s
@@ -46,12 +46,12 @@ make: gas: Command not found
 make: *** [boot/head.o] Error 127
 ```
 
-出错原因: 
+出错原因:
 
-gas、gld 的名称已经过时, 现在GNU assembler的名称是 as
+gas、gld 的名称已经过时, 现在 GNU assembler 的名称是 as
 
 
-解决办法: 
+解决办法:
 
 修改主 Makefile 文件
 
@@ -63,11 +63,11 @@ gas、gld 的名称已经过时, 现在GNU assembler的名称是 as
 或者
 
 ```
-连接gas到as 
-gld到ld
+连接 gas 到 as
+gld 到 ld
 ```
 
-- 问题3: 
+- 问题 3:
 
 ```
 gas -c -o boot/head.o boot/head.s
@@ -76,24 +76,24 @@ boot/head.s: Assembler messages:
 boot/head.s:232: Error: alignment not a power of 2
 ```
 
-出错原因: 
+出错原因:
 
-.align 2 是汇编语言指示符, 其含义是指存储边界对齐调整; 
+.align 2 是汇编语言指示符, 其含义是指存储边界对齐调整;
 
-"2"表示把随后的代码或数据的偏移位置调整到地址值最后2比特位为零的位置(2^2), 即按4字节对齐内存地址. 
+"2"表示把随后的代码或数据的偏移位置调整到地址值最后 2 比特位为零的位置(2^2), 即按 4 字节对齐内存地址.
 
-不过现在GNU as直接是写出对齐的值而非2的次方值了. 
+不过现在 GNU as 直接是写出对齐的值而非 2 的次方值了.
 
 ```
 .align 2 应该改为 .align 4
 .align 3 应该改为 .align 8
 ```
 
-解决方案: 
+解决方案:
 
-修改head.s文件
+修改 head.s 文件
 
-- 问题4
+- 问题 4
 
 ```
 -nostdinc -Iinclude -c -o init/main.o init/main.c
@@ -102,14 +102,14 @@ gcc: error: unrecognized command line option ‘-mstring-insns’
 make: *** [init/main.o] Error 1
 ```
 
-解决办法: 
+解决办法:
 
 修改 Makefile 文件
 
-将 -fcombine-regs -mstring-insns 删除或者注释掉 
+将 -fcombine-regs -mstring-insns 删除或者注释掉
 
-- 问题5
- 
+- 问题 5
+
 ```
 init/main.c:23:29: error: static declaration of ‘fork’ follows non-static declaration
 
@@ -122,7 +122,7 @@ init/main.c:26:29: error: static declaration of ‘sync’ follows non-static de
  static inline _syscall0(int,sync)
 ```
 
-解决办法: 
+解决办法:
 
 修改 init/main.c 文件
 

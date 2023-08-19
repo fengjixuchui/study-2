@@ -1,1 +1,1 @@
-debug见`linux/debug/debug`
+debug 见 `linux/debug/debug`

@@ -1,4 +1,4 @@
-翻译自AMD SDM
+翻译自 AMD SDM
 
 Secure Virtual Machine
 

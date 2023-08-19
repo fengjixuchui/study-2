@@ -3,18 +3,18 @@
 
 <!-- code_chunk_output -->
 
-- [所有CPU的基类](#所有cpu的基类)
+- [所有 CPU 的基类](#所有-cpu-的基类)
   - [CPUClass](#cpuclass)
   - [CPUState](#cpustate)
 - [参考](#参考)
 
 <!-- /code_chunk_output -->
 
-CPU也是一种设备, 因此CPU类继承自Device类. CPU这种设备相比其他设备来说种类非常繁杂. 首先, CPU有着不同的架构, 而对于每一种架构的CPU来说, 随着时间的推移, CPU厂商也会给该架构的CPU不断地增加新特性和更新换代, 这种更新换代造成该架构的CPU也有了各种不同的CPU模型. 
+CPU 也是一种设备, 因此 CPU 类继承自 Device 类. CPU 这种设备相比其他设备来说种类非常繁杂. 首先, CPU 有着不同的架构, 而对于每一种架构的 CPU 来说, 随着时间的推移, CPU 厂商也会给该架构的 CPU 不断地增加新特性和更新换代, 这种更新换代造成该架构的 CPU 也有了各种不同的 CPU 模型.
 
-以x86 CPU为例, QEMU中可以支持的CPU的模型就包括以下几种, 我们可以通过qemu-system-x86_64 \-cpu \?命令查看QEMU支持的X86 CPU类型. 其中一些CPU模型是QEMU自己定义的, 另外一些类型则是直接来自厂商. 其中host类型是指将物理机上的CPU特性全部暴露给虚拟机, 这样可以全面发挥CPU的性能, 但是另一方面, 由于全部特性被暴露给虚拟机, 会造成具有不同特性的CPU架构或CPU模型的物理机之间动态迁移虚拟机会变得不可靠. 
+以 x86 CPU 为例, QEMU 中可以支持的 CPU 的模型就包括以下几种, 我们可以通过 qemu-system-x86_64 \-cpu \?命令查看 QEMU 支持的 X86 CPU 类型. 其中一些 CPU 模型是 QEMU 自己定义的, 另外一些类型则是直接来自厂商. 其中 host 类型是指将物理机上的 CPU 特性全部暴露给虚拟机, 这样可以全面发挥 CPU 的性能, 但是另一方面, 由于全部特性被暴露给虚拟机, 会造成具有不同特性的 CPU 架构或 CPU 模型的物理机之间动态迁移虚拟机会变得不可靠.
 
-如此众多的CPU架构、CPU模型, 而**CPU架构**、**CPU模型**天然具有**父类和子类的关系**. 使用面向对象编程模型对它们进行设计是再合适不过了. 但是目前对于X86CPU中不同的CPU模型(其他的架构没有仔细看), QEMU只是使用一个描述X86CPU定义的数据结构的数组来表示的. QEMU的代码注释中说明, **未来**要将**所有的CPU模型**最终定义为**X86CPU的子类**. 
+如此众多的 CPU 架构、CPU 模型, 而**CPU 架构**、**CPU 模型**天然具有**父类和子类的关系**. 使用面向对象编程模型对它们进行设计是再合适不过了. 但是目前对于 X86CPU 中不同的 CPU 模型(其他的架构没有仔细看), QEMU 只是使用一个描述 X86CPU 定义的数据结构的数组来表示的. QEMU 的代码注释中说明, **未来**要将**所有的 CPU 模型**最终定义为**X86CPU 的子类**.
 
 ```
 x86           qemu64  QEMU Virtual CPU version 2.5+
@@ -48,22 +48,22 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU
 x86             host  KVM processor with all supported host features (only available in KVM mode)
 ```
 
-# 所有CPU的基类
+# 所有 CPU 的基类
 
-要定义所有CPU的基类, 需要定义CPU的类的数据结构和CPU的对象的数据结构, 然后给对应的TypeInfo中的函数指针赋值即可. 
+要定义所有 CPU 的基类, 需要定义 CPU 的类的数据结构和 CPU 的对象的数据结构, 然后给对应的 TypeInfo 中的函数指针赋值即可.
 
-其中**CPU类的数据结构**名为**CPUClass**、**CPU对象**的数据结构名为**CPUState**, 它们被定义在include/qom/cpu.h中, 而**对应的TypeInfo的赋值工作**则在**qom/cpu.c**中进行. 
+其中**CPU 类的数据结构**名为**CPUClass**、**CPU 对象**的数据结构名为**CPUState**, 它们被定义在 include/qom/cpu.h 中, 而**对应的 TypeInfo 的赋值工作**则在**qom/cpu.c**中进行.
 
-这里只说明CPUClass、CPUState数据结构. 
+这里只说明 CPUClass、CPUState 数据结构.
 
 ## CPUClass
 
-CPUClass的数据结构如下, 其中最主要的内容, 是与CPU相关的大量的回调函数, 通过给这些回调函数的指针赋值, **对应的CPUState**就可以**调用这些函数**实现相应的功能. 
+CPUClass 的数据结构如下, 其中最主要的内容, 是与 CPU 相关的大量的回调函数, 通过给这些回调函数的指针赋值, **对应的 CPUState**就可以**调用这些函数**实现相应的功能.
 
 ```c
 typedef struct CPUClass {
     /*< private >*/
-    DeviceClass parent_class;   //父类是Device类
+    DeviceClass parent_class;   //父类是 Device 类
     /*< public >*/
 
     //回调函数
@@ -89,7 +89,7 @@ typedef struct CPUClass {
     void (*get_memory_mapping)(CPUState *cpu, MemoryMappingList *list,
                                Error **errp);
     void (*set_pc)(CPUState *cpu, vaddr value);
-    void (*synchronize_from_tb)(CPUState *cpu, struct TranslationBlock *tb); //该函数与tcg相关, 不必看
+    void (*synchronize_from_tb)(CPUState *cpu, struct TranslationBlock *tb); //该函数与 tcg 相关, 不必看
     int (*handle_mmu_fault)(CPUState *cpu, vaddr address, int rw,
                             int mmu_index);
     hwaddr (*get_phys_page_debug)(CPUState *cpu, vaddr addr);
@@ -106,7 +106,7 @@ typedef struct CPUClass {
     int (*write_elf32_qemunote)(WriteCoreDumpFunction f, CPUState *cpu,
                                 void *opaque);
 
-    const struct VMStateDescription *vmsd;  //该数据结构记录CPU中的重要数据, 在热迁移过程中对CPU重要数据进行传输
+    const struct VMStateDescription *vmsd;  //该数据结构记录 CPU 中的重要数据, 在热迁移过程中对 CPU 重要数据进行传输
     int gdb_num_core_regs;
     const char *gdb_core_xml_file;
     bool gdb_stop_before_watchpoint;
@@ -121,32 +121,32 @@ typedef struct CPUClass {
 
 ## CPUState
 
-CPUState是**CPU对象**的数据结构, **一个CPUState**就表示**一个虚拟机的CPU**. 在QEMU中, 任何CPU的操作的大部分都是对以CPUState形式出现的CPU来进行的. 
+CPUState 是**CPU 对象**的数据结构, **一个 CPUState**就表示**一个虚拟机的 CPU**. 在 QEMU 中, 任何 CPU 的操作的大部分都是对以 CPUState 形式出现的 CPU 来进行的.
 
 ```c
 struct CPUState {
     /*< private >*/
-    DeviceState parent_obj;    //继承自Device对象
+    DeviceState parent_obj;    //继承自 Device 对象
     /*< public >*/
 
-    int nr_cores;             //CPU的核数
-    int nr_threads;           //CPU每核的线程数
-    int numa_node;            //CPU有几个numa node
+    int nr_cores;             //CPU 的核数
+    int nr_threads;           //CPU 每核的线程数
+    int numa_node;            //CPU 有几个 numa node
 
-    struct QemuThread *thread;   //该CPU对应的线程
+    struct QemuThread *thread;   //该 CPU 对应的线程
 #ifdef _WIN32
     HANDLE hThread;
 #endif
-    int thread_id;               //线程id
+    int thread_id;               //线程 id
     uint32_t host_tid;
-    bool running;               //CPU是否正在运行
-    struct QemuCond *halt_cond;   //cpu停止运行所使用的条件变量, 用于通知该CPU
-    bool thread_kicked;          
-    bool created;      
+    bool running;               //CPU 是否正在运行
+    struct QemuCond *halt_cond;   //cpu 停止运行所使用的条件变量, 用于通知该 CPU
+    bool thread_kicked;
+    bool created;
     bool stop;
     bool stopped;
     bool crash_occurred;
-    bool exit_request;        
+    bool exit_request;
     uint32_t interrupt_request;
     int singlestep_enabled;
     int64_t icount_extra;
@@ -155,14 +155,14 @@ struct CPUState {
     QemuMutex work_mutex;
     struct qemu_work_item *queued_work_first, *queued_work_last;
 
-    //CPU对应的地址空间
+    //CPU 对应的地址空间
     CPUAddressSpace *cpu_ases;
     AddressSpace *as;
 
-    //这个数据结构保存该CPU的段寄存器、FPU等信息, x86对应的数据结构是CPUX86State, 读者可在target-i386/cpu.h中看到
+    //这个数据结构保存该 CPU 的段寄存器、FPU 等信息, x86 对应的数据结构是 CPUX86State, 读者可在 target-i386/cpu.h 中看到
     void *env_ptr; /* CPUArchState */
 
-    //以下变量与TCG相关, 不必看    
+    //以下变量与 TCG 相关, 不必看
     struct TranslationBlock *current_tb;
     struct TranslationBlock *tb_jmp_cache[TB_JMP_CACHE_SIZE];
 
@@ -186,8 +186,8 @@ struct CPUState {
     uintptr_t mem_io_pc;
     vaddr mem_io_vaddr;
 
-    //与kvm相关的变量
-    int kvm_fd;    //kvm在创建CPU时, 给每个CPU分配eventfd, 该变量用于保存这个文件描述符
+    //与 kvm 相关的变量
+    int kvm_fd;    //kvm 在创建 CPU 时, 给每个 CPU 分配 eventfd, 该变量用于保存这个文件描述符
     bool kvm_vcpu_dirty;
     struct KVMState *kvm_state;
     struct kvm_run *kvm_run;
@@ -204,7 +204,7 @@ struct CPUState {
     /* Used to keep track of an outstanding cpu throttle thread for migration
      * autoconverge
      */
-    bool throttle_thread_scheduled;  //跟踪CPU运行, 当热迁移时可以自动减慢CPU运行速度, 保证热迁移顺利完成. 
+    bool throttle_thread_scheduled;  //跟踪 CPU 运行, 当热迁移时可以自动减慢 CPU 运行速度, 保证热迁移顺利完成.
 
     /* Note that this is accessed at the start of every TB via a negative
        offset from AREG0.  Leave this field at the end so as to make the

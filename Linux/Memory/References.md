@@ -4,11 +4,11 @@
 
 全部详细教程级: http://blog.csdn.net/gatieme/article/details/52384965
 
-ARM系统教程级: http://www.cnblogs.com/arnoldlu/category/1132616.html
+ARM 系统教程级: http://www.cnblogs.com/arnoldlu/category/1132616.html
 
-ARM全教程: https://blog.csdn.net/ljy1988123/article/details/47983095
+ARM 全教程: https://blog.csdn.net/ljy1988123/article/details/47983095
 
-3.14.12教程: http://blog.chinaunix.net/uid/26859697/cid-175604-list-2.html
+3.14.12 教程: http://blog.chinaunix.net/uid/26859697/cid-175604-list-2.html
 
 x862.6: https://blog.csdn.net/vanbreaker/article/category/1132690/2
 
@@ -44,21 +44,21 @@ https://richardweiyang-2.gitbook.io/kernel-exploring/00-memory_a_bottom_up_view/
 虚拟地址空间解惑: https://zhuanlan.zhihu.com/p/386398698
 
 内存管理: https://zhikunhuo.blog.csdn.net/category_10382170_2.html
-* linux内核那些事之物理内存模型之FLATMEM(1): https://zhikunhuo.blog.csdn.net/article/details/108549107
-* linux内核那些事之物理内存模型之DISCONTIGMEM(2): https://zhikunhuo.blog.csdn.net/article/details/117046538
-* linux内核那些事之物理内存模型之SPARSE(3): https://zhikunhuo.blog.csdn.net/article/details/117197315
-* si_meminfo获取当前系统物理内存使用情况: https://zhikunhuo.blog.csdn.net/article/details/117629859
-* linux内核那些事之Sparse内存模型初始化: https://zhikunhuo.blog.csdn.net/article/details/117840820
-* linux内核那些事之early boot memory-memblock: https://zhikunhuo.blog.csdn.net/article/details/117911931
-* linux内核那些事之E820: https://zhikunhuo.blog.csdn.net/article/details/118265431
-* linux内核那些事之Sparse vmemmap: https://zhikunhuo.blog.csdn.net/article/details/118582882
-* linux内核那些事之ZONE: https://zhikunhuo.blog.csdn.net/article/details/118821795
-* linux内核那些事之pg_data_t、zone结构初始化: https://zhikunhuo.blog.csdn.net/article/details/118913868
-* 
+* linux 内核那些事之物理内存模型之 FLATMEM(1): https://zhikunhuo.blog.csdn.net/article/details/108549107
+* linux 内核那些事之物理内存模型之 DISCONTIGMEM(2): https://zhikunhuo.blog.csdn.net/article/details/117046538
+* linux 内核那些事之物理内存模型之 SPARSE(3): https://zhikunhuo.blog.csdn.net/article/details/117197315
+* si_meminfo 获取当前系统物理内存使用情况: https://zhikunhuo.blog.csdn.net/article/details/117629859
+* linux 内核那些事之 Sparse 内存模型初始化: https://zhikunhuo.blog.csdn.net/article/details/117840820
+* linux 内核那些事之 early boot memory-memblock: https://zhikunhuo.blog.csdn.net/article/details/117911931
+* linux 内核那些事之 E820: https://zhikunhuo.blog.csdn.net/article/details/118265431
+* linux 内核那些事之 Sparse vmemmap: https://zhikunhuo.blog.csdn.net/article/details/118582882
+* linux 内核那些事之 ZONE: https://zhikunhuo.blog.csdn.net/article/details/118821795
+* linux 内核那些事之 pg_data_t、zone 结构初始化: https://zhikunhuo.blog.csdn.net/article/details/118913868
+*
 
 # 书籍
 
-《深入理解Linux虚拟内存管理》
+《深入理解 Linux 虚拟内存管理》
 
-《深入剖析Linux内核反向映射机制》
+《深入剖析 Linux 内核反向映射机制》
 

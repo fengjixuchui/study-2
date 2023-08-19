@@ -1,4 +1,4 @@
-- memblock内存分配器: 
+- memblock 内存分配器: 
 
 文档: https://biscuitos.github.io/blog/MMU-ARM32-MEMBLOCK-index/#header
 

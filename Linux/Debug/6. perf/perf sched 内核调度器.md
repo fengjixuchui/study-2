@@ -31,12 +31,12 @@ perf sched [<options>] {record|latency|map|replay|script|timehist}
  perf:11155            |      2.109 ms |        1 | avg:    0.068 ms | max:    0.068 ms | max at: 9814.867918 s
 ```
 
-* TASK: 进程名和pid. 
-* Runtime: 实际的运行时间. 
-* Switches: 进程切换的次数. 
-* Average delay: 平均的调度延迟. 
-* Maximum delay: 最大的调度延迟. 
-* Maximum delay at: 最大调度延迟发生的时刻. 
+* TASK: 进程名和 pid.
+* Runtime: 实际的运行时间.
+* Switches: 进程切换的次数.
+* Average delay: 平均的调度延迟.
+* Maximum delay: 最大的调度延迟.
+* Maximum delay at: 最大调度延迟发生的时刻.
 
 # 参数说明
 

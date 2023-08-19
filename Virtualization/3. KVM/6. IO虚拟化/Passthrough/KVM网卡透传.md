@@ -3,27 +3,27 @@
 
 <!-- code_chunk_output -->
 
-* [1 KVM里CentOS 7虚拟机的网络设置](#1-kvm里centos-7虚拟机的网络设置)
+- [KVM 里 CentOS 7 虚拟机的网络设置](#kvm-里-centos-7-虚拟机的网络设置)
 
 <!-- /code_chunk_output -->
 
 http://www.lenky.info/archives/2018/12/2667
 
-# 1 KVM里CentOS 7虚拟机的网络设置
+# KVM 里 CentOS 7 虚拟机的网络设置
 
-1. 宿主机是CentOS 7, KVM虚拟机也是CentOS 7
+1. 宿主机是 CentOS 7, KVM 虚拟机也是 CentOS 7
 
-2. 在宿主机上有物理网卡eth0, 配置有ip: 192.168.1.2/24
+2. 在宿主机上有物理网卡 eth0, 配置有 ip: 192.168.1.2/24
 
-有网桥virbr0, 配置有ip: 192.168.122.1/24
+有网桥 virbr0, 配置有 ip: 192.168.122.1/24
 
-该virbr0绑定在virbr0\-nic接口上, 而virbr0\-nic貌似是一个tun/tap设备, 因此性能非常差. 
+该 virbr0 绑定在 virbr0\-nic 接口上, 而 virbr0\-nic 貌似是一个 tun/tap 设备, 因此性能非常差.
 
-**所有KVM虚拟机**挂在这个**virbr0网桥**上, 然后通过virbr0\-nic进行相互通信. 
+**所有 KVM 虚拟机**挂在这个**virbr0 网桥**上, 然后通过 virbr0\-nic 进行相互通信.
 
-如果虚拟机要访问外部主机, 则通过virbr0\-nic做NAT出去. 
+如果虚拟机要访问外部主机, 则通过 virbr0\-nic 做 NAT 出去.
 
-如果外部主机要访问虚拟机, 则比较麻烦, 或许可能不行. 
+如果外部主机要访问虚拟机, 则比较麻烦, 或许可能不行.
 
 ```
 # brctl show
@@ -32,11 +32,11 @@ virbr0	8000.52540098e452	yes	virbr0-nic
 vnet0
 ```
 
-vnet0是KVM虚拟机网卡在宿主机上对应的tap设备, 如果还有其他KVM虚拟机, 则都接到这个virbr0. 
+vnet0 是 KVM 虚拟机网卡在宿主机上对应的 tap 设备, 如果还有其他 KVM 虚拟机, 则都接到这个 virbr0.
 
-3, 在上一步中, 看到**网桥**是绑定在**virbr0\-nic虚拟设备**上的, 其实可以直接绑定在宿主机的物理网卡eth0上. 
+3, 在上一步中, 看到**网桥**是绑定在**virbr0\-nic 虚拟设备**上的, 其实可以直接绑定在宿主机的物理网卡 eth0 上.
 
-a, 新增网桥br0以及配置
+a, 新增网桥 br0 以及配置
 
 ```
 # brctl addbr br0
@@ -61,7 +61,7 @@ DEVICE=br0
 ONBOOT=yes
 ```
 
-b, 修改eth0网卡配置, 在最后一行加上BRIDGE=br0, 表示将eth0桥接到br0: 
+b, 修改 eth0 网卡配置, 在最后一行加上 BRIDGE=br0, 表示将 eth0 桥接到 br0:
 
 ```
 # cat /etc/sysconfig/network-scripts/ifcfg-enp4s0f0
@@ -84,13 +84,13 @@ ONBOOT=yes
 BRIDGE=br0
 ```
 
-c, 重启网络, 务必多执行一次start, 因为eth0启用依赖于br0, 有可能第一次启动会失败. 如果恰好eth0是用来做远程的, 则可能导致网络断掉. 
+c, 重启网络, 务必多执行一次 start, 因为 eth0 启用依赖于 br0, 有可能第一次启动会失败. 如果恰好 eth0 是用来做远程的, 则可能导致网络断掉.
 
 ```
 # service network restart; service network start;
 ```
 
-把启动的虚拟机在宿主机上的对应网卡绑定到这个br0上: 
+把启动的虚拟机在宿主机上的对应网卡绑定到这个 br0 上:
 
 ```
 # brctl show
@@ -111,21 +111,21 @@ vnet0
 virbr0	8000.52540098e452	yes	virbr0-nic
 ```
 
-这种设置的虚拟机网络性能相比上一种要好, 而性能更好的设置方式就是直接把物理网卡pass through到虚拟机. 
+这种设置的虚拟机网络性能相比上一种要好, 而性能更好的设置方式就是直接把物理网卡 pass through 到虚拟机.
 
-当然可以基于ovs网桥去做, 见其他文章
+当然可以基于 ovs 网桥去做, 见其他文章
 
-4, 做物理网卡pass through需要宿主机的硬件支持和一些准备工作
+4, 做物理网卡 pass through 需要宿主机的硬件支持和一些准备工作
 
-a, 确认宿主机的硬件支持, 主要是cpu和主板, 这可以查看官方的硬件支持列表, 或者在BIOS中查看相关选项. 以Intel硬件为例, 主要就是: 
+a, 确认宿主机的硬件支持, 主要是 cpu 和主板, 这可以查看官方的硬件支持列表, 或者在 BIOS 中查看相关选项. 以 Intel 硬件为例, 主要就是:
 
-VT-x: 处理器技术, 提供内存以及虚拟机的硬件隔离, 所涉及的技术有页表管理以及地址空间的保护. 
+VT-x: 处理器技术, 提供内存以及虚拟机的硬件隔离, 所涉及的技术有页表管理以及地址空间的保护.
 
-VT-d: 处理有关芯片组的技术, 它提供一些针对虚拟机的特殊应用, 如支持某些特定的虚拟机应用跨过处理器I/O管理程序, 直接调用I/O资源, 从而提高效率, 通过直接连接I/O带来近乎完美的I/O性能. 
+VT-d: 处理有关芯片组的技术, 它提供一些针对虚拟机的特殊应用, 如支持某些特定的虚拟机应用跨过处理器 I/O 管理程序, 直接调用 I/O 资源, 从而提高效率, 通过直接连接 I/O 带来近乎完美的 I/O 性能.
 
-VT-c: 针对网络提供的管理, 它可以在一个物理网卡上, 建立针对虚拟机的设备队列. 
+VT-c: 针对网络提供的管理, 它可以在一个物理网卡上, 建立针对虚拟机的设备队列.
 
-VT-c是后面将提到的SR-IOV关系比较大, 本小节只需验证VT-x和VT-d, 一般在BIOS中Advanced下CPU和System或相关条目中设置, 都设置为Enabled: 
+VT-c 是后面将提到的 SR-IOV 关系比较大, 本小节只需验证 VT-x 和 VT-d, 一般在 BIOS 中 Advanced 下 CPU 和 System 或相关条目中设置, 都设置为 Enabled:
 
 VT: Intel Virtualization Technology
 
@@ -133,7 +133,7 @@ VT-d: Intel VT for Directed I/O
 
 VT-c: I/O Virtualization
 
-b, 修改内核启动参数, 使IOMMU生效, CentOS7上修改稍微不同: 
+b, 修改内核启动参数, 使 IOMMU 生效, CentOS7 上修改稍微不同:
 
 ```
 # cat /etc/default/grub
@@ -142,7 +142,7 @@ GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap
 …
 ```
 
-在GRUB_CMDLINE_LINUX后加上intel_iommu=on, 其他的不动. 先备份, 再重新生成grub.cfg: 
+在 GRUB_CMDLINE_LINUX 后加上 intel_iommu=on, 其他的不动. 先备份, 再重新生成 grub.cfg:
 
 ```
 # cp /boot/grub2/grub.cfg ~/grub.cfg.bak
@@ -150,16 +150,16 @@ GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap
 # diff /boot/grub2/grub.cfg ~/grub.cfg.bak
 ```
 
-可以diff比较一下参数是否正确加上. 
+可以 diff 比较一下参数是否正确加上.
 
-重启机器后执行如下两条命令进行确认: 
+重启机器后执行如下两条命令进行确认:
 
 ```
 # find /sys/kernel/iommu_groups/ -type l
 # dmesg | grep -e DMAR -e IOMMU
 ```
 
-如果有输出, 那就说明ok了. 如果没有, 那再验证BIOS、内核编译项、内核启动参数等是否没有正确配置. 比如内核是否已经编译了IOMMO: 
+如果有输出, 那就说明 ok 了. 如果没有, 那再验证 BIOS、内核编译项、内核启动参数等是否没有正确配置. 比如内核是否已经编译了 IOMMO:
 
 ```
 # cat /boot/config-3.10.0-862.el7.x86_64 |grep IOMMU
@@ -176,16 +176,16 @@ CONFIG_AMD_IOMMU_V2=m
 CONFIG_INTEL_IOMMU=y
 ```
 
-c, 找一个没用的网卡设备, 因为pass through是虚拟机独占, 所以肯定不能用远程ip所对应的网卡设备, 否则远程网络就断了. 比如我的远程网卡为enp4s0f0, 那么我这里拿enp8s0f0作为pass through网卡. 
+c, 找一个没用的网卡设备, 因为 pass through 是虚拟机独占, 所以肯定不能用远程 ip 所对应的网卡设备, 否则远程网络就断了. 比如我的远程网卡为 enp4s0f0, 那么我这里拿 enp8s0f0 作为 pass through 网卡.
 
-通过ethtool查看网卡的bus信息: 
+通过 ethtool 查看网卡的 bus 信息:
 
 ```
 # ethtool -i enp8s0f0 | grep bus
 bus-info: 0000:08:00.0
 ```
 
-解除绑定(注意里面的0000:08:00.0是上一步获得的bus信息): 
+解除绑定(注意里面的 0000:08:00.0 是上一步获得的 bus 信息):
 
 ```
 # lspci -s 0000:08:00.0 -n
@@ -195,7 +195,7 @@ bus-info: 0000:08:00.0
 # echo "8086 10c9″ > /sys/bus/pci/drivers/pci-stub/new_id
 ```
 
-驱动确认(注意里面的: **Kernel driver in use: pci-stub**): 
+驱动确认(注意里面的: **Kernel driver in use: pci-stub**):
 
 ```
 # lspci -s 0000:08:00.0 -k
@@ -205,7 +205,7 @@ Kernel driver in use: pci-stub
 Kernel modules: igb
 ```
 
-启动虚拟机: 
+启动虚拟机:
 
 ```
 kvm -name centos7 -smp 4 -m 8192 \
@@ -216,28 +216,28 @@ kvm -name centos7 -smp 4 -m 8192 \
 -device pci-assign,host=0000:08:00.0
 ```
 
-注意最后两个参数: 
+注意最后两个参数:
 
-- ‘-net none’: 告诉qemu不用模拟网卡设备
-- ‘-device pci-assign,host=0000:08:00.0’: 直接指定一个pci设备, 对应的地址为宿主机上pci地址0000:08:00.0
+- ‘-net none’: 告诉 qemu 不用模拟网卡设备
+- ‘-device pci-assign,host=0000:08:00.0’: 直接指定一个 pci 设备, 对应的地址为宿主机上 pci 地址 0000:08:00.0
 
-执行上面命令, 我这里出现一个错误: 
+执行上面命令, 我这里出现一个错误:
 ```
 kvm: -device pci-assign,host=0000:08:00.0: No IOMMU found. Unable to assign device "(null)"
 kvm: -device pci-assign,host=0000:08:00.0: Device initialization failed.
 kvm: -device pci-assign,host=0000:08:00.0: Device ‘kvm-pci-assign’ could not be initialized
 ```
 
-然后我前面的配置都ok啊, 经过搜索, 问题在于最新的内核里, 已建议废除KVM_ASSIGN机制, 而只支持vfio, 我这里查看CentOS 7的内核编译选项也果真如此: 
+然后我前面的配置都 ok 啊, 经过搜索, 问题在于最新的内核里, 已建议废除 KVM_ASSIGN 机制, 而只支持 vfio, 我这里查看 CentOS 7 的内核编译选项也果真如此:
 
 ```
 # cat /boot/config-3.10.0-862.el7.x86_64 | grep KVM_DEVICE
 # CONFIG_KVM_DEVICE_ASSIGNMENT is not set
 ```
 
-所以换用**vfio驱动**. VFIO可以用于实现高效的用户态驱动. 在虚拟化场景可以用于device passthrough. 通过**用户态配置IOMMU接口**, 可以将DMA地址空间映射限制在进程虚拟空间中. 这对高性能驱动和虚拟化场景device passthrough尤其重要. 相对于传统方式, VFIO对UEFI支持更好. VFIO技术实现了用户空间直接访问设备. 无须root特权, 更安全, 功能更多. 
+所以换用**vfio 驱动**. VFIO 可以用于实现高效的用户态驱动. 在虚拟化场景可以用于 device passthrough. 通过**用户态配置 IOMMU 接口**, 可以将 DMA 地址空间映射限制在进程虚拟空间中. 这对高性能驱动和虚拟化场景 device passthrough 尤其重要. 相对于传统方式, VFIO 对 UEFI 支持更好. VFIO 技术实现了用户空间直接访问设备. 无须 root 特权, 更安全, 功能更多.
 
-重新解除绑定和再绑定: 
+重新解除绑定和再绑定:
 
 ```
 # modprobe vfio
@@ -254,7 +254,7 @@ Kernel driver in use: vfio-pci
 Kernel modules: igb
 ```
 
-启动虚拟机: 
+启动虚拟机:
 
 ```
 kvm -name centos7 -smp 4 -m 8192 \
@@ -265,7 +265,7 @@ kvm -name centos7 -smp 4 -m 8192 \
 -device vfio-pci,host=0000:08:00.0
 ```
 
-这次一切OK, 顺利启动并进入到CentOS 7虚拟机. 
+这次一切 OK, 顺利启动并进入到 CentOS 7 虚拟机.
 
 https://blog.csdn.net/leoufung/article/details/52144687
 
@@ -273,27 +273,27 @@ https://www.linux-kvm.org/page/10G_NIC_performance:_VFIO_vs_virtio
 
 http://www.linux-kvm.org/page/How_to_assign_devices_with_VT-d_in_KVM
 
-5, 虚拟机独占物理网卡总是资源浪费, 而且如果虚拟机比较多, 又到哪有找那么多物理网卡. 因此为了实现多个虚机共享一个物理设备, 并且达到直接分配的目的, PCI-SIG组织发布了SR-IOV(Single Root I/O Virtualization and sharing)规范, 它定义了一个标准化的机制用以原生地支持实现多个客户机共享一个设备. 当前SR-IOV(单根I/O虚拟化)最广泛地应用还是网卡上. 
+5, 虚拟机独占物理网卡总是资源浪费, 而且如果虚拟机比较多, 又到哪有找那么多物理网卡. 因此为了实现多个虚机共享一个物理设备, 并且达到直接分配的目的, PCI-SIG 组织发布了 SR-IOV(Single Root I/O Virtualization and sharing)规范, 它定义了一个标准化的机制用以原生地支持实现多个客户机共享一个设备. 当前 SR-IOV(单根 I/O 虚拟化)最广泛地应用还是网卡上.
 
-SR-IOV使得一个单一的功能单元(比如, 一个以太网端口)能看起来像多个独立的物理设备. 一个带有SR-IOV功能的物理设备能被配置为多个功能单元. 
+SR-IOV 使得一个单一的功能单元(比如, 一个以太网端口)能看起来像多个独立的物理设备. 一个带有 SR-IOV 功能的物理设备能被配置为多个功能单元.
 
-SR-IOV使用两种功能(function): 
+SR-IOV 使用两种功能(function):
 
-- 物理功能(Physical Functions, PF): 这是完整的带有SR-IOV能力的PCIe设备. PF能像普通PCI设备那样被发现、管理和配置. 
+- 物理功能(Physical Functions, PF): 这是完整的带有 SR-IOV 能力的 PCIe 设备. PF 能像普通 PCI 设备那样被发现、管理和配置.
 
-- 虚拟功能(Virtual Functions, VF): 简单的PCIe功能, 它只能处理I/O. 每个VF都是从PF中分离出来的. 每个物理硬件都有一个VF数目的限制. 一个PF, 能被虚拟成多个VF用于分配给多个虚拟机. 
-Hypervisor能将一个或者多个VF分配给一个虚机. 在某一时刻, 一个VF只能被分配给一个虚机. 一个虚机可以拥有多个VF. 在虚机的操作系统看来, 一个VF网卡看起来和一个普通网卡没有区别. **SR-IOV驱动是在内核**中实现的. 
+- 虚拟功能(Virtual Functions, VF): 简单的 PCIe 功能, 它只能处理 I/O. 每个 VF 都是从 PF 中分离出来的. 每个物理硬件都有一个 VF 数目的限制. 一个 PF, 能被虚拟成多个 VF 用于分配给多个虚拟机.
+Hypervisor 能将一个或者多个 VF 分配给一个虚机. 在某一时刻, 一个 VF 只能被分配给一个虚机. 一个虚机可以拥有多个 VF. 在虚机的操作系统看来, 一个 VF 网卡看起来和一个普通网卡没有区别. **SR-IOV 驱动是在内核**中实现的.
 
-a, 检查设备是否支持SR-IOV: 
+a, 检查设备是否支持 SR-IOV:
 
 ```
 # lspci -s 0000:08:00.0 -vvv | grep -i "Single Root I/O Virtualization"
 Capabilities: [160 v1] Single Root I/O Virtualization (SR-IOV)
 ```
 
-看来我这个设备上的这个网卡是支持的. 
+看来我这个设备上的这个网卡是支持的.
 
-b, 重新绑定到igb驱动: 
+b, 重新绑定到 igb 驱动:
 
 ```
 # echo 0000:08:00.0 > /sys/bus/pci/devices/0000\:08\:00.0/driver/unbind
@@ -303,7 +303,7 @@ bash: echo: write error: File exists
 bash: echo: write error: No such device
 ```
 
-出现上面这些错误, 当前还不知道怎么回事, 可能是因为我关闭kvm都是直接在宿主机里kill掉进程的, 导致bus信息未释放?待进一步分析. 
+出现上面这些错误, 当前还不知道怎么回事, 可能是因为我关闭 kvm 都是直接在宿主机里 kill 掉进程的, 导致 bus 信息未释放?待进一步分析.
 
 ```
 # echo igb > /sys/bus/pci/devices/0000\:08\:00.0/driver_override
@@ -315,13 +315,13 @@ Kernel driver in use: igb
 Kernel modules: igb
 ```
 
-c, 创建VF, 可以通过重新加载内核模块参数来创建VF: 
+c, 创建 VF, 可以通过重新加载内核模块参数来创建 VF:
 
 ```
 # modprobe -r igb; modprobe igb max_vfs=7
 ```
 
-如果远程网卡也是用的igb, 则会导致断网. 因此还是直接只对0000:08:00.0网卡开启VF: 
+如果远程网卡也是用的 igb, 则会导致断网. 因此还是直接只对 0000:08:00.0 网卡开启 VF:
 
 ```
 # lspci -nn | grep "Virtual Function"
@@ -334,16 +334,16 @@ c, 创建VF, 可以通过重新加载内核模块参数来创建VF:
 ```
 
 
-也就是对sriov_numvfs进行数字写入, 表示创建几个VF, 写入0则删除所有VF. 
+也就是对 sriov_numvfs 进行数字写入, 表示创建几个 VF, 写入 0 则删除所有 VF.
 
-如果要**重启生效**, 那还是在**模块加载时指定参数**: 
+如果要**重启生效**, 那还是在**模块加载时指定参数**:
 
 ```
 # echo "options igb max_vfs=2″ >>/etc/modprobe.d/igb.conf
 ```
 
 
-d, 接下来就可以把VF当做普通网卡给虚拟机独占使用了
+d, 接下来就可以把 VF 当做普通网卡给虚拟机独占使用了
 
 ```
 # lshw -c network -businfo
@@ -374,7 +374,7 @@ Kernel modules: igbvf
 -net none -device vfio-pci,host=0000:08:10.0
 ```
 
-进入虚拟机后查看网卡的驱动信息, 可以看到是用的igbvf: 
+进入虚拟机后查看网卡的驱动信息, 可以看到是用的 igbvf:
 
 ```
 # ethtool -i eth0
@@ -383,9 +383,9 @@ version: 2.4.0-k
 …
 ```
 
-5, pass through的麻烦之处在于**需要指定具体的pci地址**, 比较麻烦, 比如在虚拟机要做迁移的场景. 
+5, pass through 的麻烦之处在于**需要指定具体的 pci 地址**, 比较麻烦, 比如在虚拟机要做迁移的场景.
 
-因此另外一种据说性能也非常好的方式是通过**Virtio网卡**. 首先需要在内核打开如下选项: 
+因此另外一种据说性能也非常好的方式是通过**Virtio 网卡**. 首先需要在内核打开如下选项:
 
 ```
 CONFIG_VIRTIO=m
@@ -396,7 +396,7 @@ CONFIG_VIRTIO_BLK=m
 CONFIG_VIRTIO_NET=m
 ```
 
-CentOS 7自带内核默认已经打开, 因此可以直接使用. 
+CentOS 7 自带内核默认已经打开, 因此可以直接使用.
 ```
 # cat /boot/config-3.10.0-862.el7.x86_64 | grep VIRTIO
 CONFIG_VIRTIO_VSOCKETS=m
@@ -415,7 +415,7 @@ CONFIG_VIRTIO_INPUT=m
 # CONFIG_VIRTIO_MMIO is not set
 ```
 
-执行kvm: 
+执行 kvm:
 
 ```
 kvm -name centos7 -smp 4 -m 8192 \
@@ -425,11 +425,11 @@ kvm -name centos7 -smp 4 -m 8192 \
 -device virtio-net-pci,netdev=net0 -netdev tap,id=net0,script=/home/vmhome/qemu-ifup,downscript=no
 ```
 
-注意最后一行的网卡设置: 
-- \-device virtio-net-pci: 指定了一个使用**virtio-net-pci的设备**, 而netdev=net0: 和后面的id=net0关联起来, net0是任意值, 只要一致就可以. 
+注意最后一行的网卡设置:
+- \-device virtio-net-pci: 指定了一个使用**virtio-net-pci 的设备**, 而 netdev=net0: 和后面的 id=net0 关联起来, net0 是任意值, 只要一致就可以.
 - \-netdev tap,id=net0,script=/home/vmhome/qemu-ifup,downscript=no: 宿主机上对应桥接到交换机上的端口
 
-进入虚拟机, 查看网卡驱动, 可以看到如下: 
+进入虚拟机, 查看网卡驱动, 可以看到如下:
 
 ```
 # ethtool -i eth0
@@ -438,7 +438,7 @@ version: 1.0.0
 …
 ```
 
-根据注1, 如果采用如下命令, 性能会非常差: 
+根据注 1, 如果采用如下命令, 性能会非常差:
 
 ```
 kvm -name centos7 -smp 4 -m 8192 \
@@ -448,16 +448,16 @@ kvm -name centos7 -smp 4 -m 8192 \
 -net nic,model=virtio -net tap,script=/home/vmhome/qemu-ifup,downscript=no
 ```
 
-但是根据注2, 这两种写法应该是一样的, 只不过-net nic,model=virtio是旧语法(old -net..-net syntax), 实践验证后一种kvm启动的虚拟机里通过ethtool查看网卡的驱动也是virtio_net. 难道是另外的某些原因还不得而知. 
+但是根据注 2, 这两种写法应该是一样的, 只不过-net nic,model=virtio 是旧语法(old -net..-net syntax), 实践验证后一种 kvm 启动的虚拟机里通过 ethtool 查看网卡的驱动也是 virtio_net. 难道是另外的某些原因还不得而知.
 
-ps: 通过如下命令可以查看当前qemu支持的网卡类型
+ps: 通过如下命令可以查看当前 qemu 支持的网卡类型
 
 ```
 # kvm -net nic,model=?
 qemu: Supported NIC models: ne2k_pci,i82551,i82557b,i82559er,rtl8139,e1000,pcnet,virtio
 ```
 
-注: 
+注:
 1, https://www.linux-kvm.org/page/10G_NIC_performance:_VFIO_vs_virtio
 2, http://www.linux-kvm.org/page/Virtio
 3, https://www.cnblogs.com/sammyliu/p/4548194.html

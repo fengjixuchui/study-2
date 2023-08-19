@@ -1,6 +1,6 @@
 - 安装包
 
-ubuntu: 
+ubuntu:
 
 ```
 apt-get install lm-sensors
@@ -19,7 +19,7 @@ sensors-detect
 ```
 
 - 查看侦测结果
- 
+
 ```
 sensors
 ```

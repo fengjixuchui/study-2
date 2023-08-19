@@ -77,7 +77,7 @@ $ gdb breakpoint
 ...
 ...
 (gdb) run
-Starting program: /home/alex/breakpoints 
+Starting program: /home/alex/breakpoints
 i equal to: 0
 
 Program received signal SIGTRAP, Trace/breakpoint trap.
@@ -403,7 +403,7 @@ as it will be passed as first parameter of secondary exception handler.
 .endif
 ```
 
-Additionally you may see that we zeroed the `%esi` register above in a case if an exception does not provide error code. 
+Additionally you may see that we zeroed the `%esi` register above in a case if an exception does not provide error code.
 
 In the end we just call secondary exception handler:
 

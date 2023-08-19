@@ -5,40 +5,40 @@
 
 - [1 简介](#1-简介)
 - [2 命令用法](#2-命令用法)
-  - [支持的type](#支持的type)
+  - [支持的 type](#支持的-type)
 - [3 查看内存信息和支持的最大内存](#3-查看内存信息和支持的最大内存)
   - [3.1 查看当前物理内存](#31-查看当前物理内存)
   - [3.2 硬件支持的信息](#32-硬件支持的信息)
-- [4 获取BIOS信息](#4-获取bios信息)
-- [5 获取制造商, 型号和序列号](#5-获取制造商型号和序列号)
+- [4 获取 BIOS 信息](#4-获取-bios-信息)
+- [5 获取制造商, 型号和序列号](#5-获取制造商-型号和序列号)
 - [脚本](#脚本)
 
 <!-- /code_chunk_output -->
 
 # 1 简介
 
-使用的dmidecode命令检索任何Linux系统的硬件信息.  假设, 如果我们要升级, 我们需要收集如内存 , BIOS和CPU等信息的系统 随着的dmidecode命令的帮助下, 我们会知道的细节, 而无需打开系统的底盘.  
+使用的 dmidecode 命令检索任何 Linux 系统的硬件信息.  假设, 如果我们要升级, 我们需要收集如内存 , BIOS 和 CPU 等信息的系统 随着的 dmidecode 命令的帮助下, 我们会知道的细节, 而无需打开系统的底盘.
 
-dmidecode命令适用于RHEL / CentOS的 / Fedora的 / Ubuntu Linux操作系统. 
+dmidecode 命令适用于 RHEL / CentOS 的 / Fedora 的 / Ubuntu Linux 操作系统.
 
-dmidecode允许你在Linux系统下获取有关硬件方面的信息. dmidecode遵循SMBIOS/DMI标准, 其输出的信息包括BIOS、系统、主板、处理器、内存、缓存等等. 
+dmidecode 允许你在 Linux 系统下获取有关硬件方面的信息. dmidecode 遵循 SMBIOS/DMI 标准, 其输出的信息包括 BIOS、系统、主板、处理器、内存、缓存等等.
 
-DMI是英文单词Desktop Management Interface的缩写, 也就是桌面管理界面, 它含有关于系统硬件的配置信息. 计算机**每次启动**时都对**DMI数据进行校验**, 如果该数据出错或硬件有所变动, 就会**对机器进行检测**, 并把测试的数据写入**BIOS芯片保存**. 所以如果我们在**BIOS设置**中**禁止了BIOS芯片的刷新功能**或者在**主板使用跳线禁止了 BIOS芯片的刷新功能**, 那这台机器的**DMI数据**将**不能被更新**. 如果你更换了硬件配置, 那么在进行WINDOWS系统时, 机器仍旧按老系统的配置进行工作. 这样就不能充分发挥新添加硬件的性能, 有时还会出现这样或那样的故障. 
+DMI 是英文单词 Desktop Management Interface 的缩写, 也就是桌面管理界面, 它含有关于系统硬件的配置信息. 计算机**每次启动**时都对**DMI 数据进行校验**, 如果该数据出错或硬件有所变动, 就会**对机器进行检测**, 并把测试的数据写入**BIOS 芯片保存**. 所以如果我们在**BIOS 设置**中**禁止了 BIOS 芯片的刷新功能**或者在**主板使用跳线禁止了 BIOS 芯片的刷新功能**, 那这台机器的**DMI 数据**将**不能被更新**. 如果你更换了硬件配置, 那么在进行 WINDOWS 系统时, 机器仍旧按老系统的配置进行工作. 这样就不能充分发挥新添加硬件的性能, 有时还会出现这样或那样的故障.
 
-- DMI(Desktop Management Interface,DMI)就是帮助收集电脑**系统信息**的**管理系统**, **DMI信息的收集**必须在严格遵照**SMBIOS规范**的前提下进行. 
-- SMBIOS(System Management BIOS)是**主板或系统制造者**以标准格式显示产品管理信息所需遵循的统一规范. 
+- DMI(Desktop Management Interface,DMI)就是帮助收集电脑**系统信息**的**管理系统**, **DMI 信息的收集**必须在严格遵照**SMBIOS 规范**的前提下进行.
+- SMBIOS(System Management BIOS)是**主板或系统制造者**以标准格式显示产品管理信息所需遵循的统一规范.
 
-SMBIOS和DMI是由行业指导机构Desktop Management Task Force(DMTF)起草的开放性的技术标准, 其中DMI设计适用于任何的平台和操作系统. 
+SMBIOS 和 DMI 是由行业指导机构 Desktop Management Task Force(DMTF)起草的开放性的技术标准, 其中 DMI 设计适用于任何的平台和操作系统.
 
-DMI充当了管理工具和系统层之间接口的角色. 它建立了标准的可管理系统更加方便了电脑厂商和用户对系统的了解. DMI的主要组成部分是Management Information Format(MIF)数据库. 这个数据库包括了所有有关电脑系统和配件的信息. 通过DMI, 用户可以获取序列号、电脑厂商、串口信息以及其它系统配件信息. 
+DMI 充当了管理工具和系统层之间接口的角色. 它建立了标准的可管理系统更加方便了电脑厂商和用户对系统的了解. DMI 的主要组成部分是 Management Information Format(MIF)数据库. 这个数据库包括了所有有关电脑系统和配件的信息. 通过 DMI, 用户可以获取序列号、电脑厂商、串口信息以及其它系统配件信息.
 
-dmidecode的作用是将DMI数据库中的信息解码, 以可读的文本方式显示. 由于DMI信息可以人为修改, 因此**里面的信息不一定是系统准确的信息！！！**. 
+dmidecode 的作用是将 DMI 数据库中的信息解码, 以可读的文本方式显示. 由于 DMI 信息可以人为修改, 因此**里面的信息不一定是系统准确的信息！！！**.
 
-以内存插槽为例, 芯片组支持的插槽数不一定全部有连接, 可能有些管道, 而dmidecode是基于DMI/SMBIOS规范的, 取决于主板/系统制造者的实现.
+以内存插槽为例, 芯片组支持的插槽数不一定全部有连接, 可能有些管道, 而 dmidecode 是基于 DMI/SMBIOS 规范的, 取决于主板/系统制造者的实现.
 
 # 2 命令用法
 
-不带选项执行dmidecode通常会输出所有的硬件信息. dmidecode有个很有用的选项-t, 可以指定类型输出相关信息. 假如要获得处理器方面的信息, 则可以执行: 
+不带选项执行 dmidecode 通常会输出所有的硬件信息. dmidecode 有个很有用的选项-t, 可以指定类型输出相关信息. 假如要获得处理器方面的信息, 则可以执行:
 
 ```
 dmidecode -t processor
@@ -50,15 +50,15 @@ Usage: dmidecode [OPTIONS]
 
 Options are:
 
--d: (default:/dev/mem)从设备文件读取信息, 输出内容与不加参数标准输出相同. 
+-d: (default:/dev/mem)从设备文件读取信息, 输出内容与不加参数标准输出相同.
 
--h: 显示帮助信息. 
+-h: 显示帮助信息.
 
--s: 只显示指定DMI字符串的信息. (string)
+-s: 只显示指定 DMI 字符串的信息. (string)
 
 -t: 只显示指定条目的信息. (type)
 
--u: 显示未解码的原始条目内容. 
+-u: 显示未解码的原始条目内容.
 
 -- dump-bin FILE: Dump the DMI data to a binary file.
 
@@ -66,7 +66,7 @@ Options are:
 
 -V: 显示版本信息
 
-dmidecode的输出格式一般如下: 
+dmidecode 的输出格式一般如下:
 
 ```
 Handle 0x0002, DMI type 2, 95 bytes.
@@ -82,17 +82,17 @@ Base Board Information
      Serial Number: Not Specified
 ```
 
-其中记录头(recode header)包括了: 
+其中记录头(recode header)包括了:
 
-recode id(Handle): **DMI表**中的**记录标识符**, 这是唯一的, 比如上例中的Handle 0x0002.
+recode id(Handle): **DMI 表**中的**记录标识符**, 这是唯一的, 比如上例中的 Handle 0x0002.
 
-DMI type id: **记录的类型**, 譬如说: BIOS, Memory, 上例是type 2, 即"Base Board Information".
+DMI type id: **记录的类型**, 譬如说: BIOS, Memory, 上例是 type 2, 即"Base Board Information".
 
-recode size: DMI表中对应**记录的大小**, 上例为95 bytes. (不包括文本信息, 所有实际输出的内容比这个size要更大). 记录头之后就是记录的值. 
+recode size: DMI 表中对应**记录的大小**, 上例为 95 bytes. (不包括文本信息, 所有实际输出的内容比这个 size 要更大). 记录头之后就是记录的值.
 
-recoded values: 记录值可以是多行的, 比如上例显示了主板的制造商(Manufacturer)、Product Name、Version以及Serial Number. 
+recoded values: 记录值可以是多行的, 比如上例显示了主板的制造商(Manufacturer)、Product Name、Version 以及 Serial Number.
 
-1. 最简单的的显示全部dmi信息
+1. 最简单的的显示全部 dmi 信息
 
 ```
 [root@localhost ~]# dmidecode
@@ -108,37 +108,37 @@ recoded values: 记录值可以是多行的, 比如上例显示了主板的制�
 
 -q(–quite) 只显示必要的信息
 
-3. 显示指定类型的信息: 
+3. 显示指定类型的信息:
 
-通常我只想查看某类型, 比如CPU, 内存或者磁盘的信息而不是全部的. 这可以使用\-t(\–type TYPE)来指定信息类型
+通常我只想查看某类型, 比如 CPU, 内存或者磁盘的信息而不是全部的. 这可以使用\-t(\–type TYPE)来指定信息类型
 
 ```
 # dmidecode -t bios
 # dmidecode -t bios, processor (这种方式不可以用, 必须用下面的数字的方式)
-# dmidecode -t 0,4 (显示bios和processor)
+# dmidecode -t 0,4 (显示 bios 和 processor)
 ```
 
-## 支持的type
+## 支持的 type
 
-可以在man dmidecode里面看到
+可以在 man dmidecode 里面看到
 
-文本参数支持: 
+文本参数支持:
 
 bios, system, baseboard, chassis, processor, memory, cache, connector, slot
 
-bios |  bios的各项信息
+bios |  bios 的各项信息
 -----|-----------
- system |  系统信息, 在我的笔记本上可以看到版本、型号、序号等信息. 
+ system |  系统信息, 在我的笔记本上可以看到版本、型号、序号等信息.
  baseboard |  主板信息
  chassis |  "底板", 不太理解其含意, 期待大家补充
- processor |  CPU的详细信息
- memory |  内存信息, 包括目前插的内存条数及大小, 支持的单条最大内存和总内存大小等等. 
- cache |  缓存信息, 似乎是CPU的缓存信息
- connector |  在我的电脑是PCI设备的信息
+ processor |  CPU 的详细信息
+ memory |  内存信息, 包括目前插的内存条数及大小, 支持的单条最大内存和总内存大小等等.
+ cache |  缓存信息, 似乎是 CPU 的缓存信息
+ connector |  在我的电脑是 PCI 设备的信息
  slot |  插槽信息
 
 
-数字参数支持很多: 
+数字参数支持很多:
 
 ```
 The SMBIOS specification defines the following DMI types:
@@ -191,7 +191,7 @@ The SMBIOS specification defines the following DMI types:
          42   Management Controller Host Interface
 ```
 
-4. 通过关键字查看信息: 
+4. 通过关键字查看信息:
 
 比如只想查看系统序列号, 可以使用:
 
@@ -200,7 +200,7 @@ The SMBIOS specification defines the following DMI types:
 218480676
 ```
 
--s (–string keyword)支持的keyword包括: 
+-s (–string keyword)支持的 keyword 包括:
 
 bios-vendor,bios-version, bios-release-date,
 
@@ -212,7 +212,7 @@ system-manufacturer, system-product-name, system-version, system-serial-number, 
 
 ## 3.1 查看当前物理内存
 
-Linux下, 可以使用free或者查看meminfo来获得当前的物理内存: 
+Linux 下, 可以使用 free 或者查看 meminfo 来获得当前的物理内存:
 
 ```
 # free -h
@@ -221,16 +221,16 @@ Mem:           125G         18G         87G        2.1G         19G        103G
 Swap:           39G        733M         39G
 ```
 
-显示当前服务器物理内存是125G
+显示当前服务器物理内存是 125G
 
-但是通过这种方式, 你只能看到内存的总量和使用量. 而无法知道内存的类型(DDR1、DDR2、DDR3、DDR4、SDRAM、DRAM)、频率等信息. 
+但是通过这种方式, 你只能看到内存的总量和使用量. 而无法知道内存的类型(DDR1、DDR2、DDR3、DDR4、SDRAM、DRAM)、频率等信息.
 
 ## 3.2 硬件支持的信息
 
 服务器到底能扩展到多大的内存?
 
 ```
-# 16代表物理内存数组
+# 16 代表物理内存数组
 [root@compute1 ~]# dmidecode -t 16
 # dmidecode 3.0
 Getting SMBIOS data from sysfs.
@@ -273,9 +273,9 @@ Physical Memory Array
 	Number Of Devices: 4
 ```
 
-\-t是16是总体内存信息, 一个代表一个物理内存组(物理上呢???) 注意, 每个组有一个唯一标识
+\-t 是 16 是总体内存信息, 一个代表一个物理内存组(物理上呢???) 注意, 每个组有一个唯一标识
 
-查看CPU
+查看 CPU
 
 ```
 # lscpu
@@ -302,8 +302,8 @@ L1d 缓存:           32K
 L1i 缓存:           32K
 L2 缓存:            1024K
 L3 缓存:            22528K
-NUMA 节点0 CPU:     0-15,32-47
-NUMA 节点1 CPU:     16-31,48-63
+NUMA 节点 0 CPU:     0-15,32-47
+NUMA 节点 1 CPU:     16-31,48-63
 Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb cat_l3 cdp_l3 intel_pt tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm mpx rdt_a avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local dtherm ida arat pln pts
 ```
 
@@ -311,8 +311,8 @@ Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca 
 
 从上面信息可以看到:
 
-- 2个物理CPU, 2个NUMA节点
-- 4个物理内存组
+- 2 个物理 CPU, 2 个 NUMA 节点
+- 4 个物理内存组
 - 从上节知道, 现在整体物理内存: 128GB
 
 每个物理内存组:
@@ -321,11 +321,11 @@ Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca 
 - 最大扩展内存: 1280 GB
 - 单根内存条最大: 1280GB/4 = 320GB
 
-也就是一共16根插槽, 即16根内存条
+也就是一共 16 根插槽, 即 16 根内存条
 
-这个支持, 额, 目前一根内存条最多128GB(除非是傲腾)
+这个支持, 额, 目前一根内存条最多 128GB(除非是傲腾)
 
-我们还必须查清这里的128G到底是16\*8GB, 8\*16GB还是其他?也就是查看已使用的插槽数是否已经插满, 如果已经插满, 那就无法扩展了, 只能更换某些内存条.
+我们还必须查清这里的 128G 到底是 16\*8GB, 8\*16GB 还是其他?也就是查看已使用的插槽数是否已经插满, 如果已经插满, 那就无法扩展了, 只能更换某些内存条.
 
 ```
 # 内存设备信息
@@ -336,15 +336,15 @@ SMBIOS 2.8 present.
 
 Handle 0x0015, DMI type 17, 40 bytes
 Memory Device
-	Array Handle: 0x0013 【注意这个标识, 对应第一个Physical Memory Array】
+	Array Handle: 0x0013 【注意这个标识, 对应第一个 Physical Memory Array】
 	Error Information Handle: Not Provided 【错误信息处理: 不提供】
-	Total Width: 72 bits 【总位宽: 72位】
-	Data Width: 64 bits 【数据宽度: 64位】
-	Size: 32 GB 【这个插槽已经有32GB大小的内存条】
+	Total Width: 72 bits 【总位宽: 72 位】
+	Data Width: 64 bits 【数据宽度: 64 位】
+	Size: 32 GB 【这个插槽已经有 32GB 大小的内存条】
 	Form Factor: DIMM 【构成: DIMM】
 	Set: None
-	Locator: P1-DIMMA1 【位置: 第1个处理器的第1根DIMM插槽】
-	Bank Locator: P0_Node0_Channel0_Dimm0 【Bank定位: 处理器0, Node0, Channel0, DIMM1】
+	Locator: P1-DIMMA1 【位置: 第 1 个处理器的第 1 根 DIMM 插槽】
+	Bank Locator: P0_Node0_Channel0_Dimm0 【Bank 定位: 处理器 0, Node0, Channel0, DIMM1】
 	Type: DDR4 【类型: DDR4】
 	Type Detail: Synchronous
 	Speed: 2666 MHz 【速度频率: 2666 MHz】
@@ -367,7 +367,7 @@ Memory Device
 	Size: No Module Installed
 	Form Factor: Unknown
 	Set: None
-	Locator: P1-DIMMA2 【位置: 第1个处理器的第2根DIMM插槽】
+	Locator: P1-DIMMA2 【位置: 第 1 个处理器的第 2 根 DIMM 插槽】
 	Bank Locator: NO DIMM
 	Type: Unknown
 	Type Detail: Unknown
@@ -721,7 +721,7 @@ Memory Device
 
 这里面每一个代表一个物理内存设备, 即一个插槽(不一定有设备)
 
-# 4 获取BIOS信息
+# 4 获取 BIOS 信息
 
 ```
 # dmidecode -t bios
@@ -855,21 +855,21 @@ System Event Log
 
 # 脚本
 
-查看基本硬件信息的shell脚本
+查看基本硬件信息的 shell 脚本
 
 ```sh
-#!/bin/bash  
-echo "IP:"  
-ifconfig |grep "inet addr"|grep -v 127.0.0.1|awk '{print $2}'|awk -F ':' '{print $2}'  
-echo "Product Name:"  
-dmidecode |grep Name  
-echo "CPU Info:"  
-dmidecode |grep -i cpu|grep -i version|awk -F ':' '{print $2}'  
-echo "Disk Info:"  
-parted -l|grep 'Disk /dev/sd'|awk -F ',' '{print "   ",$1}'  
-echo "Network Info:"  
-lspci |grep Ethernet  
-echo "Memory Info:"  
-dmidecode|grep -A5 "Memory Device"|grep Size|grep -v No  
+#!/bin/bash
+echo "IP:"
+ifconfig |grep "inet addr"|grep -v 127.0.0.1|awk '{print $2}'|awk -F ':' '{print $2}'
+echo "Product Name:"
+dmidecode |grep Name
+echo "CPU Info:"
+dmidecode |grep -i cpu|grep -i version|awk -F ':' '{print $2}'
+echo "Disk Info:"
+parted -l|grep 'Disk /dev/sd'|awk -F ',' '{print "   ",$1}'
+echo "Network Info:"
+lspci |grep Ethernet
+echo "Memory Info:"
+dmidecode|grep -A5 "Memory Device"|grep Size|grep -v No
 echo "Memory number:"`dmidecode|grep -A5 "Memory Device"|grep Size|grep -v No|wc -l`
 ```

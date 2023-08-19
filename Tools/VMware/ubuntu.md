@@ -15,7 +15,7 @@
 
 ![2021-09-03-17-34-24.png](./images/2021-09-03-17-34-24.png)
 
-系统盘只需要20G即可, 使用单个磁盘, 便于备份和拷贝
+系统盘只需要 20G 即可, 使用单个磁盘, 便于备份和拷贝
 
 ![2021-09-03-17-34-55.png](./images/2021-09-03-17-34-55.png)
 
@@ -33,7 +33,7 @@ firmware = "efi"
 
 在 VMware Player 中启用 UEFI 模式: https://vvl.me/2018/03/use-uefi-in-vmware-player/
 
-开发环境, 所以选择mini安装
+开发环境, 所以选择 mini 安装
 
 ![2021-09-03-17-46-49.png](./images/2021-09-03-17-46-49.png)
 
@@ -69,7 +69,7 @@ boot loader 安装位置一定要选择刚才的 EFI 系统分区
 
 # 键盘输入设置
 
-ubuntu中启用page up/down进行补全功能: https://blog.csdn.net/jingtaohuang/article/details/109628105
+ubuntu 中启用 page up/down 进行补全功能: https://blog.csdn.net/jingtaohuang/article/details/109628105
 
 `/etc/inputrc` 中这两行取消注释
 
@@ -99,4 +99,4 @@ GRUB_CMDLINE_LINUX=""
 # update-grub
 ```
 
-ubuntu修改默认启动内核: https://cdmana.com/2021/03/20210328153654881n.html
+ubuntu 修改默认启动内核: https://cdmana.com/2021/03/20210328153654881n.html

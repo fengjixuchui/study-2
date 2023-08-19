@@ -1,5 +1,6 @@
 
-linux线程私有数据 --- TSD池
+
+linux 线程私有数据 --- TSD 池
 
 # 背景
 
@@ -13,9 +14,9 @@ linux线程私有数据 --- TSD池
 
 # 原理
 
-线程私有数据采用了**一键多值**技术, 即一个key对应多个值. 访问数据都是通过键值来访问的, 好像是对一个变量进行访问, 其实是在访问不同的数据.
+线程私有数据采用了**一键多值**技术, 即一个 key 对应多个值. 访问数据都是通过键值来访问的, 好像是对一个变量进行访问, 其实是在访问不同的数据.
 
-使用线程私有数据时, 需要对**每个线程**创建一个**关联 的key**, linux中主要有四个接口来实现:
+使用线程私有数据时, 需要对**每个线程**创建一个**关联 的 key**, linux 中主要有四个接口来实现:
 
 1. `pthread_key_create`: 创建一个键
 
@@ -77,7 +78,7 @@ void * pthread_getspecific(pthread_key_t key);
 
 该接口用于删除一个键, 功能仅仅是将该 key 在结构体数组 pthread_keys 对应的元素设置为"un_use", 与该 key 相关联的线程数据是不会被释放的, 因此线程私有数据的释放必须在键删除之前.
 
-用来删除一个键, 删除后, 键所占用的内存将被释放. 注销一个 TSD, 这个函数并不检查当前是否有线程正使用该TSD, 也不会调用清理函数 (destr_function), 而只是将TSD释放以供下一次调用 pthread_key_create() 使用. 需要注意的是, 键占用的内存被释放. 与该键关联的线程数据所占用的内存并不被释放. 因此, 线程数据的释放, 必须在释放键之前完成.
+用来删除一个键, 删除后, 键所占用的内存将被释放. 注销一个 TSD, 这个函数并不检查当前是否有线程正使用该 TSD, 也不会调用清理函数 (destr_function), 而只是将 TSD 释放以供下一次调用 pthread_key_create() 使用. 需要注意的是, 键占用的内存被释放. 与该键关联的线程数据所占用的内存并不被释放. 因此, 线程数据的释放, 必须在释放键之前完成.
 
 # 一般流程
 
@@ -155,7 +156,7 @@ int main()
 释放空间、每次设置之前判断的代码:
 
 ```cpp
-/*三个线程: 主线程,th1,th2各自有自己的私有数据区域
+/*三个线程: 主线程,th1,th2 各自有自己的私有数据区域
 */
 #include <stdio.h>
 #include <string.h>
@@ -173,10 +174,10 @@ char* str_accumulate(const char* s)
 
     pthread_once(&str_alloc_key_once,str_alloc_key);//str_alloc_key()这个函数只调用一次
     accu=(char*)pthread_getspecific(str_key);//取得该线程对应的关键字所关联的私有数据空间首址
-    if(accu==NULL)//每个新刚创建的线程这个值一定是NULL(没有指向任何已分配的数据空间)
+    if(accu==NULL)//每个新刚创建的线程这个值一定是 NULL(没有指向任何已分配的数据空间)
     {    accu=malloc(1024);//用上面取得的值指向新分配的空间
         if(accu==NULL)    return NULL;
-        accu[0]=0;//为后面strcat()作准备
+        accu[0]=0;//为后面 strcat()作准备
 
         pthread_setspecific(str_key,(void*)accu);//设置该线程对应的关键字关联的私有数据空间
         printf("Thread %lx: allocating buffer at %p\n",pthread_self(),accu);
@@ -186,10 +187,10 @@ char* str_accumulate(const char* s)
 }
 //设置私有数据空间的释放内存函数
 static void str_alloc_key()
-{    pthread_key_create(&str_key,str_alloc_destroy_accu);/*创建关键字及其对应的内存释放函数, 当进程创建关键字后, 这个关键字是NULL. 之后每创建一个线程os都会分给一个对应的关键字, 关键字关联线程私有数据空间首址, 初始化时是NULL*/
+{    pthread_key_create(&str_key,str_alloc_destroy_accu);/*创建关键字及其对应的内存释放函数, 当进程创建关键字后, 这个关键字是 NULL. 之后每创建一个线程 os 都会分给一个对应的关键字, 关键字关联线程私有数据空间首址, 初始化时是 NULL*/
     printf("Thread %lx: allocated key %d\n",pthread_self(),str_key);
 }
-/*线程退出时释放私有数据空间,注意主线程必须调用pthread_exit()(调用exit()不行)才能执行该函数释放accu指向的空间*/
+/*线程退出时释放私有数据空间,注意主线程必须调用 pthread_exit()(调用 exit()不行)才能执行该函数释放 accu 指向的空间*/
 static void str_alloc_destroy_accu(void* accu)
 {    printf("Thread %lx: freeing buffer at %p\n",pthread_self(),accu);
     free(accu);

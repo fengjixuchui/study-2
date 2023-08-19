@@ -1,17 +1,17 @@
-第6章 内核调试
+第 6 章 内核调试
 
-- 6.1 QEMU调试Linux内核
-    
-    - 6.1.1 QEMU运行ARM Linux内核
-    - 6.1.2 QEMU调试ARM Linux内核
-    - 6.1.3 QEMU运行ARMv8开发环境
+- 6.1 QEMU 调试 Linux 内核
+
+    - 6.1.1 QEMU 运行 ARM Linux 内核
+    - 6.1.2 QEMU 调试 ARM Linux 内核
+    - 6.1.3 QEMU 运行 ARMv8 开发环境
     - 6.1.4 文件系统支持
     - 6.1.5 图形化调试
     - 6.1.6 实验进阶
 
 - 6.2 ftrace
-    
-    - 6.2.1     
+
+    - 6.2.1
 
 - 6.3 SystemTap
 

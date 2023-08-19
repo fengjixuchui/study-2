@@ -10,11 +10,7 @@ yum install libmount-devel -y
 yum install libcap-ng-devel -y
 
 yum install libmnl-devel -y
-
-
-
 ```
-
 
 `tools/testing/selftests/kvm`
 

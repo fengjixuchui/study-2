@@ -3,4 +3,4 @@
 
 edk2 环境搭建: https://github.com/yuanzhaoming/uefi
 
-补充《UEFI原理与编程》中关于Edk2的调试: http://www.cppblog.com/djxzh/archive/2015/02/08/209766.html
+补充《UEFI 原理与编程》中关于 Edk2 的调试: http://www.cppblog.com/djxzh/archive/2015/02/08/209766.html

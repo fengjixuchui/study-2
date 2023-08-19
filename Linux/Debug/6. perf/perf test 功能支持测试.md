@@ -5,11 +5,11 @@
 
 Runs sanity tests. 健全性/完整性 测试
 
-该命令最初通过链接的例程进行各种健全性测试(assorted sanity tests), 但还将以脚本的形式查找包含更多测试的目录. 
+该命令最初通过链接的例程进行各种健全性测试(assorted sanity tests), 但还将以脚本的形式查找包含更多测试的目录.
 
-要获得可用测试的列表, 请使用`perf test list`, 指定测试名称片段将显示具有该名称的所有测试. 
+要获得可用测试的列表, 请使用`perf test list`, 指定测试名称片段将显示具有该名称的所有测试.
 
-要仅运行特定测试, 请告知测试名称片段或从性能测试列表中获得的编号. 
+要仅运行特定测试, 请告知测试名称片段或从性能测试列表中获得的编号.
 
 # 2. 使用方法
 
@@ -39,8 +39,8 @@ perf test [<options>] [{list <test-name-fragment>|[<test-name-fragments>|<test-n
     -v, --verbose         be more verbose (show symbol address, etc)
 ```
 
-* 
-* 
+*
+*
 
 ##
 
@@ -144,7 +144,7 @@ perf test [<options>] [{list <test-name-fragment>|[<test-name-fragments>|<test-n
 77: x86 Sample parsing
 ```
 
-DWARF unwind功能是否支持测试:
+DWARF unwind 功能是否支持测试:
 
 ```
 # perf test 73

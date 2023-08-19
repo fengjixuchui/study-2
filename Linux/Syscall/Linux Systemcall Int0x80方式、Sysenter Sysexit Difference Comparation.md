@@ -1,23 +1,22 @@
-
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
 
 - [1 系统调用简介](#1-系统调用简介)
-- [2 Linux系统调用实现方式的演进](#2-linux系统调用实现方式的演进)
-  - [2.1 通过INT 0x80中断方式进入系统调用](#21-通过int-0x80中断方式进入系统调用)
-  - [2.2 通过sysenter指令方式直接进入系统调用](#22-通过sysenter指令方式直接进入系统调用)
-- [3 通过INT 0x80中断方式进入系统调用](#3-通过int-0x80中断方式进入系统调用)
-- [4 通过sysenter指令方式直接进入系统调用](#4-通过sysenter指令方式直接进入系统调用)
-  - [4.1 sysenter/sysexit机制简介](#41-sysentersysexit机制简介)
+- [2 Linux 系统调用实现方式的演进](#2-linux-系统调用实现方式的演进)
+  - [2.1 通过 INT 0x80 中断方式进入系统调用](#21-通过-int-0x80-中断方式进入系统调用)
+  - [2.2 通过 sysenter 指令方式直接进入系统调用](#22-通过-sysenter-指令方式直接进入系统调用)
+- [3 通过 INT 0x80 中断方式进入系统调用](#3-通过-int-0x80-中断方式进入系统调用)
+- [4 通过 sysenter 指令方式直接进入系统调用](#4-通过-sysenter-指令方式直接进入系统调用)
+  - [4.1 sysenter/sysexit 机制简介](#41-sysentersysexit-机制简介)
     - [4.1.1 sysenter 指令](#411-sysenter-指令)
     - [4.1.2 SYSEXIT 指令](#412-sysexit-指令)
-  - [4.2 sysenter/sysexit和int n/iret的区别](#42-sysentersysexit和int-niret的区别)
+  - [4.2 sysenter/sysexit 和 int n/iret 的区别](#42-sysentersysexit-和-int-niret-的区别)
     - [4.2.1 sysenter/sysexit](#421-sysentersysexit)
     - [4.2.2 int n/iret](#422-int-niret)
-  - [4.3 sysenter执行流程](#43-sysenter执行流程)
-  - [4.4 sysexit执行流程](#44-sysexit执行流程)
-- [5 sysenter/sysexit编程示例](#5-sysentersysexit编程示例)
+  - [4.3 sysenter 执行流程](#43-sysenter-执行流程)
+  - [4.4 sysexit 执行流程](#44-sysexit-执行流程)
+- [5 sysenter/sysexit 编程示例](#5-sysentersysexit-编程示例)
 - [6 Linux SCI](#6-linux-sci)
   - [6.1 基于多路分解的系统调用实现](#61-基于多路分解的系统调用实现)
   - [6.2 直接内核态子函数调用实现系统调用](#62-直接内核态子函数调用实现系统调用)
@@ -35,7 +34,7 @@
 syscall_call:
     /*
     调用系统函数
-    sys_call_table也定义在是一张由指向实现各种系统调用的内核函数的函数指针组成的表: 
+    sys_call_table 也定义在是一张由指向实现各种系统调用的内核函数的函数指针组成的表: 
     linux-2.6.32.63\arch\x86\kernel\syscall_table_32.S
         ENTRY(sys_call_table)
             .long sys_restart_syscall    /* 0 - old "setup()" system call, used for restarting */
@@ -377,14 +376,14 @@ syscall_call:
             .long sys_perf_event_open
 ```
 
-在entry\_32.S中列出了Linux操作系统所支持的所有系统调用
+在 entry\_32.S 中列出了 Linux 操作系统所支持的所有系统调用
 
-# 2 Linux系统调用实现方式的演进
+# 2 Linux 系统调用实现方式的演进
 
 
-## 2.1 通过INT 0x80中断方式进入系统调用
+## 2.1 通过 INT 0x80 中断方式进入系统调用
 
-在 2.6以前的 Linux 2.4 内核中, 用户态 Ring3 代码请求内核态 Ring0 代码完成某些功能是通过系统调用完成的, 而系统调用的是通过软中断指令(int 0x80) 实现的. 在 x86 保护模式中, 处理 INT 中断指令时
+在 2.6 以前的 Linux 2.4 内核中, 用户态 Ring3 代码请求内核态 Ring0 代码完成某些功能是通过系统调用完成的, 而系统调用的是通过软中断指令(int 0x80) 实现的. 在 x86 保护模式中, 处理 INT 中断指令时
 
 1) CPU 首先从中断描述表 IDT 取出对应的门描述符
 
@@ -398,11 +397,11 @@ syscall_call:
 
 在发生系统调用, 由 Ring3 进入 Ring0 的这个过程浪费了不少的 CPU 周期, 例如, 系统调用必然需要由 Ring3 进入 Ring0, 权限提升之前和之后的级别是固定的, CPL 肯定是 3, 而 INT 80 的 DPL 肯定也是 3, 这样 CPU 检查门描述符的 DPL 和调用者的 CPL 就是完全没必要. 正是由于如此, Intel x86 CPU 从 PII 300(Family 6, Model 3, Stepping 3)之后, 开始支持新的系统调用指令 sysenter/sysexit
 
-## 2.2 通过sysenter指令方式直接进入系统调用
+## 2.2 通过 sysenter 指令方式直接进入系统调用
 
 sysenter 指令用于由 Ring3 进入 Ring0, SYSEXIT 指令用于由 Ring0 返回 Ring3. 由于**没有特权级别检查**的处理, 也**没有压栈**的操作, 所以执行速度比 INT n/IRET 快了不少. 
 
-sysenter和sysexit都是CPU原生支持的指令集
+sysenter 和 sysexit 都是 CPU 原生支持的指令集
 
 不同系统调用方法的性能比较:
 
@@ -414,15 +413,15 @@ sysenter和sysexit都是CPU原生支持的指令集
 
 http://www.ibm.com/developerworks/cn/linux/kernel/l-k26ncpu/
 
-# 3 通过INT 0x80中断方式进入系统调用
+# 3 通过 INT 0x80 中断方式进入系统调用
 
-通过80中断(软中断)进入系统调用的方式是Linux 2.6之前的做法, 关于这块的内容请参阅另一篇文章
+通过 80 中断(软中断)进入系统调用的方式是 Linux 2.6 之前的做法, 关于这块的内容请参阅另一篇文章
 
 http://www.cnblogs.com/LittleHann/p/3871630.html
 
-# 4 通过sysenter指令方式直接进入系统调用
+# 4 通过 sysenter 指令方式直接进入系统调用
 
-## 4.1 sysenter/sysexit机制简介
+## 4.1 sysenter/sysexit 机制简介
 
 ### 4.1.1 sysenter 指令
 
@@ -436,7 +435,7 @@ http://www.cnblogs.com/LittleHann/p/3871630.html
 
 2) SYSEXIT 指令只能从特权级 0 调用
 
-## 4.2 sysenter/sysexit和int n/iret的区别
+## 4.2 sysenter/sysexit 和 int n/iret 的区别
 
 ### 4.2.1 sysenter/sysexit
 
@@ -450,15 +449,15 @@ http://www.cnblogs.com/LittleHann/p/3871630.html
 
 3.2) SYSENTER_EIP_MSR: 用于指定要执行的 Ring 0 代码的起始地址
 
-3.3) SYSENTER_ESP_MSR: 用于指定要执行的Ring 0代码所使用的栈指针
+3.3) SYSENTER_ESP_MSR: 用于指定要执行的 Ring 0 代码所使用的栈指针
 
 ### 4.2.2 int n/iret
 
-1) int n/iret是成对出现的, iret 返回的地址并一定是 int n 指令的下一个指令地址
+1) int n/iret 是成对出现的, iret 返回的地址并一定是 int n 指令的下一个指令地址
 
-需要明白的是, 不管是以前的INT 0x80中断方式进入系统调用, 还是使用sysenter方式进入系统调用, 对于系统调用来说, 最终都是通过"**sys\_call\_table**"来根据**调用号**寻址, 跳转到对应的系统调用处理例程里面的, 所以我们对sys\_call\_table进行hijack replace hook不管在linux 2.4还是2.6以后都是有效的
+需要明白的是, 不管是以前的 INT 0x80 中断方式进入系统调用, 还是使用 sysenter 方式进入系统调用, 对于系统调用来说, 最终都是通过"**sys\_call\_table**"来根据**调用号**寻址, 跳转到对应的系统调用处理例程里面的, 所以我们对 sys\_call\_table 进行 hijack replace hook 不管在 linux 2.4 还是 2.6 以后都是有效的
 
-## 4.3 sysenter执行流程
+## 4.3 sysenter 执行流程
 
 在 Ring3 的代码调用了 sysenter 指令之后, CPU 会做出如下的操作: 
 
@@ -470,7 +469,7 @@ http://www.cnblogs.com/LittleHann/p/3871630.html
 6. 如果 EFLAGS 寄存器的 VM 标志被置位, 则清除该标志
 7. 开始执行指定的 Ring0 代码
 
-## 4.4 sysexit执行流程
+## 4.4 sysexit 执行流程
 
 在 Ring0 代码执行完毕, 调用 SYSEXIT 指令退回 Ring3 时, CPU 会做出如下操作: 
 
@@ -489,7 +488,7 @@ http://chenyufei.info/blog/2007-05-12/post-070512-221011-78/
 
 http://articles.manugarg.com/systemcallinlinux2_6.html
 
-# 5 sysenter/sysexit编程示例
+# 5 sysenter/sysexit 编程示例
 
 ```c
 #include <stdio.h>
@@ -509,24 +508,24 @@ int main() {
 
 # 6 Linux SCI
 
-Linux中系统调用的实现会根据不同的架构而有所变化, 而且即使在某种给定的体架构上也会不同. 例如, 早期的x86处理器使用了中断机制从用户空间迁移到内核空间中, 不过新的IA\-32处理器则提供了一些指令对这种转换进行优化(使用sysentersysexit指令)
+Linux 中系统调用的实现会根据不同的架构而有所变化, 而且即使在某种给定的体架构上也会不同. 例如, 早期的 x86 处理器使用了中断机制从用户空间迁移到内核空间中, 不过新的 IA\-32 处理器则提供了一些指令对这种转换进行优化(使用 sysentersysexit 指令)
 
 ## 6.1 基于多路分解的系统调用实现
 
-在Linux内核中, 多路分解是一种很常见的逻辑架构, **每个系统调用**都是通过一个**单一的入口点多路**传入内核. eax寄存器用来标识应当调用的某个系统调用. 例如, BSD(Berkeley Software Distribution)socket 调用(socket、bind、 connect 等)都与一个单独的系统调用索引(\_\_NR\_socketcall)关联在一起, 不过在内核中会进行多路分解, 通过另外一个参数进入适当的调用. 请参看 ./linux/net/socket.c中的sys\_socketcall 函数
+在 Linux 内核中, 多路分解是一种很常见的逻辑架构, **每个系统调用**都是通过一个**单一的入口点多路**传入内核. eax 寄存器用来标识应当调用的某个系统调用. 例如, BSD(Berkeley Software Distribution)socket 调用(socket、bind、 connect 等)都与一个单独的系统调用索引(\_\_NR\_socketcall)关联在一起, 不过在内核中会进行多路分解, 通过另外一个参数进入适当的调用. 请参看 ./linux/net/socket.c 中的 sys\_socketcall 函数
 
-关于BSD sys\_socketcall的相关知识, 请参阅另一篇文章
+关于 BSD sys\_socketcall 的相关知识, 请参阅另一篇文章
 
 ```
 http://www.cnblogs.com/LittleHann/p/3875451.html
-//搜索: 2. connect() API原理
+//搜索: 2. connect() API 原理
 ```
 
 ## 6.2 直接内核态子函数调用实现系统调用
 
-通过一个系统调用, 将工作委托给多个其他函数, 是内核前期的常见做法, 内核后来移植的某些体系结构(例如IA\-64、AMD64)没有实现多路分解, 而是直接使用原始多路复用的子函数直接作为系统调用
+通过一个系统调用, 将工作委托给多个其他函数, 是内核前期的常见做法, 内核后来移植的某些体系结构(例如 IA\-64、AMD64)没有实现多路分解, 而是直接使用原始多路复用的子函数直接作为系统调用
 
-例如socketcall的多路分解就演变成了直接的子函数系统调用
+例如 socketcall 的多路分解就演变成了直接的子函数系统调用
 
 Relevant Link:
 

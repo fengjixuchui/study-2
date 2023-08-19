@@ -3,13 +3,13 @@
 
 # 事件相关
 
-这部分说明了怎么统计和追踪KVM模块性能事件.
+这部分说明了怎么统计和追踪 KVM 模块性能事件.
 
 两种工具, `kvm_stat`和`kvm_trace`.
 
-## 跟踪KVM事件
+## 跟踪 KVM 事件
 
-使用ftrace能够生成详细事件跟踪记录.
+使用 ftrace 能够生成详细事件跟踪记录.
 
 ```
 # echo 1 >/sys/kernel/debug/tracing/events/kvm/enable
@@ -28,13 +28,13 @@
 # echo 0 >/sys/kernel/debug/tracing/events/kvm/enable
 ```
 
-## 统计KVM事件
+## 统计 KVM 事件
 
-通常是执行benchmark统计性能事件
+通常是执行 benchmark 统计性能事件
 
-这个`perf`工具在linux源码的`tools/perf`.
+这个`perf`工具在 linux 源码的`tools/perf`.
 
-build工具:
+build 工具:
 
 ```
 make -C <kernel source root directory>/tools/perf

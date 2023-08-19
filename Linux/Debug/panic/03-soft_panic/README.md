@@ -4,16 +4,16 @@
 <!-- code_chunk_output -->
 
 - [1. soft panic](#1-soft-panic)
-- [2. 驱动OOPS实例分析](#2-驱动oops实例分析)
+- [2. 驱动 OOPS 实例分析](#2-驱动-oops-实例分析)
   - [2.1. 导致 `OOPS` 的代码](#21-导致-oops-的代码)
   - [2.2. 重现 `OOPS`](#22-重现-oops)
   - [2.3. `OOPS` 信息](#23-oops-信息)
-  - [2.4. OOOPS信息分析](#24-ooops信息分析)
+  - [2.4. OOOPS 信息分析](#24-ooops-信息分析)
   - [2.5. 发现问题所在](#25-发现问题所在)
-    - [2.5.1. 通过gdb调试列出地址所对应的位置](#251-通过gdb调试列出地址所对应的位置)
-    - [2.5.2. addr2line将地址转换为对应的源代码](#252-addr2line将地址转换为对应的源代码)
-    - [2.5.3. 将gdb反汇编代码得到地址直接转换为对应的源代码](#253-将gdb反汇编代码得到地址直接转换为对应的源代码)
-    - [2.5.4. 使用objdump反汇编代码得到地址](#254-使用objdump反汇编代码得到地址)
+    - [2.5.1. 通过 gdb 调试列出地址所对应的位置](#251-通过-gdb-调试列出地址所对应的位置)
+    - [2.5.2. addr2line 将地址转换为对应的源代码](#252-addr2line-将地址转换为对应的源代码)
+    - [2.5.3. 将 gdb 反汇编代码得到地址直接转换为对应的源代码](#253-将-gdb-反汇编代码得到地址直接转换为对应的源代码)
+    - [2.5.4. 使用 objdump 反汇编代码得到地址](#254-使用-objdump-反汇编代码得到地址)
 - [3. 参考资料](#3-参考资料)
 
 <!-- /code_chunk_output -->
@@ -24,7 +24,7 @@
 
 在这种情况下, 驱动本身会崩溃, 但是还不至于让系统出现致命性失败, 因为它没有锁定中断处理例程. 导致 `hard panic`的原因同样对`soft panic`也有用(比如在运行时访问一个空指针).
 
-# 2. 驱动OOPS实例分析
+# 2. 驱动 OOPS 实例分析
 
 ## 2.1. 导致 `OOPS` 的代码
 
@@ -128,9 +128,9 @@ endif
 
 ## 2.2. 重现 `OOPS`
 
-make后加载模块, 提示加载失败, 此时内核倒是了OOPS, 由于故障不严重, 系统并未死机
+make 后加载模块, 提示加载失败, 此时内核倒是了 OOPS, 由于故障不严重, 系统并未死机
 
-![加载模块导致OOPS](insmod_oops.png)
+![加载模块导致 OOPS](insmod_oops.png)
 
 
 ## 2.3. `OOPS` 信息
@@ -140,8 +140,8 @@ make后加载模块, 提示加载失败, 此时内核倒是了OOPS, 由于故障
 ```cpp
 [ 5235.513513] BUG: unable to handle kernel NULL pointer dereference at           (null)
 [ 5235.513604] IP: [<ffffffffc0008003>] hello_init+0x3/0x1000 [kerneloops]
-[ 5235.513671] PGD 0 
-[ 5235.513696] Oops: 0002 [#1] SMP 
+[ 5235.513671] PGD 0
+[ 5235.513696] Oops: 0002 [#1] SMP
 [ 5235.513736] Modules linked in: kerneloops(OE+) bbswitch(OE) cuse arc4 ath9k ath9k_common ath9k_hw uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_core v4l2_common videodev i915 ath mac80211 rfcomm bnep media bluetooth cfg80211 intel_rapl x86_pkg_temp_thermal intel_powerclamp snd_hda_codec_hdmi kvm_intel snd_hda_codec_realtek drm_kms_helper kvm snd_hda_codec_generic snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep drm snd_pcm acer_wmi sparse_keymap snd_seq_midi snd_seq_midi_event snd_rawmidi snd_seq snd_seq_device snd_timer snd mei_me mei irqbypass crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel i2c_algo_bit fb_sys_fops syscopyarea sysfillrect sysimgblt lpc_ich shpchp soundcore aes_x86_64 lrw gf128mul glue_helper ablk_helper cryptd nfsd joydev input_leds auth_rpcgss nfs_acl nfs serio_raw video mac_hid wmi lockd parport_pc ppdev coretemp grace sunrpc lp fscache parport binfmt_misc hid_generic psmouse pata_acpi usbhid tg3 hid sdhci_pci ptp sdhci pps_core fjes
 [ 5235.514835] CPU: 1 PID: 9087 Comm: insmod Tainted: G           OE   4.4.0-72-generic #93~14.04.1-Ubuntu
 [ 5235.514918] Hardware name: Acer Aspire 4752/Aspire 4752, BIOS V2.10 08/25/2011
@@ -171,14 +171,14 @@ make后加载模块, 提示加载失败, 此时内核倒是了OOPS, 由于故障
 [ 5235.516610]  [<ffffffff811049be>] SYSC_finit_module+0x7e/0xa0
 [ 5235.516706]  [<ffffffff811049fe>] SyS_finit_module+0xe/0x10
 [ 5235.516802]  [<ffffffff81806eb6>] entry_SYSCALL_64_fastpath+0x16/0x75
-[ 5235.516883] Code: <c7> 04 25 00 00 00 00 01 00 00 00 48 89 e5 5d c3 00 00 00 00 00 00 
+[ 5235.516883] Code: <c7> 04 25 00 00 00 00 01 00 00 00 48 89 e5 5d c3 00 00 00 00 00 00
 [ 5235.517020] RIP  [<ffffffffc0008003>] hello_init+0x3/0x1000 [kerneloops]
 [ 5235.517084]  RSP <ffff880050053cc0>
 [ 5235.517117] CR2: 0000000000000000
 [ 5235.528875] ---[ end trace 69ea8d586c904d41 ]---
 ```
 
-## 2.4. OOOPS信息分析
+## 2.4. OOOPS 信息分析
 
 ```cpp
 Oops: 0002 [#1] SMP
@@ -200,9 +200,9 @@ Oops: 0002 [#1] SMP
 [ 5235.514835] CPU: 1 PID: 9087 Comm: insmod Tainted: G           OE   4.4.0-72-generic #93~14.04.1-Ubuntu
 ```
 
-表示这个 `OOPS` 发生在 `CPU1`, 当前运行的进程是9087号进程 insmod, `Tainted` 标识为 `G`, 内核版本是 `4.4.0-72-generic`, 操作系统为 `#93~14.04.1-Ubuntu`
+表示这个 `OOPS` 发生在 `CPU1`, 当前运行的进程是 9087 号进程 insmod, `Tainted` 标识为 `G`, 内核版本是 `4.4.0-72-generic`, 操作系统为 `#93~14.04.1-Ubuntu`
 
-其中Tainted的表示可以从内核中 `kernel/panic.c` 中找到
+其中 Tainted 的表示可以从内核中 `kernel/panic.c` 中找到
 
 | Tainted | 描述 |
 |:-------:|:---:|
@@ -266,17 +266,17 @@ Oops: 0002 [#1] SMP
 [ 5235.516802]  [<ffffffff81806eb6>] entry_SYSCALL_64_fastpath+0x16/0x75
 ```
 
-以上是堆栈调用跟踪回溯信息, 在Oops发生之前调用的函数的列表.
+以上是堆栈调用跟踪回溯信息, 在 Oops 发生之前调用的函数的列表.
 
 然后是在 `Oops`发生时正在运行的机器代码部分的十六进制转储.
 
 ```cpp
-cpp[ 5235.516883] Code: <c7> 04 25 00 00 00 00 01 00 00 00 48 89 e5 5d c3 00 00 00 00 00 00 
+cpp[ 5235.516883] Code: <c7> 04 25 00 00 00 00 01 00 00 00 48 89 e5 5d c3 00 00 00 00 00 00
 ```
 
 ## 2.5. 发现问题所在
 
-其中最关键的信息, 就是PC/IP等寄存器的信息, 直接显示了正在执行的代码
+其中最关键的信息, 就是 PC/IP 等寄存器的信息, 直接显示了正在执行的代码
 
 ```cpp
 [ 5235.513604] IP: [<ffffffffc0008003>] hello_init+0x3/0x1000 [kerneloops]
@@ -296,28 +296,28 @@ cpp[ 5235.516883] Code: <c7> 04 25 00 00 00 00 01 00 00 00 48 89 e5 5d c3 00 00 
 
 >格式为 <symbol> +偏移/长度
 >
->hello_init指示了是在hello_init中出现的异常
+>hello_init 指示了是在 hello_init 中出现的异常
 >
->0x3表示出错的偏移位置
+>0x3 表示出错的偏移位置
 >
->0x1000表示hello_init函数的大小
+>0x1000 表示 hello_init 函数的大小
 
-### 2.5.1. 通过gdb调试列出地址所对应的位置
+### 2.5.1. 通过 gdb 调试列出地址所对应的位置
 
-由于我们的是驱动出现的问题, 那么我们就用gdb直接调试驱动的 `KO` 文件, 如果是源内核出现的 `OOPS`, 那么只能用 `gdb` 对 `vmlinux` 文件进行调试
+由于我们的是驱动出现的问题, 那么我们就用 gdb 直接调试驱动的 `KO` 文件, 如果是源内核出现的 `OOPS`, 那么只能用 `gdb` 对 `vmlinux` 文件进行调试
 
 ```
-# gdb调试驱动
+# gdb 调试驱动
 gdb kerneloops.ko
 
-# l/list address列出对应的代码位置
+# l/list address 列出对应的代码位置
 l *(hello_init+0x3)
 
-# 或者 b address在地址出插入断点, 也会提示断点的位置
+# 或者 b address 在地址出插入断点, 也会提示断点的位置
 b *(hello_init+0x3)
 ```
 
-![gdb调试代码](gdb_debug_oops.png)
+![gdb 调试代码](gdb_debug_oops.png)
 
 
 可以看到 `gdb` 提示 `hello_init+0x3` 对应的代码是驱动远大第 `12` 行
@@ -328,17 +328,17 @@ b *(hello_init+0x3)
 
 由于 `p` 值一个 `NULL` 指针, 直接赋值, 导致 `NULL` 指针异常
 
-此方法对于内核OOPS同样适用, 调试时将驱动 `KO` 文件替换为内核 `vmlinux` 文件
+此方法对于内核 OOPS 同样适用, 调试时将驱动 `KO` 文件替换为内核 `vmlinux` 文件
 
-### 2.5.2. addr2line将地址转换为对应的源代码
+### 2.5.2. addr2line 将地址转换为对应的源代码
 
 ```cpp
 addr2line -e kerneloops.o hello_init+0x3
 ```
 
-此方法对于内核OOPS同样适用, 调试时将驱动 `KO` 文件或者 `OBJ` 文件替换为内核 `vmlinux` 文件
+此方法对于内核 OOPS 同样适用, 调试时将驱动 `KO` 文件或者 `OBJ` 文件替换为内核 `vmlinux` 文件
 
-### 2.5.3. 将gdb反汇编代码得到地址直接转换为对应的源代码
+### 2.5.3. 将 gdb 反汇编代码得到地址直接转换为对应的源代码
 
 对于驱动来说, 可以从`/sys/module/对应驱动名称/sections/.init.text` 查找到对应的地址信息
 
@@ -348,9 +348,9 @@ gdb kerneloops.ko
 
 #  接下来, 使用 `add-symbol-file` 将符号文件添加到调试器.
 add-symbol-file kerneloops.o 0xffffffffa03e1000
-#  将hello_init函数反汇编得到虚拟地址信息
+#  将 hello_init 函数反汇编得到虚拟地址信息
 disassemble hello_init
-#list  address+offset的信息
+#list  address+offset 的信息
 l *(address+offset)
 ```
 
@@ -367,17 +367,17 @@ l *(address+offset)
 
 ```cpp
 cat /sys/module/kerneloops/sections/.init.text
-OR 
+OR
 nm kerneloops.ko | grep hello_init
-OR 
+OR
 nm kerneloops.o | grep hello_init
 ```
 
 ![获取地址](cat_hello_init_address.png)
 
-地址信息是0x0000000000000000
+地址信息是 0x0000000000000000
 
-gdb调试驱动kerneloops.ko,  并添加调试信息
+gdb 调试驱动 kerneloops.ko,  并添加调试信息
 
 ```cpp
 gdb kerneloops.ko
@@ -386,7 +386,7 @@ add-symbol-file kerneloops.o 0x0000000000000000
 
 ![add_symbol_file](add_symbol_file.png)
 
-接着将hello_init函数反汇编
+接着将 hello_init 函数反汇编
 
 
 ```cpp
@@ -395,10 +395,10 @@ disassemble hello_init
 
 ![disassemble_hello_init](disassemble_hello_init.png)
 
-可以得到hello_init的起始地址为 `0x0000000000000024`, 
-那么hello_init+0x03的地址为0x0000000000000027
+可以得到 hello_init 的起始地址为 `0x0000000000000024`,
+那么 hello_init+0x03 的地址为 0x0000000000000027
 对应的代码`mov    DWORD PTR ds:0x0,0x1`
-可以看到是个0异常
+可以看到是个 0 异常
 
 进一步的我们查阅其代码
 
@@ -408,19 +408,19 @@ l *(0x0000000000000027)
 
 ![list_address_offset](list_address_offset.png)
 
-同样可以得到最后异常的代码在地12行
+同样可以得到最后异常的代码在地 12 行
 
 
-此方法对于内核OOPS同样适用, 调试时将驱动 `KO` 文件或者 `OBJ` 文件替换为内核 `vmlinux` 文件,  通过 `nm vmlinux`和 `cat /proc/kallsyms` 获取到对应的地址信息
+此方法对于内核 OOPS 同样适用, 调试时将驱动 `KO` 文件或者 `OBJ` 文件替换为内核 `vmlinux` 文件,  通过 `nm vmlinux`和 `cat /proc/kallsyms` 获取到对应的地址信息
 
-### 2.5.4. 使用objdump反汇编代码得到地址
+### 2.5.4. 使用 objdump 反汇编代码得到地址
 
 ```cpp
-objdump -D *.o得到反汇编代码
+objdump -D *.o 得到反汇编代码
 
-objdump -S *.o得到含有c源码的汇编
+objdump -S *.o 得到含有 c 源码的汇编
 ```
-这要求之前的编译包含了 `debug`信息 `(-g)`, 而我们的Makefile中添加了 `-g` 调试选项
+这要求之前的编译包含了 `debug`信息 `(-g)`, 而我们的 Makefile 中添加了 `-g` 调试选项
 
 
 ```cpp
@@ -432,7 +432,7 @@ objdump -S kerneloops.o
 ![objdump](objdump_disassemble.png)
 
 
-可以很明显的看到hello_init偏移0x3出的汇编和对应的代码
+可以很明显的看到 hello_init 偏移 0x3 出的汇编和对应的代码
 
 ```cpp
 	*p = 1;
@@ -442,15 +442,15 @@ objdump -S kerneloops.o
 直接对地址 `0x0` 处写入 `0x1`
 
 
-此方法对于内核OOPS同样适用, 调试时将驱动 `KO` 文件或者 `OBJ` 文件替换为内核 `vmlinux` 文件
+此方法对于内核 OOPS 同样适用, 调试时将驱动 `KO` 文件或者 `OBJ` 文件替换为内核 `vmlinux` 文件
 
 # 3. 参考资料
 
-[根据内核Oops 定位代码工具使用— addr2line 、gdb、objdump](http://blog.csdn.net/u012719256/article/details/53365155)
+[根据内核 Oops 定位代码工具使用— addr2line 、gdb、objdump](http://blog.csdn.net/u012719256/article/details/53365155)
 
-[转载_Linux内核OOPS调试](http://blog.csdn.net/tommy_wxie/article/details/12521535)
+[转载_Linux 内核 OOPS 调试](http://blog.csdn.net/tommy_wxie/article/details/12521535)
 
-[kernel panic/kernel oops分析](http://blog.chinaunix.net/uid-20651662-id-1906954.html)
+[kernel panic/kernel oops 分析](http://blog.chinaunix.net/uid-20651662-id-1906954.html)
 
 [DebuggingKernelOops](https://wiki.ubuntu.com/DebuggingKernelOops)
 
@@ -458,7 +458,7 @@ objdump -S kerneloops.o
 
 [Understanding a Kernel Oops!](http://opensourceforu.com/2011/01/understanding-a-kernel-oops/)
 
-[Kernel oops错误](http://blog.163.com/prodigal_s/blog/static/204537164201411611432884/)
+[Kernel oops 错误](http://blog.163.com/prodigal_s/blog/static/204537164201411611432884/)
 
 [Kernel Oops Howto](http://madwifi-project.org/wiki/DevDocs/KernelOops)
 
@@ -466,4 +466,4 @@ objdump -S kerneloops.o
 
 [WiKipedia](https://en.wikipedia.org/wiki/Linux_kernel_oops)
 
-[Oops中的error code解释](http://blog.csdn.net/mozun1/article/details/53306714)
+[Oops 中的 error code 解释](http://blog.csdn.net/mozun1/article/details/53306714)

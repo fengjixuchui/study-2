@@ -1,5 +1,5 @@
 
-wiki链接: http://wiki.0xffffff.org
+wiki 链接: http://wiki.0xffffff.org
 
 wiki github: https://github.com/hurley25/wiki
 

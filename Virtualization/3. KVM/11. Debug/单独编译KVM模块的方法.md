@@ -1,8 +1,8 @@
 
-1. 进入KVM代码目录
+1. 进入 KVM 代码目录
 
 ```
-进入KVM代码目录
+进入 KVM 代码目录
 
 cd /home/sdp/workspace/src/open/linux/arch/x86/kvm
 

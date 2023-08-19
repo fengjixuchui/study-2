@@ -5,7 +5,7 @@
 
 Filter to augment the events stream with additional information(用附加信息扩充事件流的过滤器)
 
-该工具读取perf record工具记录的事件流, 并将其定向到标准输出. 在被分析代码中的任何一点, 都可以向事件流中注入其他事件. 
+该工具读取 perf record 工具记录的事件流, 并将其定向到标准输出. 在被分析代码中的任何一点, 都可以向事件流中注入其他事件.
 
 
 # 2. 使用方法
@@ -74,8 +74,8 @@ perf inject <options>
         --strip           strip non-synthesized events (use with --itrace)
 ```
 
-* 
-* 
+*
+*
 
 ##
 

@@ -3,10 +3,10 @@
 
 <!-- code_chunk_output -->
 
-* [1 查看MCH(北桥)](#1-查看mch北桥)
+- [1 查看 MCH(北桥)](#1-查看-mch北桥)
 
 <!-- /code_chunk_output -->
 
-# 1 查看MCH(北桥)
+# 1 查看 MCH(北桥)
 
 通过

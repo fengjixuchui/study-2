@@ -69,8 +69,8 @@ perf daemon ping [<options>]]
         --time <str>      Time span (time percent or absolute timestamp)
 ```
 
-* 
-* 
+*
+*
 
 ##
 
@@ -89,4 +89,4 @@ https://kernel.taobao.org/2017/10/C2C-False-Sharing-Detection-in-Linux-Perf/
 https://joemario.github.io/blog/2016/09/01/c2c-blog/
 
 
-只支持Intel???
+只支持 Intel???

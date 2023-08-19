@@ -22,7 +22,7 @@
 # fc-list
 ```
 
-提示命令无效, 在/usr/share/目录下没有fonts和fontconfig目录, 说明没有字体库.
+提示命令无效, 在/usr/share/目录下没有 fonts 和 fontconfig 目录, 说明没有字体库.
 
 # 2. 安装字体库
 
@@ -30,11 +30,11 @@
 # yum install -y fontconfig
 ```
 
-fontconfig用来安装字体库
+fontconfig 用来安装字体库
 
-/usr/share目录就可以看到fonts和fontconfig目录
+/usr/share 目录就可以看到 fonts 和 fontconfig 目录
 
-ttmkfdir用来搜索目录中所有的字体信息, 并汇总生成fonts.scale文件
+ttmkfdir 用来搜索目录中所有的字体信息, 并汇总生成 fonts.scale 文件
 
 # 3. 添加字体
 
@@ -44,25 +44,25 @@ ttmkfdir用来搜索目录中所有的字体信息, 并汇总生成fonts.scale�
 # mkdir /usr/share/fonts/SourceCodePro
 ```
 
-从 https://github.com/ryanoasis/nerd-fonts/releases 下载SourceCodePro.zip
+从 https://github.com/ryanoasis/nerd-fonts/releases 下载 SourceCodePro.zip
 
 并解压放到该目录下(不需要子目录)
 
 # 4. 修改目录的权限
 
 ```
-# chmod -R 755 /usr/share/fonts/SourceCodePro 
+# chmod -R 755 /usr/share/fonts/SourceCodePro
 ```
 
 # 5. 处理字体信息
 
-安装ttmkfdir来搜索目录中所有的字体信息, 并汇总生成fonts.scale文件
+安装 ttmkfdir 来搜索目录中所有的字体信息, 并汇总生成 fonts.scale 文件
 
 ```
 # yum -y install ttmkfdir
 ```
 
-执行ttmkfdir命令
+执行 ttmkfdir 命令
 
 ```
 # ttmkfdir -e /usr/share/X11/fonts/encodings/encodings.dir
@@ -74,7 +74,7 @@ ttmkfdir用来搜索目录中所有的字体信息, 并汇总生成fonts.scale�
 # vim /etc/fonts/fonts.conf
 ```
 
-有个Font directory list, 即字体列表, 将字体位置加进去:
+有个 Font directory list, 即字体列表, 将字体位置加进去:
 
 ```
 <!-- Font directory list -->

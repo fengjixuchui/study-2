@@ -41,4 +41,4 @@ $ cd /tmp/kernel-extract/
 $ objdump -D vmlinux | less
 ```
 
-# 
+#

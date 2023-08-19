@@ -3,13 +3,13 @@
 
 # 用途
 
-管理perf的buildid缓存. 
+管理 perf 的 buildid 缓存.
 
-> 每个ELF文件都有一个唯一的buildid. buildid被perf用来关联性能数据与ELF文件.
+> 每个 ELF 文件都有一个唯一的 buildid. buildid 被 perf 用来关联性能数据与 ELF 文件.
 
-它可以用来给缓存中添加, 删除, 更新和清除文件.  将来, 它还应该为缓存等使用的空间设置上限. 
+它可以用来给缓存中添加, 删除, 更新和清除文件.  将来, 它还应该为缓存等使用的空间设置上限.
 
-这还会扫描目标二进制文件的SDT(静态定义的跟踪), 并将其与buildid-cache一起记录下来, 这将由perf probe.  有关更多详细信息, 请参见perf-probe(1). 
+这还会扫描目标二进制文件的 SDT(静态定义的跟踪), 并将其与 buildid-cache 一起记录下来, 这将由 perf probe.  有关更多详细信息, 请参见 perf-probe(1).
 
 # 2. 使用方法
 
@@ -52,8 +52,8 @@ perf buildid-cache <options>
         --target-ns <n>   target pid for namespace context
 ```
 
-* 
-* 
+*
+*
 
 ##
 

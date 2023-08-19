@@ -14,9 +14,9 @@
 
 - 算法数据结构: https://www.cnblogs.com/1-2-3/category/235329.html
 
-- 常用数据结构与算法C/C++实现: https://github.com/mmc-maodun/Data-Structure-And-Algorithm
+- 常用数据结构与算法 C/C++实现: https://github.com/mmc-maodun/Data-Structure-And-Algorithm
 
-- 数据结构与算法的C语言实现: https://github.com/Wangchangchung/Data-structure
+- 数据结构与算法的 C 语言实现: https://github.com/Wangchangchung/Data-structure
 
 - 维基百科
 
@@ -24,4 +24,4 @@
 
 - 快速攻克算法和数据结构: https://www.zhihu.com/lives/795264798257479680
 
-* 数据结构与算法之美: 极客时间课程, 王争(前Google工程师)
+* 数据结构与算法之美: 极客时间课程, 王争(前 Google 工程师)

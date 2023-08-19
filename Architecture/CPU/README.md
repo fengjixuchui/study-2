@@ -1,1 +1,1 @@
-CPU, 各种架构CPU
+CPU, 各种架构 CPU

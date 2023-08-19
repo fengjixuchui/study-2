@@ -1,1 +1,1 @@
-谢宝友:  深入理解Linux RCU
+谢宝友:  深入理解 Linux RCU

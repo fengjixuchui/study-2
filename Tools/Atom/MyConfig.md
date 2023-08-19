@@ -1,3 +1,4 @@
+
 ## 1. 基本配置
 
 ### 1.1 配置文件
@@ -38,9 +39,9 @@ tab length: 4
 
 ### 3.4 tree-view-background
 
-### 3.5 vim相关
+### 3.5 vim 相关
 
-使用vim-mode一定要安装ex-mode和relative-numbers插件
+使用 vim-mode 一定要安装 ex-mode 和 relative-numbers 插件
 
 地址: https://atom.io/packages/ex-mode
 

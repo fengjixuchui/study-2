@@ -1,1 +1,1 @@
-Intel 8086汇编模拟器: https://github.com/haiwei-li/Intel8086
+Intel 8086 汇编模拟器: https://github.com/haiwei-li/Intel8086

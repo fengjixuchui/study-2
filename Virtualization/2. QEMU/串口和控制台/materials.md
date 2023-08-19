@@ -16,21 +16,23 @@ https://blog.csdn.net/defeattroy/article/details/8849057
 
 char device redirected to /dev/pts/4 (label charserial0)
 
-1. host发, 查看guest
-host写guest:
+1. host 发, 查看 guest
+
+host 写 guest:
 
 echo "root" > /dev/pts/4
 
-host读guest重定向信息:
+host 读 guest 重定向信息:
 
 cat /dev/pts/4
 
-2. guest发, host看
-在guest中执行
+2. guest 发, host 看
+
+在 guest 中执行
 
 echo love > /dev/ttyS0
 
-在host中查看
+在 host 中查看
 
 cat /dev/pts/4
 

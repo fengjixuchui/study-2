@@ -3,60 +3,60 @@
 
 <!-- code_chunk_output -->
 
-* [1 Systemd和Systemctl基础](#1-systemd和systemctl基础)
-	* [1.1 版本](#11-版本)
-	* [1.2 二进制文件和库文件](#12-二进制文件和库文件)
-	* [1.3 systemd是否运行](#13-systemd是否运行)
-	* [1.4 分析systemd启动进程](#14-分析systemd启动进程)
-	* [1.5 分析启动时各个进程花费的时间](#15-分析启动时各个进程花费的时间)
-	* [1.6 分析启动时的关键链](#16-分析启动时的关键链)
-	* [1.7 列出所有可用单元](#17-列出所有可用单元)
-	* [1.8 列出所有运行中单元](#18-列出所有运行中单元)
-	* [1.9 列出所有失败单元](#19-列出所有失败单元)
-	* [1.10 检查某个单元(如 cron.service)是否启用](#110-检查某个单元如-cronservice是否启用)
-	* [1.11 检查某个单元或服务是否运行](#111-检查某个单元或服务是否运行)
-* [2 使用Systemctl控制并管理服务](#2-使用systemctl控制并管理服务)
-	* [2.1 列出所有服务(包括启用的和禁用的)](#21-列出所有服务包括启用的和禁用的)
-	* [2.2 启动、重启、停止、重载服务以及检查服务](#22-启动-重启-停止-重载服务以及检查服务)
-	* [2.3 如何激活服务并在启动时启用或禁用服务(即系统启动时自动启动服务)](#23-如何激活服务并在启动时启用或禁用服务即系统启动时自动启动服务)
-	* [2.4 如何屏蔽(让它不能启动)或显示服务](#24-如何屏蔽让它不能启动或显示服务)
-	* [2.5 使用systemctl命令杀死服务](#25-使用systemctl命令杀死服务)
-* [3 使用Systemctl控制并管理挂载点](#3-使用systemctl控制并管理挂载点)
-	* [3.1 列出所有系统挂载点](#31-列出所有系统挂载点)
-	* [3.2 挂载、卸载、重新挂载、重载系统挂载点并检查系统中挂载点状态](#32-挂载-卸载-重新挂载-重载系统挂载点并检查系统中挂载点状态)
-	* [3.3 在启动时激活、启用或禁用挂载点(系统启动时自动挂载)](#33-在启动时激活-启用或禁用挂载点系统启动时自动挂载)
-	* [3.4 在Linux中屏蔽(让它不能启用)或可见挂载点](#34-在linux中屏蔽让它不能启用或可见挂载点)
-* [4 使用Systemctl控制并管理套接口](#4-使用systemctl控制并管理套接口)
-	* [4.1 列出所有可用系统套接口](#41-列出所有可用系统套接口)
-	* [4.2 在Linux中启动、重启、停止、重载套接口并检查其状态](#42-在linux中启动-重启-停止-重载套接口并检查其状态)
-	* [4.3 在启动时激活套接口, 并启用或禁用它(系统启动时自启动)](#43-在启动时激活套接口并启用或禁用它系统启动时自启动)
-	* [4.4 屏蔽(使它不能启动)或显示套接口](#44-屏蔽使它不能启动或显示套接口)
-* [5 服务的CPU利用率](#5-服务的cpu利用率)
-	* [5.1 获取当前某个服务的CPU分配额](#51-获取当前某个服务的cpu分配额)
-	* [5.2 将某个服务(httpd.service)的CPU分配份额限制为2000 CPUShares\/](#52-将某个服务httpdservice的cpu分配份额限制为2000-cpushares)
-	* [5.3 检查某个服务的所有配置细节](#53-检查某个服务的所有配置细节)
-	* [5.4 分析某个服务的关键链](#54-分析某个服务的关键链)
-	* [5.5 获取某个服务的依赖性列表](#55-获取某个服务的依赖性列表)
-	* [5.6 按等级列出控制组](#56-按等级列出控制组)
-	* [5.7 按CPU、内存、输入和输出列出控制组](#57-按cpu-内存-输入和输出列出控制组)
-* [6 控制系统运行等级](#6-控制系统运行等级)
-	* [6.1 启动系统救援模式](#61-启动系统救援模式)
-	* [6.2 进入紧急模式](#62-进入紧急模式)
-	* [6.3 列出当前使用的运行等级](#63-列出当前使用的运行等级)
-	* [6.4 启动运行等级5, 即图形模式](#64-启动运行等级5即图形模式)
-	* [6.5 启动运行等级3, 即多用户模式(命令行)](#65-启动运行等级3即多用户模式命令行)
-	* [6.6 设置多用户模式或图形模式为默认运行等级](#66-设置多用户模式或图形模式为默认运行等级)
-	* [6.7 重启、停止、挂起、休眠系统或使系统进入混合睡眠](#67-重启-停止-挂起-休眠系统或使系统进入混合睡眠)
-* [7 参考](#7-参考)
+- [1 Systemd 和 Systemctl 基础](#1-systemd-和-systemctl-基础)
+  - [1.1 版本](#11-版本)
+  - [1.2 二进制文件和库文件](#12-二进制文件和库文件)
+  - [1.3 systemd 是否运行](#13-systemd-是否运行)
+  - [1.4 分析 systemd 启动进程](#14-分析-systemd-启动进程)
+  - [1.5 分析启动时各个进程花费的时间](#15-分析启动时各个进程花费的时间)
+  - [1.6 分析启动时的关键链](#16-分析启动时的关键链)
+  - [1.7 列出所有可用单元](#17-列出所有可用单元)
+  - [1.8 列出所有运行中单元](#18-列出所有运行中单元)
+  - [1.9 列出所有失败单元](#19-列出所有失败单元)
+  - [1.10 检查某个单元(如 cron.service)是否启用](#110-检查某个单元如-cronservice 是否启用)
+  - [1.11 检查某个单元或服务是否运行](#111-检查某个单元或服务是否运行)
+- [2 使用 Systemctl 控制并管理服务](#2-使用-systemctl-控制并管理服务)
+  - [2.1 列出所有服务(包括启用的和禁用的)](#21-列出所有服务包括启用的和禁用的)
+  - [2.2 启动、重启、停止、重载服务以及检查服务](#22-启动-重启-停止-重载服务以及检查服务)
+  - [2.3 如何激活服务并在启动时启用或禁用服务(即系统启动时自动启动服务)](#23-如何激活服务并在启动时启用或禁用服务即系统启动时自动启动服务)
+  - [2.4 如何屏蔽(让它不能启动)或显示服务](#24-如何屏蔽让它不能启动或显示服务)
+  - [2.5 使用 systemctl 命令杀死服务](#25-使用-systemctl-命令杀死服务)
+- [3 使用 Systemctl 控制并管理挂载点](#3-使用-systemctl-控制并管理挂载点)
+  - [3.1 列出所有系统挂载点](#31-列出所有系统挂载点)
+  - [3.2 挂载、卸载、重新挂载、重载系统挂载点并检查系统中挂载点状态](#32-挂载-卸载-重新挂载-重载系统挂载点并检查系统中挂载点状态)
+  - [3.3 在启动时激活、启用或禁用挂载点(系统启动时自动挂载)](#33-在启动时激活-启用或禁用挂载点系统启动时自动挂载)
+  - [3.4 在 Linux 中屏蔽(让它不能启用)或可见挂载点](#34-在-linux-中屏蔽让它不能启用或可见挂载点)
+- [4 使用 Systemctl 控制并管理套接口](#4-使用-systemctl-控制并管理套接口)
+  - [4.1 列出所有可用系统套接口](#41-列出所有可用系统套接口)
+  - [4.2 在 Linux 中启动、重启、停止、重载套接口并检查其状态](#42-在-linux-中启动-重启-停止-重载套接口并检查其状态)
+  - [4.3 在启动时激活套接口, 并启用或禁用它(系统启动时自启动)](#43-在启动时激活套接口-并启用或禁用它系统启动时自启动)
+  - [4.4 屏蔽(使它不能启动)或显示套接口](#44-屏蔽使它不能启动或显示套接口)
+- [5 服务的 CPU 利用率](#5-服务的-cpu-利用率)
+  - [5.1 获取当前某个服务的 CPU 分配额](#51-获取当前某个服务的-cpu-分配额)
+  - [5.2 将某个服务(httpd.service)的 CPU 分配份额限制为 2000 CPUShares\/](#52-将某个服务 httpdservice 的-cpu-分配份额限制为-2000-cpushares)
+  - [5.3 检查某个服务的所有配置细节](#53-检查某个服务的所有配置细节)
+  - [5.4 分析某个服务的关键链](#54-分析某个服务的关键链)
+  - [5.5 获取某个服务的依赖性列表](#55-获取某个服务的依赖性列表)
+  - [5.6 按等级列出控制组](#56-按等级列出控制组)
+  - [5.7 按 CPU、内存、输入和输出列出控制组](#57-按-cpu-内存-输入和输出列出控制组)
+- [6 控制系统运行等级](#6-控制系统运行等级)
+  - [6.1 启动系统救援模式](#61-启动系统救援模式)
+  - [6.2 进入紧急模式](#62-进入紧急模式)
+  - [6.3 列出当前使用的运行等级](#63-列出当前使用的运行等级)
+  - [6.4 启动运行等级 5, 即图形模式](#64-启动运行等级-5-即图形模式)
+  - [6.5 启动运行等级 3, 即多用户模式(命令行)](#65-启动运行等级-3-即多用户模式命令行)
+  - [6.6 设置多用户模式或图形模式为默认运行等级](#66-设置多用户模式或图形模式为默认运行等级)
+  - [6.7 重启、停止、挂起、休眠系统或使系统进入混合睡眠](#67-重启-停止-挂起-休眠系统或使系统进入混合睡眠)
+- [7 参考](#7-参考)
 
 <!-- /code_chunk_output -->
-Systemctl是一个systemd工具, 主要负责控制systemd系统和服务管理器. 
+Systemctl 是一个 systemd 工具, 主要负责控制 systemd 系统和服务管理器.
 
-Systemd是一个系统管理守护进程、工具和库的集合, 用于取代System V初始进程. Systemd的功能是用于集中管理和配置类UNIX系统. 
+Systemd 是一个系统管理守护进程、工具和库的集合, 用于取代 System V 初始进程. Systemd 的功能是用于集中管理和配置类 UNIX 系统.
 
-在Linux生态系统中, Systemd被部署到了大多数的标准Linux发行版中, 只有为数不多的几个发行版尚未部署. Systemd通常是所有其它守护进程的父进程, 但并非总是如此. 
+在 Linux 生态系统中, Systemd 被部署到了大多数的标准 Linux 发行版中, 只有为数不多的几个发行版尚未部署. Systemd 通常是所有其它守护进程的父进程, 但并非总是如此.
 
-# 1 Systemd和Systemctl基础
+# 1 Systemd 和 Systemctl 基础
 
 ## 1.1 版本
 
@@ -70,7 +70,7 @@ systemd 219
 
 ## 1.2 二进制文件和库文件
 
-检查systemd和systemctl的二进制文件和库文件的安装位置
+检查 systemd 和 systemctl 的二进制文件和库文件的安装位置
 
 ```
 [root@gerrylee ~]# whereis systemd
@@ -79,20 +79,20 @@ systemd: /usr/lib/systemd /etc/systemd /usr/share/systemd /usr/share/man/man1/sy
 systemctl: /usr/bin/systemctl /usr/share/man/man1/systemctl.1.gz
 ```
 
-## 1.3 systemd是否运行
+## 1.3 systemd 是否运行
 
 ```
 [root@gerrylee ~]# ps -eaf | grep [s]ystemd
-root         1     0  0 5月21 ?       00:02:54 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
-root      2656     1  0 5月21 ?       00:00:04 /usr/lib/systemd/systemd-journald
-root      2692     1  0 5月21 ?       00:00:00 /usr/lib/systemd/systemd-udevd
-dbus      5466     1  7 5月21 ?       16:21:20 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
-root      5501     1  0 5月21 ?       00:00:07 /usr/lib/systemd/systemd-logind
+root         1     0  0 5 月 21 ?       00:02:54 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+root      2656     1  0 5 月 21 ?       00:00:04 /usr/lib/systemd/systemd-journald
+root      2692     1  0 5 月 21 ?       00:00:00 /usr/lib/systemd/systemd-udevd
+dbus      5466     1  7 5 月 21 ?       16:21:20 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
+root      5501     1  0 5 月 21 ?       00:00:07 /usr/lib/systemd/systemd-logind
 ```
 
-注意: systemd是作为父进程(PID=1)运行的. 在上面带(\-e)参数的ps命令输出中, 选择所有进程, (\-a)选择除会话前导外的所有进程, 并使用(\-f)参数输出完整格式列表(即 \-eaf). 
+注意: systemd 是作为父进程(PID=1)运行的. 在上面带(\-e)参数的 ps 命令输出中, 选择所有进程, (\-a)选择除会话前导外的所有进程, 并使用(\-f)参数输出完整格式列表(即 \-eaf).
 
-## 1.4 分析systemd启动进程
+## 1.4 分析 systemd 启动进程
 
 ```
 [root@gerrylee project]# systemd-analyze
@@ -143,7 +143,7 @@ graphical.target @26.024s
                                       └─dev-mapper-centos\x2dswap.device @718ms
 ```
 
-重要: Systemctl接受服务(.service), 挂载点(.mount), 套接口(.socket)和设备(.device)作为单元. 
+重要: Systemctl 接受服务(.service), 挂载点(.mount), 套接口(.socket)和设备(.device)作为单元.
 
 ## 1.7 列出所有可用单元
 
@@ -218,7 +218,7 @@ enabled
      Docs: man:firewalld(1)
 ```
 
-# 2 使用Systemctl控制并管理服务
+# 2 使用 Systemctl 控制并管理服务
 
 ## 2.1 列出所有服务(包括启用的和禁用的)
 
@@ -266,13 +266,13 @@ ln -s '/dev/null' '/etc/systemd/system/httpd.service'
 rm '/etc/systemd/system/httpd.service'
 ```
 
-## 2.5 使用systemctl命令杀死服务
+## 2.5 使用 systemctl 命令杀死服务
 
 ```
 systemctl kill httpd
 ```
 
-# 3 使用Systemctl控制并管理挂载点
+# 3 使用 Systemctl 控制并管理挂载点
 
 ## 3.1 列出所有系统挂载点
 
@@ -298,7 +298,7 @@ systemctl enable tmp.mount
 systemctl disable  tmp.mount
 ```
 
-## 3.4 在Linux中屏蔽(让它不能启用)或可见挂载点
+## 3.4 在 Linux 中屏蔽(让它不能启用)或可见挂载点
 
 ```
 # systemctl mask tmp.mount
@@ -308,7 +308,7 @@ ln -s '/dev/null' '/etc/systemd/system/tmp.mount'
 rm '/etc/systemd/system/tmp.mount'
 ```
 
-# 4 使用Systemctl控制并管理套接口
+# 4 使用 Systemctl 控制并管理套接口
 
 ## 4.1 列出所有可用系统套接口
 
@@ -316,7 +316,7 @@ rm '/etc/systemd/system/tmp.mount'
 systemctl list-unit-files --type=socket
 ```
 
-## 4.2 在Linux中启动、重启、停止、重载套接口并检查其状态
+## 4.2 在 Linux 中启动、重启、停止、重载套接口并检查其状态
 
 ```
 # systemctl start cups.socket
@@ -344,18 +344,18 @@ ln -s '/dev/null' '/etc/systemd/system/cups.socket'
 rm '/etc/systemd/system/cups.socket'
 ```
 
-# 5 服务的CPU利用率
+# 5 服务的 CPU 利用率
 
-## 5.1 获取当前某个服务的CPU分配额
+## 5.1 获取当前某个服务的 CPU 分配额
 
 ```
 # systemctl show -p CPUShares httpd.service
 CPUShares=1024
 ```
 
-注意: 各个服务的默认CPU分配份额=1024, 你可以增加/减少某个进程的CPU分配份额. 
+注意: 各个服务的默认 CPU 分配份额=1024, 你可以增加/减少某个进程的 CPU 分配份额.
 
-## 5.2 将某个服务(httpd.service)的CPU分配份额限制为2000 CPUShares\/
+## 5.2 将某个服务(httpd.service)的 CPU 分配份额限制为 2000 CPUShares\/
 
 ```
 # systemctl set-property httpd.service CPUShares=2000
@@ -363,7 +363,7 @@ CPUShares=1024
 CPUShares=2000
 ```
 
-注意: 当你为某个服务设置CPUShares, 会自动创建一个以服务名命名的目录(如 httpd.service), 里面包含了一个名为90-CPUShares.conf的文件, 该文件含有CPUShare限制信息, 你可以通过以下方式查看该文件: 
+注意: 当你为某个服务设置 CPUShares, 会自动创建一个以服务名命名的目录(如 httpd.service), 里面包含了一个名为 90-CPUShares.conf 的文件, 该文件含有 CPUShare 限制信息, 你可以通过以下方式查看该文件:
 
 ```
 # vi /etc/systemd/system/httpd.service.d/90-CPUShares.conf
@@ -396,7 +396,7 @@ CPUShares=2000
 # systemd-cgls
 ```
 
-## 5.7 按CPU、内存、输入和输出列出控制组
+## 5.7 按 CPU、内存、输入和输出列出控制组
 
 ```
 # systemd-cgtop
@@ -422,7 +422,7 @@ CPUShares=2000
 # systemctl get-default
 ```
 
-## 6.4 启动运行等级5, 即图形模式
+## 6.4 启动运行等级 5, 即图形模式
 
 ```
 # systemctl isolate runlevel5.target
@@ -430,7 +430,7 @@ CPUShares=2000
 # systemctl isolate graphical.target
 ```
 
-## 6.5 启动运行等级3, 即多用户模式(命令行)
+## 6.5 启动运行等级 3, 即多用户模式(命令行)
 
 ```
 # systemctl isolate runlevel3.target

@@ -3,65 +3,65 @@
 
 <!-- code_chunk_output -->
 
-* [1    调度器调优参数](#1-调度器调优参数)
-	* [1.1   CFS相关](#11-cfs相关)
-	* [1.2 RT相关](#12-rt相关)
-	* [1.3  全局参数](#13-全局参数)
-* [2   进程最少运行时间 `sysctl_sched_min_granularity`](#2-进程最少运行时间-sysctl_sched_min_granularity)
-	* [2.1   参数背景](#21-参数背景)
-	* [2.2   `check_preempt_wakeup` 检查周期性抢占](#22-check_preempt_wakeup-检查周期性抢占)
-	* [2.3   `sysctl_sched_min_granularity` 接口实现](#23-sysctl_sched_min_granularity-接口实现)
-* [3  调度周期 `sysctl_sched_latency`](#3-调度周期-sysctl_sched_latency)
-	* [3.1   参数背景](#31-参数背景)
-	* [3.2   参数详解](#32-参数详解)
-	* [3.2.1   调度周期](#321-调度周期)
-		* [3.2.2    进程数目阈值 `sched_nr_latency`](#322-进程数目阈值-sched_nr_latency)
-		* [3.2.3    调度周期 `sysctl_sched_latency` 的影响](#323-调度周期-sysctl_sched_latency-的影响)
-	* [3.3   `sysctl_sched_latency` 接口](#33-sysctl_sched_latency-接口)
-* [4  `sysctl_sched_wakeup_granularity` 唤醒后抢占](#4-sysctl_sched_wakeup_granularity-唤醒后抢占)
-	* [4.1   参数背景](#41-参数背景)
-	* [4.2   唤醒抢占](#42-唤醒抢占)
-	* [4.3   `sysctl_sched_wakeup_granularity` 接口](#43-sysctl_sched_wakeup_granularity-接口)
-* [5  `sysctl_sched_tunable_scaling`](#5-sysctl_sched_tunable_scaling)
-	* [5.1   参数背景](#51-参数背景)
-	* [5.2   参数详解](#52-参数详解)
-	* [5.3   接口详解](#53-接口详解)
-* [6  `sysctl_sched_child_runs_first`](#6-sysctl_sched_child_runs_first)
-	* [6.1   参数背景](#61-参数背景)
-	* [6.2   `sysctl_sched_child_runs_first` 保证子进程先运行](#62-sysctl_sched_child_runs_first-保证子进程先运行)
-	* [6.3 `sysctl_sched_child_runs_first` 接口](#63-sysctl_sched_child_runs_first-接口)
-* [7  `sysctl_sched_migration_cost`](#7-sysctl_sched_migration_cost)
-	* [7.1   参数背景](#71-参数背景)
-	* [7.2   `sysctl_sched_migration_cost` 实现详解](#72-sysctl_sched_migration_cost-实现详解)
-		* [7.2.1 判断进程是否是 `cache-hot`](#721-判断进程是否是-cache-hot)
-		* [7.2.2    `idle_balance` 是否需要 `pull`](#722-idle_balance-是否需要-pull)
-	* [7.3   `sysctl_sched_migration_cost` 接口详解](#73-sysctl_sched_migration_cost-接口详解)
-* [8 `sysctl_sched_rt_period` 与 `sysctl_sched_rt_runtime`](#8-sysctl_sched_rt_period-与-sysctl_sched_rt_runtime)
-* [9  sysctl_sched_rt_runtime](#9-sysctl_sched_rt_runtime)
-* [10](#10)
-* [11  调度器特性 features](#11-调度器特性-features)
-	* [11.1  `sched_features` 接口的设计](#111-sched_features-接口的设计)
-	* [11.2    调度器特性 `sched_features`](#112-调度器特性-sched_features)
-	* [11.3   `place_entity` -- `GENTLE_FAIR_SLEEPERS` && `START_DEBIT`](#113-place_entity-gentle_fair_sleepers-start_debit)
-		* [11.3.1   `GENTLE_FAIR_SLEEPERS` 平滑的补偿睡眠进程](#1131-gentle_fair_sleepers-平滑的补偿睡眠进程)
-			* [11.3.1.1  `GENTLE_FAIR_SLEEPERS` 睡眠唤醒补偿背景](#11311-gentle_fair_sleepers-睡眠唤醒补偿背景)
-			* [11.3.1.2   睡眠唤醒补偿实现](#11312-睡眠唤醒补偿实现)
-			* [11.3.1.3   睡眠唤醒补偿接口](#11313-睡眠唤醒补偿接口)
-		* [11.3.2   新创建进程处理 `START_DEBIT`](#1132-新创建进程处理-start_debit)
-			* [11.3.2.1  `START_DEBIT` 背景](#11321-start_debit-背景)
-			* [11.3.2.2   `START_DEBIT` 实现](#11322-start_debit-实现)
-			* [11.3.2.3  `START_DEBIT` 接口](#11323-start_debit-接口)
-		* [11.3.3   `place_entity` 函数](#1133-place_entity-函数)
-	* [11.4 唤醒抢占 `WAKEUP_PREEMPTION`](#114-唤醒抢占-wakeup_preemption)
-	* [11.4.1  唤醒抢占标识 `WAKEUP_PREEMPTION` 背景](#1141-唤醒抢占标识-wakeup_preemption-背景)
-	* [11.4.2  唤醒抢占标识 `WAKEUP_PREEMPTION` 实现](#1142-唤醒抢占标识-wakeup_preemption-实现)
-	* [11.4.3  唤醒抢占标识 `WAKEUP_PREEMPTION` 接口](#1143-唤醒抢占标识-wakeup_preemption-接口)
-	* [11.4  `NEXT_BUDDY` && `LAST_BUDDY`](#114-next_buddy-last_buddy)
-		* [11.4.1 `NEXT_BUDDY` && `LAST_BUDDY` 背景](#1141-next_buddy-last_buddy-背景)
-		* [11.4.2 `NEXT_BUDDY` && `LAST_BUDDY` 实现](#1142-next_buddy-last_buddy-实现)
-			* [11.4.2.1  `LAST_BUDDY` 实现](#11421-last_buddy-实现)
-		* [11.4.3 `NEXT_BUDDY` && `LAST_BUDDY` 接口](#1143-next_buddy-last_buddy-接口)
-* [参考资料](#参考资料)
+- [调度器调优参数](#调度器调优参数)
+  - [CFS 相关](#cfs-相关)
+  - [1.2 RT 相关](#12-rt-相关)
+  - [1.3  全局参数](#13--全局参数)
+- [2   进程最少运行时间 `sysctl_sched_min_granularity`](#2---进程最少运行时间-sysctl_sched_min_granularity)
+  - [2.1   参数背景](#21---参数背景)
+  - [2.2   `check_preempt_wakeup` 检查周期性抢占](#22---check_preempt_wakeup-检查周期性抢占)
+  - [2.3   `sysctl_sched_min_granularity` 接口实现](#23---sysctl_sched_min_granularity-接口实现)
+- [3  调度周期 `sysctl_sched_latency`](#3--调度周期-sysctl_sched_latency)
+  - [3.1   参数背景](#31---参数背景)
+  - [3.2   参数详解](#32---参数详解)
+  - [3.2.1   调度周期](#321---调度周期)
+    - [3.2.2    进程数目阈值 `sched_nr_latency`](#322----进程数目阈值-sched_nr_latency)
+    - [3.2.3    调度周期 `sysctl_sched_latency` 的影响](#323----调度周期-sysctl_sched_latency-的影响)
+  - [3.3   `sysctl_sched_latency` 接口](#33---sysctl_sched_latency-接口)
+- [4  `sysctl_sched_wakeup_granularity` 唤醒后抢占](#4--sysctl_sched_wakeup_granularity-唤醒后抢占)
+  - [4.1   参数背景](#41---参数背景)
+  - [4.2   唤醒抢占](#42---唤醒抢占)
+  - [4.3   `sysctl_sched_wakeup_granularity` 接口](#43---sysctl_sched_wakeup_granularity-接口)
+- [5  `sysctl_sched_tunable_scaling`](#5--sysctl_sched_tunable_scaling)
+  - [5.1   参数背景](#51---参数背景)
+  - [5.2   参数详解](#52---参数详解)
+  - [5.3   接口详解](#53---接口详解)
+- [6  `sysctl_sched_child_runs_first`](#6--sysctl_sched_child_runs_first)
+  - [6.1   参数背景](#61---参数背景)
+  - [6.2   `sysctl_sched_child_runs_first` 保证子进程先运行](#62---sysctl_sched_child_runs_first-保证子进程先运行)
+  - [6.3 `sysctl_sched_child_runs_first` 接口](#63-sysctl_sched_child_runs_first-接口)
+- [7  `sysctl_sched_migration_cost`](#7--sysctl_sched_migration_cost)
+  - [7.1   参数背景](#71---参数背景)
+  - [7.2   `sysctl_sched_migration_cost` 实现详解](#72---sysctl_sched_migration_cost-实现详解)
+    - [7.2.1 判断进程是否是 `cache-hot`](#721-判断进程是否是-cache-hot)
+    - [7.2.2    `idle_balance` 是否需要 `pull`](#722----idle_balance-是否需要-pull)
+  - [7.3   `sysctl_sched_migration_cost` 接口详解](#73---sysctl_sched_migration_cost-接口详解)
+- [8 `sysctl_sched_rt_period` 与 `sysctl_sched_rt_runtime`](#8-sysctl_sched_rt_period-与-sysctl_sched_rt_runtime)
+- [9  sysctl_sched_rt_runtime](#9--sysctl_sched_rt_runtime)
+- [10](#10)
+- [11  调度器特性 features](#11--调度器特性-features)
+  - [11.1  `sched_features` 接口的设计](#111--sched_features-接口的设计)
+  - [11.2    调度器特性 `sched_features`](#112----调度器特性-sched_features)
+  - [11.3   `place_entity` -- `GENTLE_FAIR_SLEEPERS` && `START_DEBIT`](#113---place_entity---gentle_fair_sleepers--start_debit)
+    - [11.3.1   `GENTLE_FAIR_SLEEPERS` 平滑的补偿睡眠进程](#1131---gentle_fair_sleepers-平滑的补偿睡眠进程)
+      - [11.3.1.1  `GENTLE_FAIR_SLEEPERS` 睡眠唤醒补偿背景](#11311--gentle_fair_sleepers-睡眠唤醒补偿背景)
+      - [11.3.1.2   睡眠唤醒补偿实现](#11312---睡眠唤醒补偿实现)
+      - [11.3.1.3   睡眠唤醒补偿接口](#11313---睡眠唤醒补偿接口)
+    - [11.3.2   新创建进程处理 `START_DEBIT`](#1132---新创建进程处理-start_debit)
+      - [11.3.2.1  `START_DEBIT` 背景](#11321--start_debit-背景)
+      - [11.3.2.2   `START_DEBIT` 实现](#11322---start_debit-实现)
+      - [11.3.2.3  `START_DEBIT` 接口](#11323--start_debit-接口)
+    - [11.3.3   `place_entity` 函数](#1133---place_entity-函数)
+  - [11.4 唤醒抢占 `WAKEUP_PREEMPTION`](#114-唤醒抢占-wakeup_preemption)
+  - [11.4.1  唤醒抢占标识 `WAKEUP_PREEMPTION` 背景](#1141--唤醒抢占标识-wakeup_preemption-背景)
+  - [11.4.2  唤醒抢占标识 `WAKEUP_PREEMPTION` 实现](#1142--唤醒抢占标识-wakeup_preemption-实现)
+  - [11.4.3  唤醒抢占标识 `WAKEUP_PREEMPTION` 接口](#1143--唤醒抢占标识-wakeup_preemption-接口)
+  - [11.4  `NEXT_BUDDY` && `LAST_BUDDY`](#114--next_buddy--last_buddy)
+    - [11.4.1 `NEXT_BUDDY` && `LAST_BUDDY` 背景](#1141-next_buddy--last_buddy-背景)
+    - [11.4.2 `NEXT_BUDDY` && `LAST_BUDDY` 实现](#1142-next_buddy--last_buddy-实现)
+      - [11.4.2.1  `LAST_BUDDY` 实现](#11421--last_buddy-实现)
+    - [11.4.3 `NEXT_BUDDY` && `LAST_BUDDY` 接口](#1143-next_buddy--last_buddy-接口)
+- [参考资料](#参考资料)
 
 <!-- /code_chunk_output -->
 
@@ -82,33 +82,33 @@
 <br>
 
 
-#1    调度器调优参数
+# 调度器调优参数
 -------
 
 
 
-##1.1   CFS相关
+## CFS 相关
 -------
 
 | 内核参数 | 位置 | 内核默认值 | 描述 |
 |:------------:|:------:|:---------------:|:------:|
 | [`sysctl_sched_min_granularity`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L75) | `/proc/sys/kernel/sched_min_granularity_ns` | `4000000ns` | 表示进程最少运行时间, 防止频繁的切换, 对于交互系统(如桌面), 该值可以设置得较小, 这样可以保证交互得到更快的响应(见周期调度器的 `check_preempt_tick` 过程) |
-| [`sysctl_sched_latency`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L54) | `/proc/sys/kernel/sched_latency_ns` | `20000000ns` | 表示一个运行队列所有进程运行一次的周期, 当前这个与运行队列的进程数有关, 如果进程数超过 `sched_nr_latency` (这个变量不能通过 `/proc` 设置, 它是由 `(sysctl_sched_latency+ sysctl_sched_min_granularity-1)/sysctl_sched_min_granularity` 确定的), 那么调度周期就是 `sched_min_granularity_ns*运行队列里的进程数`, 与 `sysctl_sched_latency` 无关; 否则队列进程数小于sched_nr_latency, 运行周期就是sysctl_sched_latency. 显然这个数越小, 一个运行队列支持的sched_nr_latency越少, 而且当sysctl_sched_min_granularity越小时能支持的sched_nr_latency越多, 那么每个进程在这个周期内能执行的时间也就越少, 这也与上面sysctl_sched_min_granularity变量的讨论一致. 其实sched_nr_latency也可以当做我们cpu load的基准值, 如果cpu的load大于这个值, 那么说明cpu不够使用了 |
-| [`sysctl_sched_wakeup_granularity`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L98) | `/proc/sys/kernel/sched_wakeup_granularity_ns` | `4000000ns` | 该变量表示进程被唤醒后至少应该运行的时间的基数, 它只是用来判断某个进程是否应该抢占当前进程, 并不代表它能够执行的最小时间(sysctl_sched_min_granularity), 如果这个数值越小, 那么发生抢占的概率也就越高(见wakeup_gran、wakeup_preempt_entity函数) |
-| [`sysctl_sched_child_runs_first`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L87) | `/proc/sys/kernel/sched_child_runs_first` | 0 | 该变量表示在创建子进程的时候是否让子进程抢占父进程, 即使父进程的vruntime小于子进程, 这个会减少公平性, 但是可以降低write_on_copy, 具体要根据系统的应用情况来考量使用哪种方式(见task_fork_fair过程) |
-| [`sysctl_sched_migration_cost`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L101) | `/proc/sys/kernel/sched_migration_cost` | `500000ns` | 该变量用来判断一个进程是否还是hot, 如果进程的运行时间(now - p->se.exec_start)小于它, 那么内核认为它的code还在cache里, 所以该进程还是hot, 那么在迁移的时候就不会考虑它 |
-| [`sysctl_sched_tunable_scaling`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L68) | `/proc/sys/kernel/sched_tunable_scaling` | 1 | 当内核试图调整sched_min_granularity, sched_latency和sched_wakeup_granularity这三个值的时候所使用的更新方法, 0为不调整, 1为按照cpu个数以2为底的对数值进行调整, 2为按照cpu的个数进行线性比例的调整 |
+| [`sysctl_sched_latency`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L54) | `/proc/sys/kernel/sched_latency_ns` | `20000000ns` | 表示一个运行队列所有进程运行一次的周期, 当前这个与运行队列的进程数有关, 如果进程数超过 `sched_nr_latency` (这个变量不能通过 `/proc` 设置, 它是由 `(sysctl_sched_latency+ sysctl_sched_min_granularity-1)/sysctl_sched_min_granularity` 确定的), 那么调度周期就是 `sched_min_granularity_ns*运行队列里的进程数`, 与 `sysctl_sched_latency` 无关; 否则队列进程数小于 sched_nr_latency, 运行周期就是 sysctl_sched_latency. 显然这个数越小, 一个运行队列支持的 sched_nr_latency 越少, 而且当 sysctl_sched_min_granularity 越小时能支持的 sched_nr_latency 越多, 那么每个进程在这个周期内能执行的时间也就越少, 这也与上面 sysctl_sched_min_granularity 变量的讨论一致. 其实 sched_nr_latency 也可以当做我们 cpu load 的基准值, 如果 cpu 的 load 大于这个值, 那么说明 cpu 不够使用了 |
+| [`sysctl_sched_wakeup_granularity`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L98) | `/proc/sys/kernel/sched_wakeup_granularity_ns` | `4000000ns` | 该变量表示进程被唤醒后至少应该运行的时间的基数, 它只是用来判断某个进程是否应该抢占当前进程, 并不代表它能够执行的最小时间(sysctl_sched_min_granularity), 如果这个数值越小, 那么发生抢占的概率也就越高(见 wakeup_gran、wakeup_preempt_entity 函数) |
+| [`sysctl_sched_child_runs_first`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L87) | `/proc/sys/kernel/sched_child_runs_first` | 0 | 该变量表示在创建子进程的时候是否让子进程抢占父进程, 即使父进程的 vruntime 小于子进程, 这个会减少公平性, 但是可以降低 write_on_copy, 具体要根据系统的应用情况来考量使用哪种方式(见 task_fork_fair 过程) |
+| [`sysctl_sched_migration_cost`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L101) | `/proc/sys/kernel/sched_migration_cost` | `500000ns` | 该变量用来判断一个进程是否还是 hot, 如果进程的运行时间(now - p->se.exec_start)小于它, 那么内核认为它的 code 还在 cache 里, 所以该进程还是 hot, 那么在迁移的时候就不会考虑它 |
+| [`sysctl_sched_tunable_scaling`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L68) | `/proc/sys/kernel/sched_tunable_scaling` | 1 | 当内核试图调整 sched_min_granularity, sched_latency 和 sched_wakeup_granularity 这三个值的时候所使用的更新方法, 0 为不调整, 1 为按照 cpu 个数以 2 为底的对数值进行调整, 2 为按照 cpu 的个数进行线性比例的调整 |
 | [`sysctl_sched_cfs_bandwidth_slice`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L124) | `/proc/sys/kernel/sched_cfs_bandwidth_slice_us` | 5000us | |
 
 
-##1.2 RT相关
+##1.2 RT 相关
 -------
 
 | 内核参数 | 位置 | 内核默认值 | 描述 |
 |:------------:|:------:|:---------------:|:------:|
-| [`sysctl_sched_rt_period`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/core.c#L76) | `/proc/sys/kernel/sched_rt_period_us` | `1000000us` | 该参数与下面的sysctl_sched_rt_runtime一起决定了实时进程在以sysctl_sched_rt_period为周期的时间内, 实时进程最多能够运行的总的时间不能超过sysctl_sched_rt_runtime(代码见sched_rt_global_constraints |
+| [`sysctl_sched_rt_period`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/core.c#L76) | `/proc/sys/kernel/sched_rt_period_us` | `1000000us` | 该参数与下面的 sysctl_sched_rt_runtime 一起决定了实时进程在以 sysctl_sched_rt_period 为周期的时间内, 实时进程最多能够运行的总的时间不能超过 sysctl_sched_rt_runtime(代码见 sched_rt_global_constraints |
 | [`sysctl_sched_rt_runtime`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/core.c#L84) | `/proc/sys/kernel/sched_rt_runtime_us` | `950000us` | 见上 `sysctl_sched_rt_period` 变量的解释 |
-| [`sysctl_sched_compat_yield`]() | `/proc/sys/kernel/sched_compat_yield` | 0 | 该参数可以让sched_yield()系统调用更加有效, 让它使用更少的cpu, 对于那些依赖sched_yield来获得更好性能的应用可以考虑设置它为1 |
+| [`sysctl_sched_compat_yield`]() | `/proc/sys/kernel/sched_compat_yield` | 0 | 该参数可以让 sched_yield()系统调用更加有效, 让它使用更少的 cpu, 对于那些依赖 sched_yield 来获得更好性能的应用可以考虑设置它为 1 |
 
 
 ##1.3  全局参数
@@ -116,8 +116,8 @@
 
 | 内核参数 | 位置 | 内核默认值 | 描述 |
 |:------------:|:------:|:---------------:|:------:|
-| [`sysctl_sched_features`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/core.c#L52) | `/proc/sys/kernel/sched_features` | `3183d=110001101111b` | 该变量表示调度器支持的特性, 如GENTLE_FAIR_SLEEPERS(平滑的补偿睡眠进程),START_DEBIT(新进程尽量的早调度),WAKEUP_PREEMPT(是否wakeup的进程可以去抢占当前运行的进程)等, 所有的features见内核sech_features.h文件的定义 |
-| [`sysctl_sched_nr_migrate`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/core.c#L62) | `/proc/sys/kernel/sched_nr_migrate` | 32 | 在多CPU情况下进行负载均衡时, 一次最多移动多少个进程到另一个CPU上 |
+| [`sysctl_sched_features`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/core.c#L52) | `/proc/sys/kernel/sched_features` | `3183d=110001101111b` | 该变量表示调度器支持的特性, 如 GENTLE_FAIR_SLEEPERS(平滑的补偿睡眠进程),START_DEBIT(新进程尽量的早调度),WAKEUP_PREEMPT(是否 wakeup 的进程可以去抢占当前运行的进程)等, 所有的 features 见内核 sech_features.h 文件的定义 |
+| [`sysctl_sched_nr_migrate`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/core.c#L62) | `/proc/sys/kernel/sched_nr_migrate` | 32 | 在多 CPU 情况下进行负载均衡时, 一次最多移动多少个进程到另一个 CPU 上 |
 
 
 
@@ -177,14 +177,14 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr)
     struct sched_entity *se;
     s64 delta;
 
-    //  首先 sched_slice 计算进程的理想运行时间(实际时间ns)
+    //  首先 sched_slice 计算进程的理想运行时间(实际时间 ns)
     ideal_runtime = sched_slice(cfs_rq, curr);
     //  计算当前进程的已实际运行时间 delta_exec
     delta_exec = curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
     //  如果实际运行时间 delta_exec 比理想运行时间要大
     //  说明进程已经运行了很久了, 那么应该让出 CPU
     if (delta_exec > ideal_runtime) {
-        //  设置当前进程的TIF的抢占标识
+        //  设置当前进程的 TIF 的抢占标识
         resched_curr(rq_of(cfs_rq));
         /*
          * The current task ran long enough, ensure it doesn't get
@@ -228,7 +228,7 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr)
 ##2.3   `sysctl_sched_min_granularity` 接口实现
 -------
 
-`sysctl_sched_min_granularity` 接口位于 `/proc/sys/kernel/sched_min_granularity_ns`, 内核中的定义在 [`kernel/sysctl.c, line 316`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sysctl.c#L316). 可以看到其默认权限为 `0644`(`root` 用户可读写, 其他用户读), 值范围从 `min_sched_granularity_ns(默认0.1ms) ~ max_sched_granularity_ns(默认1s)`.
+`sysctl_sched_min_granularity` 接口位于 `/proc/sys/kernel/sched_min_granularity_ns`, 内核中的定义在 [`kernel/sysctl.c, line 316`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sysctl.c#L316). 可以看到其默认权限为 `0644`(`root` 用户可读写, 其他用户读), 值范围从 `min_sched_granularity_ns(默认 0.1ms) ~ max_sched_granularity_ns(默认 1s)`.
 
 
 ```cpp
@@ -441,7 +441,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
 {
     struct sched_entity *se = &curr->se, *pse = &p->se;
     // ......
-    //  检查当前被唤醒的进程进程p是否可以抢占当前进程curr
+    //  检查当前被唤醒的进程进程 p 是否可以抢占当前进程 curr
     if (wakeup_preempt_entity(se, pse) == 1) {
         /*
          * Bias pick_next to pick the sched entity that is
@@ -489,7 +489,7 @@ wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
 {
     s64 gran, vdiff = curr->vruntime - se->vruntime;
 
-    //  se要想抢占curr, 最基本的条件是虚拟运行时间比curr的小
+    //  se 要想抢占 curr, 最基本的条件是虚拟运行时间比 curr 的小
     if (vdiff <= 0)
         return -1;
 
@@ -615,7 +615,7 @@ static inline u64 calc_delta_fair(u64 delta, struct sched_entity *se)
 
 | 内核参数 | 位置 | 内核默认值 | 描述 |
 |:------------:|:------:|:---------------:|:------:|
-| [`sysctl_sched_tunable_scaling`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L68) | `/proc/sys/kernel/sched_tunable_scaling` | 1 | 当内核试图调整sched_min_granularity, sched_latency和sched_wakeup_granularity这三个值的时候所使用的更新方法, 0为不调整, 1为按照cpu个数以2为底的对数值进行调整, 2为按照cpu的个数进行线性比例的调整 |
+| [`sysctl_sched_tunable_scaling`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L68) | `/proc/sys/kernel/sched_tunable_scaling` | 1 | 当内核试图调整 sched_min_granularity, sched_latency 和 sched_wakeup_granularity 这三个值的时候所使用的更新方法, 0 为不调整, 1 为按照 cpu 个数以 2 为底的对数值进行调整, 2 为按照 cpu 的个数进行线性比例的调整 |
 
 
 
@@ -716,7 +716,7 @@ sysctl_sched_XXX = normalized_sysctl_XXX * (1 + ilog(ncpus))
 -------
 
 
-当CPU数量更多时, 内核需要增加 `sched_min_granularity`, `sched_latency` 和 `sched_wakeup_granularity` 这几个内核参数的粒度值. 内核定义了一组基础值 `normalized_sysctl_XXX` 和一套校正系数 `fctor` 的计算方法, 在基础值的基础上乘以校正因子 `factor`, 作为内核最终采用的实际值 `sysctl_XXX`.
+当 CPU 数量更多时, 内核需要增加 `sched_min_granularity`, `sched_latency` 和 `sched_wakeup_granularity` 这几个内核参数的粒度值. 内核定义了一组基础值 `normalized_sysctl_XXX` 和一套校正系数 `fctor` 的计算方法, 在基础值的基础上乘以校正因子 `factor`, 作为内核最终采用的实际值 `sysctl_XXX`.
 
 关于校正因子的计算内核提供了多种计算方法, 由 `sched_tunable_scaling` 表示.
 
@@ -936,7 +936,7 @@ static struct ctl_table kern_table[] = {
 
 | 内核参数 | 位置 | 内核默认值 | 描述 |
 |:------------:|:------:|:---------------:|:------:|
-| [`sysctl_sched_child_runs_first`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L87) | `/proc/sys/kernel/sched_child_runs_first` | 0 | 该变量表示在创建子进程的时候是否让子进程抢占父进程, 即使父进程的vruntime小于子进程, 这个会减少公平性, 但是可以降低write_on_copy, 具体要根据系统的应用情况来考量使用哪种方式(见task_fork_fair过程) |
+| [`sysctl_sched_child_runs_first`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/fair.c#L87) | `/proc/sys/kernel/sched_child_runs_first` | 0 | 该变量表示在创建子进程的时候是否让子进程抢占父进程, 即使父进程的 vruntime 小于子进程, 这个会减少公平性, 但是可以降低 write_on_copy, 具体要根据系统的应用情况来考量使用哪种方式(见 task_fork_fair 过程) |
 
 
 ##6.1   参数背景
@@ -1044,7 +1044,7 @@ static void task_fork_fair(struct task_struct *p)
 
 *   空闲 `CPU` 从其他忙的 `CPU` 队列中拉一个进程到当前 `CPU` 队列, 通过 `idle_balance` 完成;
 
-*   或者忙的CPU队列将一个进程推送到空闲的 `CPU` 队列中.
+*   或者忙的 CPU 队列将一个进程推送到空闲的 `CPU` 队列中.
 
 
 `idle_balance` 干的则是 `pull` 的事情, `idle_balance` 会 `for_each_domain(this_cpu, sd)` 则是遍历当前 `CPU`所在的调度域, 维持调度域内的核间平衡.
@@ -1408,7 +1408,7 @@ int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
 
 | 内核参数 | 位置 | 内核默认值 | 描述 |
 |:------------:|:------:|:---------------:|:------:|
-| [`sysctl_sched_features`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/core.c#L52) | `/proc/sys/kernel/sched_features` | `3183d=110001101111b` | 该变量表示调度器支持的特性, 如GENTLE_FAIR_SLEEPERS(平滑的补偿睡眠进程),START_DEBIT(新进程尽量的早调度),WAKEUP_PREEMPT(是否wakeup的进程可以去抢占当前运行的进程)等, 所有的features见内核sech_features.h文件的定义 |
+| [`sysctl_sched_features`](http://elixir.free-electrons.com/linux/v4.14.14/source/kernel/sched/core.c#L52) | `/proc/sys/kernel/sched_features` | `3183d=110001101111b` | 该变量表示调度器支持的特性, 如 GENTLE_FAIR_SLEEPERS(平滑的补偿睡眠进程),START_DEBIT(新进程尽量的早调度),WAKEUP_PREEMPT(是否 wakeup 的进程可以去抢占当前运行的进程)等, 所有的 features 见内核 sech_features.h 文件的定义 |
 
 
 
@@ -2023,9 +2023,9 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
     if (cfs_rq->skip == se) {
         struct sched_entity *second;
 
-        if (se == curr) {  //  被 skip 的是 curr, 则直接选择最左节点(可能是NULL)即可
+        if (se == curr) {  //  被 skip 的是 curr, 则直接选择最左节点(可能是 NULL)即可
             second = __pick_first_entity(cfs_rq);
-        } else {  //  被 skip 的是最左节点, 则从 second(可能是NULL) 和 curr 中选择最合适的
+        } else {  //  被 skip 的是最左节点, 则从 second(可能是 NULL) 和 curr 中选择最合适的
             second = __pick_next_entity(se);
             if (!second || (curr && entity_before(curr, second)))
                 second = curr;
@@ -2122,7 +2122,7 @@ static void ·(struct rq *rq, struct task_struct *p, int wake_flags)
 
     //  如果 NEXT_BUDDY 开启
     //  同时运行队列上进程数超过 sched_nr_latency,
-    //  wake_flags 不是 WF_FORK (对于新创建的进程wake_up_new_task时候将设置此标识)
+    //  wake_flags 不是 WF_FORK (对于新创建的进程 wake_up_new_task 时候将设置此标识)
     if (sched_feat(NEXT_BUDDY) && scale && !(wake_flags & WF_FORK)) {
         set_next_buddy(pse);
         next_buddy_marked = 1;
@@ -2275,7 +2275,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
 
 [Linux 调度器 BFS 简介](https://www.ibm.com/developerworks/cn/linux/l-cn-bfs/)
 
-[从几个问题开始理解CFS调度器](http://ju.outofmemory.cn/entry/105407)
+[从几个问题开始理解 CFS 调度器](http://ju.outofmemory.cn/entry/105407)
 
 
 > 关于 `waker` 和 `wakee`
@@ -2289,7 +2289,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
 
 *      本作品/博文 ( [AderStep-紫夜阑珊-青伶巷草 Copyright ©2013-2017](http://blog.csdn.net/gatieme) ), 由 [成坚(gatieme)](http://blog.csdn.net/gatieme) 创作.
 
-*      采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可. 欢迎转载、使用、重新发布, 但务必保留文章署名[成坚gatieme](http://blog.csdn.net/gatieme) ( 包含链接: http://blog.csdn.net/gatieme ), 不得用于商业目的.
+*      采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可. 欢迎转载、使用、重新发布, 但务必保留文章署名[成坚 gatieme](http://blog.csdn.net/gatieme) ( 包含链接: http://blog.csdn.net/gatieme ), 不得用于商业目的.
 
 *      基于本文修改后的作品务必以相同的许可发布. 如有任何疑问, 请与我联系.
 

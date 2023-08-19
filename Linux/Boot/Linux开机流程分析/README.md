@@ -1,6 +1,6 @@
-Linux开机流程分析
+Linux 开机流程分析
 
-参考: 
+参考:
 
 ```
 (旧式)http://cn.linux.vbird.org/linux_basic/0510osloader_1.php

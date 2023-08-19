@@ -1,14 +1,13 @@
-Linux实时进程调度
+Linux 实时进程调度
 =======
 
 
 | 日期 | 内核版本 | 架构| 作者 | GitHub| CSDN |
 | ------- |:-------:|:-------:|:-------:|:-------:|:-------:|
-| 2016-07-12 | [Linux-4.6](http://lxr.free-electrons.com/source/?v=4.6) | X86 & arm | [gatieme](http://blog.csdn.net/gatieme) | [LinuxDeviceDrivers](https://github.com/gatieme/LDD-LinuxDeviceDrivers) | [Linux进程管理与调度](http://blog.csdn.net/gatieme/article/details/51456569) |
+| 2016-07-12 | [Linux-4.6](http://lxr.free-electrons.com/source/?v=4.6) | X86 & arm | [gatieme](http://blog.csdn.net/gatieme) | [LinuxDeviceDrivers](https://github.com/gatieme/LDD-LinuxDeviceDrivers) | [Linux 进程管理与调度](http://blog.csdn.net/gatieme/article/details/51456569) |
 
 
-
-按照POSIX的标准的强制要求, 除了"普通"进程之外, Linux还支持两种实时调度类.
+按照 POSIX 的标准的强制要求, 除了"普通"进程之外, Linux 还支持两种实时调度类.
 
 调度器结构使得实时进程可以平滑集成到内核中, 而无需修改核心调度器, 这显然是调度类带来的好处.
 
@@ -18,7 +17,7 @@ Linux实时进程调度
 
 | 名称 | 调度策略 | 描述 |
 |:-------:|:-------:|:-------:|
-| 循环进程 | SCHED_RR | 有时间片, 其值在进程运行时会减少, 就像是普通进程. 在所有的时间段到期后, 则该值重置为初始值, 而进程则置与队列的末尾, 这保证了在有几个相同优先级相同的SCHED_RR进程的情况下, 他们总是依次执行 |
+| 循环进程 | SCHED_RR | 有时间片, 其值在进程运行时会减少, 就像是普通进程. 在所有的时间段到期后, 则该值重置为初始值, 而进程则置与队列的末尾, 这保证了在有几个相同优先级相同的 SCHED_RR 进程的情况下, 他们总是依次执行 |
 | 先进先出进程 | SCHED_FIFO | 没有时间片, 在被调度器选择执行后, 可以运行任意长时间. |
 
 很明显, 如果实时进程编写的比较差, 系统可能长时间无法使用. 最简单的例子, 只要写一个无限循环, 循环体内不进入休眠即可. 因而我们在编写实时应用程序时, 应该格外小心.
@@ -30,12 +29,12 @@ Linux实时进程调度
 ##实时调度器类
 -------
 
-实时进程的调度器类用rt_sched_class来表示, 其定义在[kernel/sched/rt.c, line 2326](http://lxr.free-electrons.com/source/kernel/sched/rt.c?v=4.6#L2326)中, 如下所示.
+实时进程的调度器类用 rt_sched_class 来表示, 其定义在[kernel/sched/rt.c, line 2326](http://lxr.free-electrons.com/source/kernel/sched/rt.c?v=4.6#L2326)中, 如下所示.
 
 
 
 ```c
-const struct sched_class rt_sched_class = 
+const struct sched_class rt_sched_class =
 {
     .next           = &fair_sched_class,
     .enqueue_task       = enqueue_task_rt,
@@ -68,28 +67,28 @@ const struct sched_class rt_sched_class =
     .update_curr        = update_curr_rt,
 };
 ```
-实时调度器类的实现比完全调度器简单. 
+实时调度器类的实现比完全调度器简单.
 
 ##实时进程的优先级
 -------
 
 
-实时进程的特点在于其优先级比普通进程高, 对应地, 其static_prio值总是普通进程低.
+实时进程的特点在于其优先级比普通进程高, 对应地, 其 static_prio 值总是普通进程低.
 
-task_has_rt_policy则检测进程是否关联到实时进程策略.
-
-
-**linux优先级的表示**
+task_has_rt_policy 则检测进程是否关联到实时进程策略.
 
 
->在用户空间通过nice命令设置进程的静态优先级, 这在内部会调用nice系统调用, 进程的nice值在-20~+19之间. 值越低优先级越高.
+**linux 优先级的表示**
+
+
+>在用户空间通过 nice 命令设置进程的静态优先级, 这在内部会调用 nice 系统调用, 进程的 nice 值在-20~+19 之间. 值越低优先级越高.
 >
->setpriority系统调用也可以用来设置进程的优先级. 它不仅能够修改单个线程的优先级, 还能修改进程组中所有进程的优先级, 或者通过制定UID来修改特定用户的所有进程的优先级
+>setpriority 系统调用也可以用来设置进程的优先级. 它不仅能够修改单个线程的优先级, 还能修改进程组中所有进程的优先级, 或者通过制定 UID 来修改特定用户的所有进程的优先级
 
 
-内核使用一些简单的数值范围0~139表示内部优先级, 数值越低, 优先级越高. 
+内核使用一些简单的数值范围 0~139 表示内部优先级, 数值越低, 优先级越高.
 
-从0~99的范围专供实时进程使用, nice的值[-20,19]则映射到范围100~139, 即普通进程的优先级
+从 0~99 的范围专供实时进程使用, nice 的值[-20,19]则映射到范围 100~139, 即普通进程的优先级
 
 
 
@@ -106,7 +105,7 @@ task_has_rt_policy则检测进程是否关联到实时进程策略.
 内核表示优先级的所有信息基本都放在[include/linux/sched/prio.h](http://lxr.free-electrons.com/source/include/linux/sched/prio.h?v=4.6)中, 其中定义了一些表示优先级的宏和函数.
 
 
-而MAX_RT_PRIO - 1 = 99指定了实时进程的最大优先级, 而MAX_PRIO - 1 = 139则是普通进程的最大优先级数值
+而 MAX_RT_PRIO - 1 = 99 指定了实时进程的最大优先级, 而 MAX_PRIO - 1 = 139 则是普通进程的最大优先级数值
 
 ```c
 //  http://lxr.free-electrons.com/source/include/linux/sched/prio.h?v=4.6#L22
@@ -120,33 +119,33 @@ task_has_rt_policy则检测进程是否关联到实时进程策略.
 
 | 宏 | 值 | 描述 |
 | ------------- |:-------------:|:-------------:|
-| MIN_NICE | -20 | 对应于优先级100, 可以使用NICE_TO_PRIO和PRIO_TO_NICE转换 |
-| MAX_NICE |  19 | 对应于优先级139, 可以使用NICE_TO_PRIO和PRIO_TO_NICE转换 |
-| NICE_WIDTH | 40 | nice值得范围宽度, 即[-20, 19]共40个数字的宽度 |
+| MIN_NICE | -20 | 对应于优先级 100, 可以使用 NICE_TO_PRIO 和 PRIO_TO_NICE 转换 |
+| MAX_NICE |  19 | 对应于优先级 139, 可以使用 NICE_TO_PRIO 和 PRIO_TO_NICE 转换 |
+| NICE_WIDTH | 40 | nice 值得范围宽度, 即[-20, 19]共 40 个数字的宽度 |
 | MAX_RT_PRIO, MAX_USER_RT_PRIO | 100 | 实时进程的最大优先级 |
 | MAX_PRIO | 140 | 普通进程的最大优先级 |
-| DEFAULT_PRIO | 120 | 进程的默认优先级, 对应于nice=0 |
-| MAX_DL_PRIO | 0 | 使用EDF最早截止时间优先调度算法的实时进程最大的优先级 |
+| DEFAULT_PRIO | 120 | 进程的默认优先级, 对应于 nice=0 |
+| MAX_DL_PRIO | 0 | 使用 EDF 最早截止时间优先调度算法的实时进程最大的优先级 |
 `
 
 
 ##实时就绪队列
 -------
 
-核心调度器的就绪队列也包含了用于实时进程的子就绪队列, 是一个嵌入的struct rt_rq实例.
+核心调度器的就绪队列也包含了用于实时进程的子就绪队列, 是一个嵌入的 struct rt_rq 实例.
 
-参见[struct rq的定义](http://lxr.free-electrons.com/source/kernel/sched/sched.h?v4.6#L602)
+参见[struct rq 的定义](http://lxr.free-electrons.com/source/kernel/sched/sched.h?v4.6#L602)
 
 
 ```c
 struct rq
 {
-	/*  ...... */
+ /*  ...... */
     struct rt_rq rt;
-	/*  ...... */
+ /*  ...... */
 }
 ```
-实时rt进程的就绪队列定义在[kernel/sched/sched.h, line 450](http://lxr.free-electrons.com/source/kernel/sched/sched.h?v=4.6#L450)中
+实时 rt 进程的就绪队列定义在[kernel/sched/sched.h, line 450](http://lxr.free-electrons.com/source/kernel/sched/sched.h?v=4.6#L450)中
 
 ```c
 /* Real-Time classes' related field in a runqueue: */
@@ -190,7 +189,7 @@ struct rt_rq {
 #endif
 ```
 
-其主要包含了rt_prio_array
+其主要包含了 rt_prio_array
 
 
 
@@ -203,7 +202,7 @@ struct rt_prio_array {
     struct list_head queue[MAX_RT_PRIO];
 };
 ```
-具有相同优先级的所有实时进程都保存在一个链表中, 表头为active.queue[prio], 而active.bitmap位图中每个比特位对应于一个链表, 凡包含了进程的链表, 对应的比特位置位. 如果连表中没有进程, 则对应的比特位不置位.
+具有相同优先级的所有实时进程都保存在一个链表中, 表头为 active.queue[prio], 而 active.bitmap 位图中每个比特位对应于一个链表, 凡包含了进程的链表, 对应的比特位置位. 如果连表中没有进程, 则对应的比特位不置位.
 
 
 
@@ -212,20 +211,20 @@ struct rt_prio_array {
 -------
 
 
-内核可以通过rt_task宏可以通过检查其优先级来检测给定进程是否是实时进程, 该函数定义在[include/linux/sched/rt.h, line 13](http://lxr.free-electrons.com/source/include/linux/sched/rt.h?v=4.6#L13)
+内核可以通过 rt_task 宏可以通过检查其优先级来检测给定进程是否是实时进程, 该函数定义在[include/linux/sched/rt.h, line 13](http://lxr.free-electrons.com/source/include/linux/sched/rt.h?v=4.6#L13)
 
 
 ```c
 //  http://lxr.free-electrons.com/source/include/linux/sched/rt.h?v4.6#L6
 static inline int rt_prio(int prio)
 {
-	if (unlikely(prio < MAX_RT_PRIO))
-		return 1;
-	return 0;
+ if (unlikely(prio < MAX_RT_PRIO))
+  return 1;
+ return 0;
 }
 
 static inline int rt_task(struct task_struct *p)
 {
-	return rt_prio(p->prio);
+ return rt_prio(p->prio);
 }
 ```

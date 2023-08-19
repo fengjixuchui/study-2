@@ -1,6 +1,6 @@
 
 
-cpu相关特性
+cpu 相关特性
 
 ```cpp
 //target/i386/cpu.c

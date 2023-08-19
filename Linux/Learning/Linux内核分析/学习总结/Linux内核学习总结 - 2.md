@@ -1,4 +1,4 @@
-Linux内核学习总结
+Linux 内核学习总结
 
 学习心得
 
@@ -10,9 +10,9 @@ Linux内核学习总结
 
 复习了函数堆栈、时间片轮转等相关知识, 对时钟中断模型有了实践性的认识
 
-3.构造一个简单的Linux系统MenuOS
+3.构造一个简单的 Linux 系统 MenuOS
 
-通过shell调试内核, 对start_kernel到init进程启动的过程有了详细的认识
+通过 shell 调试内核, 对 `start_kernel` 到 init 进程启动的过程有了详细的认识
 
 4.扒开系统调用的三层皮(上)
 
@@ -36,18 +36,18 @@ Linux内核学习总结
 
 作业目录
 
-1.通过汇编一个简单的C程序, 分析汇编代码理解计算机是如何工作的: http://www.jianshu.com/p/0028585afcd3
+1.通过汇编一个简单的 C 程序, 分析汇编代码理解计算机是如何工作的: http://www.jianshu.com/p/0028585afcd3
 
 2.一个简单的时间片轮转多道程序内核代码: http://www.jianshu.com/p/f245d162126f
 
-3.跟踪分析Linux内核的启动过程: http://www.jianshu.com/p/c50563d5d999
+3.跟踪分析 Linux 内核的启动过程: http://www.jianshu.com/p/c50563d5d999
 
-4.使用库函数API和C代码中嵌入汇编代码两种方式使用同一个系统调用: http://www.jianshu.com/p/dc9bab96dbea
+4.使用库函数 API 和 C 代码中嵌入汇编代码两种方式使用同一个系统调用: http://www.jianshu.com/p/dc9bab96dbea
 
-5.分析system_call中断处理过程: http://www.jianshu.com/p/396ac105dbd5
+5.分析 system_call 中断处理过程: http://www.jianshu.com/p/396ac105dbd5
 
-6.分析Linux内核创建一个新进程的过程: http://www.jianshu.com/p/7ab4972995d4
+6.分析 Linux 内核创建一个新进程的过程: http://www.jianshu.com/p/7ab4972995d4
 
-7.Linux内核如何装载和启动一个可执行程序: http://www.jianshu.com/p/eca35a20dbda
+7.Linux 内核如何装载和启动一个可执行程序: http://www.jianshu.com/p/eca35a20dbda
 
 8.理解进程调度时机跟踪分析进程调度与进程切换的过程: http://www.jianshu.com/p/ccdbed5c7243

@@ -4,7 +4,7 @@
 <!-- code_chunk_output -->
 
 - [1. 概述](#1-概述)
-- [2. 系统启动(System startup)](#2-系统启动system-startup)
+- [2. 系统启动(System startup)](#2-系统启动 system-startup)
 - [3. Stage 1 bootloader](#3-stage-1-bootloader)
 - [4. Stage 2 bootloader](#4-stage-2-bootloader)
 - [5. Kernel 阶段](#5-kernel-阶段)
@@ -16,11 +16,11 @@
 
 在最早期的时候, 引导一台计算机意味着需要给计算机提供一个带有启动程序的纸带或者需要手动调整前端仪表盘中的地址/数据/控制开关来加载启动程序. 而如今的计算机则自带有启动设备用于简化启动过程, 但是这并不意味着启动过程就变得简单.
 
-我们先从总体上看Linux启动过程的各个阶段, 然后再深入各个阶段, 分别对其进行介绍. 在这个过程中, 对Linux内核源码的引用将帮助你查找和理解内核源码.
+我们先从总体上看 Linux 启动过程的各个阶段, 然后再深入各个阶段, 分别对其进行介绍. 在这个过程中, 对 Linux 内核源码的引用将帮助你查找和理解内核源码.
 
 # 1. 概述
 
-下图给出了Linux启动的总体过程.
+下图给出了 Linux 启动的总体过程.
 
 ![2022-02-19-22-02-21.png](./images/2022-02-19-22-02-21.png)
 
@@ -47,10 +47,10 @@
 * 第二阶段的任务就是**本地设备枚举和初始化**.
 
 从 BIOS 程序功能的角度来看, **BIOS** 由**两部分**组成: **POST 代码**和 **runtime services**.
-* 当POST结束时, 内存中 POST 相关的代码将会被丢弃;
+* 当 POST 结束时, 内存中 POST 相关的代码将会被丢弃;
 * 而 runtime services 代码将继续**保持在内存中**, 为操作系统提供一些**必要的信息和服务**直到**系统关闭**.
 
-为了启动操作系统, BIOS **runtime！！！** 会根据**用户设定的偏好顺序**检测**可启动的设备**, 并尝试**启动**存放在设备中的**操作系统**. 典型的可启动设备可以是软盘、CD-ROM、硬盘的某个分区、网络设备或者是USB磁盘.
+为了启动操作系统, BIOS **runtime！！！** 会根据**用户设定的偏好顺序**检测**可启动的设备**, 并尝试**启动**存放在设备中的**操作系统**. 典型的可启动设备可以是软盘、CD-ROM、硬盘的某个分区、网络设备或者是 USB 磁盘.
 
 通常 Linux 会从**磁盘启动**, 而该磁盘的 **MBR**(`Master Boot Record`)会包含有 **primary bootloader**, 也就是 `Stage 1 bootloader`. MBR 是一个 512 字节的扇区, 该扇区为磁盘的**第一个扇区**(`sector 1, cylinder 0, head 0`). 当将 MBR 读取到内存后, BIOS 就会尝试执行该 primary bootloader, 并将控制权交给它.
 
@@ -61,7 +61,7 @@ dd if=/dev/sda of=mbr.bin bs=512 count=1
 od -xa mbr.bin
 ```
 
-dd 命令读取了 `/dev/sda`(第一个IDE磁盘)的**前 512 字节**, 并将其写入 `mbr.bin` 文件中. od 命令将二进制文件以 16 进制和 ASCII 码的形式将 `mbr.bin` 文件打印出来.
+dd 命令读取了 `/dev/sda`(第一个 IDE 磁盘)的**前 512 字节**, 并将其写入 `mbr.bin` 文件中. od 命令将二进制文件以 16 进制和 ASCII 码的形式将 `mbr.bin` 文件打印出来.
 
 # 3. Stage 1 bootloader
 
@@ -70,8 +70,8 @@ dd 命令读取了 `/dev/sda`(第一个IDE磁盘)的**前 512 字节**, 并将�
 ![2022-02-19-22-02-36.png](./images/2022-02-19-22-02-36.png)
 
 * **前 446 字节**是 **primary bootloader**, 包含了可执行代码和错误信息字符串.
-* 接下去**64字节**是磁盘的**分区表**, 该分区表中包含了**四条分区记录**, **每条分区记录**为 **16 字节**, 分区记录可以为空, 若为空则表示分区不存在.
-* 最后是 **2 个字节**的 **magic number**, 这两个字节是固定的 **0xAA55**, 这两个字节的 magic number 可以用于**判断该MBR记录是否存在**.
+* 接下去**64 字节**是磁盘的**分区表**, 该分区表中包含了**四条分区记录**, **每条分区记录**为 **16 字节**, 分区记录可以为空, 若为空则表示分区不存在.
+* 最后是 **2 个字节**的 **magic number**, 这两个字节是固定的 **0xAA55**, 这两个字节的 magic number 可以用于**判断该 MBR 记录是否存在**.
 
 primary bootloader 的作用就是**寻找并定位 secondary bootloader**, 也就是 **Stage 2 bootloader**. 它通过**遍历分区表寻找可用的分区**, 当它发现可用的分区的时候, 还是会继续扫描其他分区, 确保其他分区是不可用的. 然后**从可用的分区中读取 secondary bootloader 到内存中**, 并执行.
 
@@ -79,7 +79,7 @@ primary bootloader 的作用就是**寻找并定位 secondary bootloader**, 也�
 
 Stage 2 bootloader 也称作 **secondary bootloader**, 也可以更恰当地称作 **kernel loader**, 它的任务就是**将 Linux 内核加载到内存中**, 并根据设置, 有**选择性**地将 **initial RAM disk** 也加载到内存中.
 
-在 x86 PC 环境中, **Stage 1 bootloader** 和 **Stage 2 bootloader** 合并起来就是 **LILO**(`Linux Loader`)或者 **GRUB**(`GRand Unified Bootloader`). 因为 LILO 中存在一些缺点, 并且这些缺点在 GRUB 中得到了比较好的解决, 所以这里将会以GRUB为准进行讲解.
+在 x86 PC 环境中, **Stage 1 bootloader** 和 **Stage 2 bootloader** 合并起来就是 **LILO**(`Linux Loader`)或者 **GRUB**(`GRand Unified Bootloader`). 因为 LILO 中存在一些缺点, 并且这些缺点在 GRUB 中得到了比较好的解决, 所以这里将会以 GRUB 为准进行讲解.
 
 GRUB 的一大优点是, 它能够**正确识别到 Linux 文件系统**. 相对于像 **LILO** 那样**只能读取原始扇区数据**, **GRUB** 则可以从 **ext2** 和 **ext3** 的**文件系统**中读取到 **Linux 内核**. 为了实现这个功能, **GRUB** 将原本 2 个步骤的 bootloader 变成了 3 个步骤, 多了 Stage 1.5 bootloader, 即在 **Stage 1 bootloader** 和 **Stage 2 bootloader** 中间加载一个**可以识别 Linux 文件系统**的 **bootloader**(`Stage 1.5 bootloader`), 例如 `reiserfs_stage1_5` (用于识别 Reiser 日志文件系统)或者 `e2fs_stage1_5` (用于识别 **ext2** 和 **ext3** 文件系统). 当 `Stage 1.5 bootloader` 被加载和执行后, 就可以继续 Stage 2 bootloader 的加载和执行了.
 
@@ -101,7 +101,7 @@ grub> boot
 Uncompressing Linux... Ok, booting the kernel.
 ```
 
-如果不知道要启动的内核名字, 只需要 `/`, 然后按Tab键让它自动补齐, 或者切换可用的内核.
+如果不知道要启动的内核名字, 只需要 `/`, 然后按 Tab 键让它自动补齐, 或者切换可用的内核.
 
 **GRUB 2** 上加载内核的命令已经由 kernel 变成了 **linux**, 所以需要用到的是下面的命令
 
@@ -114,10 +114,10 @@ grub> boot
 而 `/vmlinuz` 和 `/initrd.img` 其实是链接到了 `/boot/` 目录下**特定版本的内核**
 
 ```
-lrwxrwxrwx   1 root root    33 8月  10 06:48 initrd.img -> boot/initrd.img-4.15.0-30-generic
-lrwxrwxrwx   1 root root    33 8月  10 06:48 initrd.img.old -> boot/initrd.img-4.15.0-29-generic
-lrwxrwxrwx   1 root root    30 8月  10 06:48 vmlinuz -> boot/vmlinuz-4.15.0-30-generic
-lrwxrwxrwx   1 root root    30 8月  10 06:48 vmlinuz.old -> boot/vmlinuz-4.15.0-29-generic
+lrwxrwxrwx   1 root root    33 8 月  10 06:48 initrd.img -> boot/initrd.img-4.15.0-30-generic
+lrwxrwxrwx   1 root root    33 8 月  10 06:48 initrd.img.old -> boot/initrd.img-4.15.0-29-generic
+lrwxrwxrwx   1 root root    30 8 月  10 06:48 vmlinuz -> boot/vmlinuz-4.15.0-30-generic
+lrwxrwxrwx   1 root root    30 8 月  10 06:48 vmlinuz.old -> boot/vmlinuz-4.15.0-29-generic
 ```
 
 # 5. Kernel 阶段
@@ -132,7 +132,7 @@ lrwxrwxrwx   1 root root    30 8月  10 06:48 vmlinuz.old -> boot/vmlinuz-4.15.0
 
 ![2022-02-19-22-02-51.png](./images/2022-02-19-22-02-51.png)
 
-在 `./init/main.c:start_kernl()` 函数中, 一长串的初始化函数将会被调用到用于设置中断、执行更详细的内存配置、**加载initial RAM disk**等. 接着, 将会调用 `./arch/i386/kernel/process.c:kernel_thread()` 函数来**启动第一个用户空间进程**, 该进程的执行函数是 init. 最后, idle 进程(`cpu_idle`)将会被启动, 并且调度器其将接管整个系统. 当中断使能时, 可抢占的调度器周期性地接管系统, 用于提供多任务同时运行的能力.
+在 `./init/main.c:start_kernl()` 函数中, 一长串的初始化函数将会被调用到用于设置中断、执行更详细的内存配置、**加载 initial RAM disk**等. 接着, 将会调用 `./arch/i386/kernel/process.c:kernel_thread()` 函数来**启动第一个用户空间进程**, 该进程的执行函数是 init. 最后, idle 进程(`cpu_idle`)将会被启动, 并且调度器其将接管整个系统. 当中断使能时, 可抢占的调度器周期性地接管系统, 用于提供多任务同时运行的能力.
 
 在内核启动的时候, 原本由 `Stage 2 bootloader` 加载到内核的 `initial RAM disk`(**initrd**)将会**被挂载**上. 这个位于 RAM 里面的 initrd 将会**临时充当根文件系统**, 并且允许内核直接启动, 而不需要挂载任何的物理磁盘. 因为那些用于跟外设交互的内核模块可以被放置到 initrd 中, 所以内核可以做得非常小, 并且还能支持很多的外设配置. 当内核启动起来后, 这个临时的根文件系统将会被丢弃(通过 `pivot_root()` 函数), 即 initrd 文件系统将会被卸载, 而真正的根文件系统将会被挂载.
 
@@ -140,13 +140,13 @@ initrd 功能让驱动不需要直接整合到内存中, 而是以可加载的�
 
 # 6. Init
 
-当内核启动并初始化完毕后, 内核就会开始启动第一个用户空间程序, 这个被调用的程序是第一个使用标准C库编译的程序, 在这之前, 所有的程序都不是使用标准C库编译得到的.
+当内核启动并初始化完毕后, 内核就会开始启动第一个用户空间程序, 这个被调用的程序是第一个使用标准 C 库编译的程序, 在这之前, 所有的程序都不是使用标准 C 库编译得到的.
 
-在Linux桌面系统中, 虽然不是强制规定的, 但是第一个启动的应用程序通常是`/sbin/init`. 嵌入式系统中通常很少要求init程序通过 `/etc/inittab` 提供大量的初始化工作. 很多情况下, 用户可以通过调用一个简单的shell脚本来启动所需的应用程序.
+在 Linux 桌面系统中, 虽然不是强制规定的, 但是第一个启动的应用程序通常是`/sbin/init`. 嵌入式系统中通常很少要求 init 程序通过 `/etc/inittab` 提供大量的初始化工作. 很多情况下, 用户可以通过调用一个简单的 shell 脚本来启动所需的应用程序.
 
 # 7. 总结
 
-就像Linux本身一样, Linux启动过程也是一个特别灵活的过程, 该过程支持了各种各样的处理器和硬件平台. 最早的时候, loadlin bootloader提供了最简单直接的方法来启动Linux. 后来 LILO bootloader 扩展强化了启动的能力, 但是却还是没法获取文件系统的信息. 最新的bootloader, 比如GRUB, 则允许从一些列的文件系统(从 Minix 到Reiser)中启动 Linux.
+就像 Linux 本身一样, Linux 启动过程也是一个特别灵活的过程, 该过程支持了各种各样的处理器和硬件平台. 最早的时候, loadlin bootloader 提供了最简单直接的方法来启动 Linux. 后来 LILO bootloader 扩展强化了启动的能力, 但是却还是没法获取文件系统的信息. 最新的 bootloader, 比如 GRUB, 则允许从一些列的文件系统(从 Minix 到 Reiser)中启动 Linux.
 
 # 8. reference
 

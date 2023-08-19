@@ -4,15 +4,15 @@
 <!-- code_chunk_output -->
 
 - [1. 背景](#1-背景)
-  - [1.1. 同步/异步IO](#11-同步异步io)
+  - [1.1. 同步/异步 IO](#11-同步异步-io)
   - [1.2. ioeventfd](#12-ioeventfd)
 - [2. KVM](#2-kvm)
   - [2.1. 数据结构](#21-数据结构)
-    - [2.1.1. KVM_IOEVENTFD命令字](#211-kvm_ioeventfd命令字)
-    - [2.1.2. 用户态结构体kvm_ioeventfd](#212-用户态结构体kvm_ioeventfd)
+    - [2.1.1. KVM_IOEVENTFD 命令字](#211-kvm_ioeventfd-命令字)
+    - [2.1.2. 用户态结构体 kvm_ioeventfd](#212-用户态结构体-kvm_ioeventfd)
       - [2.1.2.1. 用户态用法](#2121-用户态用法)
     - [2.1.3. 内核态结构体_ioeventfd](#213-内核态结构体_ioeventfd)
-    - [2.1.4. 虚拟机kvm关联信息](#214-虚拟机kvm关联信息)
+    - [2.1.4. 虚拟机 kvm 关联信息](#214-虚拟机-kvm-关联信息)
   - [2.2. 注册流程](#22-注册流程)
   - [2.3. 触发流程](#23-触发流程)
 - [3. QEMU](#3-qemu)
@@ -24,11 +24,11 @@
 
 # 1. 背景
 
-## 1.1. 同步/异步IO
+## 1.1. 同步/异步 IO
 
-传统的QEMU设备模拟, 当**虚机**访问到 **pci 的配置空间**或者 **BAR 空间**时, 会触发缺页异常而 `VM-Exit`, kvm 检查到虚机访问的是用户 QEMU模拟 的用户态设备的空间, 这是 IO 操作, 就会退出到用户态交给 QEMU 处理, 由 **QEMU 最终进行分发**, IO 完成之后的**原路返回**. 这样的一次路径称为**同步 IO**, 即指 Guest 需要等待 IO 操作的结果才能继续运行.
+传统的 QEMU 设备模拟, 当**虚机**访问到 **pci 的配置空间**或者 **BAR 空间**时, 会触发缺页异常而 `VM-Exit`, kvm 检查到虚机访问的是用户 QEMU 模拟 的用户态设备的空间, 这是 IO 操作, 就会退出到用户态交给 QEMU 处理, 由 **QEMU 最终进行分发**, IO 完成之后的**原路返回**. 这样的一次路径称为**同步 IO**, 即指 Guest 需要等待 IO 操作的结果才能继续运行.
 
-梳理整个流程, 需要经过**两次 cpu 模式切换**, 一次是**非根模式**到**根模式**, 一次是**内核态**到**用户态**. 从内核态切换到用户态的原因, 是**kvm没有模拟这个设备**, 处理不了这种情况才退出到用户态让 QEMU 处理.
+梳理整个流程, 需要经过**两次 cpu 模式切换**, 一次是**非根模式**到**根模式**, 一次是**内核态**到**用户态**. 从内核态切换到用户态的原因, 是**kvm 没有模拟这个设备**, 处理不了这种情况才退出到用户态让 QEMU 处理.
 
 但存在这样一种情况, 即 guest 中的**某次 IO 操作**只是作为一个**通知事件**, 用于**通知** `QEMU/KVM` 完成**另一个具体的 IO**, 这种情况下没有必要像普通 IO 一样等待数据完全写完, **只需要触发通知**并等待具体 IO 完成即可. 这样也**节省**了一个**内核态到用户态的开销**.
 
@@ -42,9 +42,9 @@ ioeventfd 正是为 IO 提供**通知机制**的东西.
 
 这样的一次 IO 操作相比于不使用 ioeventfd 的 IO 操作, 能**节省**一次在 **QEMU** 中**分发 IO 请求**和**处理 IO 请求**的时间.
 
-ioeventfd 基本原理是基于 eventfd, eventfd 是内核实现的高效**线程通信机制**, 还适合于**内核与用户态的通信**, KVM模块利用 eventfd 实现了 KVM 和 qemu 的高效通信机制 ioeventfd.
+ioeventfd 基本原理是基于 eventfd, eventfd 是内核实现的高效**线程通信机制**, 还适合于**内核与用户态的通信**, KVM 模块利用 eventfd 实现了 KVM 和 qemu 的高效通信机制 ioeventfd.
 
-> `Linux\Eventfd\Linux\` 的 `eventfd机制.md`
+> `Linux\Eventfd\Linux\` 的 `eventfd 机制.md`
 
 分为 KVM 的实现和 qemu 的使用两部分.
 
@@ -52,13 +52,13 @@ ioeventfd 基本原理是基于 eventfd, eventfd 是内核实现的高效**线�
 
 ## 2.1. 数据结构
 
-### 2.1.1. KVM_IOEVENTFD命令字
+### 2.1.1. KVM_IOEVENTFD 命令字
 
 ioeventfd 是内核 kvm 模块向 qemu 提供的一个 vm ioctl 命令字 `KVM_IOEVENTFD`, 对应调用 `kvm_vm_ioctl` 函数.
 
 这个命令字的功能是将一个 **eventfd** 绑定到**一段客户机的地址空间**, 这个空间可以是 **mmio**, 也可以是 **pio**. 当 **guest 写**这段地址空间时, 会触发 `EPT_MISCONFIGURATION` **缺页异常**, **KVM** 处理时如果发现这段地址落在了**已注册的 ioeventfd 地址区间**里, 会通过**写关联 eventfd 通知 qemu**, 从而**节约**一次**内核态到用户态的切换开销**.
 
-### 2.1.2. 用户态结构体kvm_ioeventfd
+### 2.1.2. 用户态结构体 kvm_ioeventfd
 
 > 描述了一个 ioeventfd 要注册到 kvm 中的所有信息, 其中包含了 ioeventfd 信息和需要注册到 Guest 的总线和设备信息.
 
@@ -85,7 +85,7 @@ struct kvm_ioeventfd {
 
 1. **用户态**先注册好 **evenfd** 并获得 fd(通过**系统调用** `eventfd2` 或 `eventfd`);
 2. 然后将 fd 和感兴趣的**地址区间**封装成 `kvm_ioeventfd` **结构体**作为**参数**;
-3. 最后调用 `ioctl KVM_IOEVENTFD` **命令字**, 注册到kvm
+3. 最后调用 `ioctl KVM_IOEVENTFD` **命令字**, 注册到 kvm
 
 ### 2.1.3. 内核态结构体_ioeventfd
 
@@ -107,16 +107,16 @@ struct _ioeventfd {
 };
 ```
 
-* list: 用于将当前ioeventfd链接到kvm的ioeventfd链表中去
+* list: 用于将当前 ioeventfd 链接到 kvm 的 ioeventfd 链表中去
 * addr: 客户机 `PIO/MMIO` 地址, 当客户机向该地址写入数据时触发 event
-* length: 客户机向该地址写入数据时数据的**长度**, 当 length 为0时, **忽略写入数据的长度**
+* length: 客户机向该地址写入数据时数据的**长度**, 当 length 为 0 时, **忽略写入数据的长度**
 * eventfd: 该 ioeventfd 对应关联的 eventfd
-* datamatch: 用户态程序设置的 match data, 当 ioeventfd 被设置了 `KVM_IOEVENTFD_FLAG_DATAMATCH`, 只有满足客户机写入的值等于 datamatch 的条件时才触发event
+* datamatch: 用户态程序设置的 match data, 当 ioeventfd 被设置了 `KVM_IOEVENTFD_FLAG_DATAMATCH`, 只有满足客户机写入的值等于 datamatch 的条件时才触发 event
 * dev: 用于将该 **ioeventfd 与 Guest 关联**起来(通过注册该 dev 到 Guest 实现). `VM-Exit` 退出时调用 `dev->ops` 的 write 操作, 对应 `ioeventfd_write`
-* bus_idx: 客户机的地址被分为了4类, MMIO, PIO, `VIRTIO_CCW_NOTIFY`, `FAST_MMIO`, `bus_idx` 用来区分注册到kvm的MMIO总线还是PIO总线
+* bus_idx: 客户机的地址被分为了 4 类, MMIO, PIO, `VIRTIO_CCW_NOTIFY`, `FAST_MMIO`, `bus_idx` 用来区分注册到 kvm 的 MMIO 总线还是 PIO 总线
 * wildcard: 与 datamatch 互斥, 如果 datamatch 为 false, 则 wildcard 设为 true
 
-### 2.1.4. 虚拟机kvm关联信息
+### 2.1.4. 虚拟机 kvm 关联信息
 
 用户态下发 `KVM_IOEVENTFD` 命令字最终会生成 `_ioeventfd` 结构体, 存放在内核中, 由于它是**和一个虚机关联的**, 因此被放到了 kvm 结构体中维护, kvm 结构体中有两个字段, 存放了 ioeventfd 相关的信息, 如下:
 
@@ -148,7 +148,7 @@ enum kvm_bus {
 };
 ```
 
-* **buses**: 虚拟机中所有的 **I/O 总线结构体数组**. 总线分为 **4 类**, **每类地址**可以认为有**独立的地址空间**, 它们被抽象成 4个 bus 上的地址. 分别是 `kvm_bus` 所列出的 MMIO, PIO, `VIRTIO_CCW_NOTIFY`, `FAST_MMIO`. MMIO 和 `FAST_MMIO` 的区别是, MMIO 需要**检查**写入地址的**值长度**是否和 ioeventfd 指定的长度相等, `FAST_MMIO` 不需要检查. ioeventfd 的地址信息被放在 `kvm_io_bus` 的 range 中;
+* **buses**: 虚拟机中所有的 **I/O 总线结构体数组**. 总线分为 **4 类**, **每类地址**可以认为有**独立的地址空间**, 它们被抽象成 4 个 bus 上的地址. 分别是 `kvm_bus` 所列出的 MMIO, PIO, `VIRTIO_CCW_NOTIFY`, `FAST_MMIO`. MMIO 和 `FAST_MMIO` 的区别是, MMIO 需要**检查**写入地址的**值长度**是否和 ioeventfd 指定的长度相等, `FAST_MMIO` 不需要检查. ioeventfd 的地址信息被放在 `kvm_io_bus` 的 range 中;
 * ioeventfds: ioeventfd 的整个信息通过 list 成员被链接到了 ioeventfds 中
 
 相关数据结构之间的关系:
@@ -213,7 +213,7 @@ kvm_assign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
 	......
 ```
 
-* 1: 首先从 `kvm_ioeventfd->flags` 中提取出该eventfd是MMIO还是PIO,  找到总线索引 `bus_idx`, 方便在 `kvm->buses` 数组中找到 `kvm_io_bus` 结构
+* 1: 首先从 `kvm_ioeventfd->flags` 中提取出该 eventfd 是 MMIO 还是 PIO,  找到总线索引 `bus_idx`, 方便在 `kvm->buses` 数组中找到 `kvm_io_bus` 结构
 * 2: 进行**实际关联**: 注册 ioeventfd, 将用户态的信息拆解, 封装成内核态的 `kvm_io_bus` 和 `_ioeventfd` 结构, 保存到 kvm 结构体的对应成员
 
 跟踪 `kvm_assign_ioeventfd_idx` 主要流程:
@@ -256,11 +256,11 @@ static int kvm_assign_ioeventfd_idx(struct kvm *kvm,
 ```
 
 * 1: 根据 fd 从进程的描述符表中找到 struct file 结构, 从 `file->private_data` 取出 `eventfd_ctx`, 即内核态的 eventfd
-* 2: 分配 `_ioeventfd` 结构p, 使用用户态传入的 `kvm_ioeventfd` 进行**初始化**
+* 2: 分配 `_ioeventfd` 结构 p, 使用用户态传入的 `kvm_ioeventfd` 进行**初始化**
 * 3: 判断 `kvm_ioeventfd` 结构中的 flags 是否含有 datamatch, 如果有, 则置 `p->datamatch` 为 true
 * 4: 判断本次与地址关联的 ioeventfd 是否之前存在
 * 5: 初始化 `_ioeventfd` 中的 `kvm_io_device` 设备成员, 并设置该设备的 IO 操作**钩子函数**. 当虚机**写内存缺页**时, KVM 首先尝试触发 `p->dev` 中的 **write** 函数, 检查缺页地址是否满足 ioeventfd 触发条件
-* 6: 将 `_ioevetfd` 结构中的 kvm_io_device 设备注册到Guest上. 将 `_ioeventfd` 中的**地址信息**和**钩子函数**封装成 `kvm_io_range`, 放到 `kvm->buses` 的 `range[]` 数组中. 之后 kvm 在处理缺页就**可以查询**到缺页地址是否在已注册的 `ioeventfd` 的地址区间
+* 6: 将 `_ioevetfd` 结构中的 kvm_io_device 设备注册到 Guest 上. 将 `_ioeventfd` 中的**地址信息**和**钩子函数**封装成 `kvm_io_range`, 放到 `kvm->buses` 的 `range[]` 数组中. 之后 kvm 在处理缺页就**可以查询**到缺页地址是否在已注册的 `ioeventfd` 的地址区间
 * 7: 更新 ioeventfd 的计数
 * 8: 将 ioeventfd 放到 kvm 的 ioeventfds **链表**中, 维护起来
 
@@ -273,13 +273,13 @@ static const struct kvm_io_device_ops ioeventfd_ops = {
 
 需要注意的是, ioeventfd 对应的文件操作**只有 write 操作**, 而**没有 read 操作**.
 
-write操作/OUT类指令 只是简单向外部输出数据, 无需等待 QEMU 处理完成即可继续运行Guest, 但 read操作/IN类指令 需要从外部获取数据, 必须要等待 QEMU 处理完成 IO 请求再继续运行 Guest.
+write 操作/OUT 类指令 只是简单向外部输出数据, 无需等待 QEMU 处理完成即可继续运行 Guest, 但 read 操作/IN 类指令 需要从外部获取数据, 必须要等待 QEMU 处理完成 IO 请求再继续运行 Guest.
 
-ioeventfd 设计的初衷就是节省 Guest 运行 write操作/OUT类指令 时的时间, read操作/IN类指令 执行时间无法节省, 因此这里的 ioeventfd 文件操作中只有 write 而没有read.
+ioeventfd 设计的初衷就是节省 Guest 运行 write 操作/OUT 类指令 时的时间, read 操作/IN 类指令 执行时间无法节省, 因此这里的 ioeventfd 文件操作中只有 write 而没有 read.
 
 ## 2.3. 触发流程
 
-当虚拟机向注册了ioeventfd的地址写数据时, 会产生vmexit. 当 kvm 检查 `VM-Exit` 退出原因, 如果是缺页引起的退出并且原因是 EPT misconfiguration, 首先检查缺页的物理地址是否落在已注册 ioeventfd 的物理区间, 如果是, 调用对应区间的 write 函数. 虚机触发缺页的流程如下:
+当虚拟机向注册了 ioeventfd 的地址写数据时, 会产生 vmexit. 当 kvm 检查 `VM-Exit` 退出原因, 如果是缺页引起的退出并且原因是 EPT misconfiguration, 首先检查缺页的物理地址是否落在已注册 ioeventfd 的物理区间, 如果是, 调用对应区间的 write 函数. 虚机触发缺页的流程如下:
 
 ```cpp
 vmx_handle_exit
@@ -309,7 +309,7 @@ static int handle_ept_misconfig(struct kvm_vcpu *vcpu)
 * 2: 首先尝试**触发 ioeventfd**, 如果成功, eventfd 会通知用户态 qemu, 因此不需要退到用户态, 触发 ioeventfd 之后再次进入客户态就行了
 * 3: 如果引发缺页的地址不在 ioeventfd 监听范围内, 进行缺页处理, 这里的实现我们跳过, 重点分析触发 ioeventfd 的情形
 
-分析如何触发eventfd流程:
+分析如何触发 eventfd 流程:
 
 ```cpp
 // "virt/kvm/kvm_main.c"
@@ -378,9 +378,9 @@ static int ioeventfd_write(struct kvm_vcpu *vcpu, struct kvm_io_device *this, gp
 }
 ```
 
-* 7: 根据从 bus 总线上取下的 `range[]`, 取出其dev成员, 由于dev结构体是 `_ioeventfd` 的一个成员, 通过 container 转化可以取出 `_ioeventfd`
+* 7: 根据从 bus 总线上取下的 `range[]`, 取出其 dev 成员, 由于 dev 结构体是 `_ioeventfd` 的一个成员, 通过 container 转化可以取出 `_ioeventfd`
 * 8: 检查缺页**物理地址**和 range 中**注册的地址**是否匹配
-* 9: 取出 `_ioeventfd` 中的 `eventfd_ctx` 结构体, 调用 `eventfd_signal` 往它维护的计数器中加1, 触发一次 POLLIN 事件
+* 9: 取出 `_ioeventfd` 中的 `eventfd_ctx` 结构体, 调用 `eventfd_signal` 往它维护的计数器中加 1, 触发一次 POLLIN 事件
 
 `eventfd_signal` 实现如下:
 
@@ -418,15 +418,15 @@ EXPORT_SYMBOL_GPL(eventfd_signal);
 
 * 10: 首先判断下**计数器**是否即将**溢出**. 如果计数器加上 1 之后溢出了, 让计数器直接等于最大值, 内核态写 eventfd 与用户态有所区别, 它不允许阻塞, 因此当计数器溢出时直接设置其为**最大值**
 * 11: 增加计数器的值
-* 12: **唤醒**阻塞在 eventfd 上的**读线程**, 如果计数器原来为0, 有读线程阻塞在这个 eventfd 上, 那么此时计数器加1后, 就可以唤醒这些线程
+* 12: **唤醒**阻塞在 eventfd 上的**读线程**, 如果计数器原来为 0, 有读线程阻塞在这个 eventfd 上, 那么此时计数器加 1 后, 就可以唤醒这些线程
 
-如果 QEMU 有对该 eventfd 的检测, 便会在 QEMU 中进行本次IO的处理, 与此同时, kvm 中的 `handle_ept_misconfig` 会返回0, 表示成功完成了IO请求
+如果 QEMU 有对该 eventfd 的检测, 便会在 QEMU 中进行本次 IO 的处理, 与此同时, kvm 中的 `handle_ept_misconfig` 会返回 0, 表示成功完成了 IO 请求
 
 # 3. QEMU
 
 ## 3.1. 数据结构
 
-以 virtio 磁盘为例, virtio 磁盘是一个 pci 设备, 它有 **pci 空间**, 这些空间的内存都是 QEMU 模拟的, 当虚机**写**这些 pci 空间时, QEMU需要做对应的处理, 在 virtio 磁盘**初始化成功**后, 它就会将自己的**地址空间信息提取出来**, 封装成 **ioeventfd**, 通过 `ioctl` **命令字**传递给KVM, **ioeventfd** 中包含一个 QEMU 提前通过 **eventfd** 创建好的 fd, KVM 通知 QEMU是就往这个 fd 中写 1. 以下就是这个 ioeventfd 的结构, 具体含义见前面的分析.
+以 virtio 磁盘为例, virtio 磁盘是一个 pci 设备, 它有 **pci 空间**, 这些空间的内存都是 QEMU 模拟的, 当虚机**写**这些 pci 空间时, QEMU 需要做对应的处理, 在 virtio 磁盘**初始化成功**后, 它就会将自己的**地址空间信息提取出来**, 封装成 **ioeventfd**, 通过 `ioctl` **命令字**传递给 KVM, **ioeventfd** 中包含一个 QEMU 提前通过 **eventfd** 创建好的 fd, KVM 通知 QEMU 是就往这个 fd 中写 1. 以下就是这个 ioeventfd 的结构, 具体含义见前面的分析.
 
 ```cpp
 // linux-headers/linux/kvm.h
@@ -453,7 +453,7 @@ struct MemoryRegion {
 ```
 
 * 1: 表示 **MR 对应的地址区间**中有**多少个 ioeventfd**
-* 2: MR 中包含的 **ioeventfds 数组**, 每注册一个 ioeventfd, 不只 KVM会有记录, QEMU 也会有记录
+* 2: MR 中包含的 **ioeventfds 数组**, 每注册一个 ioeventfd, 不只 KVM 会有记录, QEMU 也会有记录
 
 `MemoryRegionIoeventfd` 具体结构如下:
 
@@ -481,7 +481,7 @@ static void virtio_ioport_write(void *opaque, uint32_t addr, uint32_t val)
 {
 	switch (addr) {
 	case VIRTIO_PCI_STATUS:
-		/* 前端驱动想device_status字段写入DRIVER_OK, 表明驱动初始化完成 */
+		/* 前端驱动想 device_status 字段写入 DRIVER_OK, 表明驱动初始化完成 */
 		if (val & VIRTIO_CONFIG_S_DRIVER_OK) {
             virtio_pci_start_ioeventfd(proxy);
         }
@@ -502,7 +502,7 @@ int virtio_blk_data_plane_start(VirtIODevice *vdev)
 {
 	......
  	/* Set up virtqueue notify */
-    for (i = 0; i < nvqs; i++) { /* 为virtio磁盘的每个队列都设置一个ioeventfd */
+    for (i = 0; i < nvqs; i++) { /* 为 virtio 磁盘的每个队列都设置一个 ioeventfd */
         r = virtio_bus_set_host_notifier(VIRTIO_BUS(qbus), i, true);
     }
 	......
@@ -534,11 +534,11 @@ struct EventNotifier {
 };
 ```
 
-* 1: **每个 virtio 队列**关联**一个 eventfd**, eventfd 的 **fd** 被**存放**到 `VirtQueue->host_notifier` 中, 这里把它**取出来**, 用于初始化并传递给KVM
-* 2: 初始化 **EventNotifier**, 将 **eventfd** 对应的**计数器设置为1**
-* 3: 注册 ioeventfd, 最终会通过 ioctl **命令字** `KVM_IOEVENTFD` 注册到KVM
+* 1: **每个 virtio 队列**关联**一个 eventfd**, eventfd 的 **fd** 被**存放**到 `VirtQueue->host_notifier` 中, 这里把它**取出来**, 用于初始化并传递给 KVM
+* 2: 初始化 **EventNotifier**, 将 **eventfd** 对应的**计数器设置为 1**
+* 3: 注册 ioeventfd, 最终会通过 ioctl **命令字** `KVM_IOEVENTFD` 注册到 KVM
 
-QEMU 进行 ioeventfd 注册的时候需要一个 EventNotifier, 该EventNotifier 由 `event_notifier_init()` 初始化, `event_notifier_init` 中**判断系统**是否支持 **EVENTFD** 机制, 如果支持, 那么 EventNotifier 中的rfd和wfd相等, 均为eventfd()系统调用返回的新建的 fd, 并根据 `event_notifier_init` 收到的参数 active 决定是否唤醒 POLLIN 事件, 即直接触发 `eventfd`/`EventNotifer` 对应的 handler. 如果系统不支持EVENTFD机制, 则QEMU会利用pipe模拟eventfd, 略过.
+QEMU 进行 ioeventfd 注册的时候需要一个 EventNotifier, 该 EventNotifier 由 `event_notifier_init()` 初始化, `event_notifier_init` 中**判断系统**是否支持 **EVENTFD** 机制, 如果支持, 那么 EventNotifier 中的 rfd 和 wfd 相等, 均为 eventfd()系统调用返回的新建的 fd, 并根据 `event_notifier_init` 收到的参数 active 决定是否唤醒 POLLIN 事件, 即直接触发 `eventfd`/`EventNotifer` 对应的 handler. 如果系统不支持 EVENTFD 机制, 则 QEMU 会利用 pipe 模拟 eventfd, 略过.
 
 **ioeventfd** 关联一段**内存空间**, 由于 QEMU 每有**地址空间变化**, 都会影响全部的地址空间, QEMU 要**统一更新地址空间的视图**, 包括 **flatview** 和 **ioeventfd** 的更新. 在注册了 EventNotifier 之后, 需要将 EventNotifier 中含有的 `fd(ioeventfd)` 与对应的 Guest IO 地址关联起来. `ioeventfd_assign` 对应 `virtio_pci_ioeventfd_assign`, 流程如下:
 
@@ -585,20 +585,20 @@ void memory_region_add_eventfd(MemoryRegion *mr,
   * mr: 指 IO 地址所在的 MemoryRegion
   * addr: 表示 IO 地址(GPA)
   * size: 表示 IO 地址的大小
-  * match_data: bool 值, 表示的是 Guest 向addr写入的值是否要与参数 data 完全一致才让 KVM 走 ioeventfd 路径, 如果 `match_data` 为 true, 那么需要完全一致才让 KVM 走 ioeventfd 路径, 如果为 false. 则不需要完全一致.
+  * match_data: bool 值, 表示的是 Guest 向 addr 写入的值是否要与参数 data 完全一致才让 KVM 走 ioeventfd 路径, 如果 `match_data` 为 true, 那么需要完全一致才让 KVM 走 ioeventfd 路径, 如果为 false. 则不需要完全一致.
   * data: 与 `match_data` 共同作用, 用于限制 Guest 向 addr 写入的值
   * e: 指前面注册的 EventNotifier
 * 4: 封装地址信息
 * 5: 寻找本次要处理的 ioeventfd 应该在 ioeventfd 数组中的什么位置
 * 6: 分配原 ioeventfd 数组大小 +1 的空间, 用于将新的 ioeventfd 插入到 ioeventfd 数组中
-* 7: 将第一步找到的位置之后的ioeventfd从ioeventfd数组中后移一位
+* 7: 将第一步找到的位置之后的 ioeventfd 从 ioeventfd 数组中后移一位
 * 8: 将新的 ioeventfd 插入到 MemoryRegion 的 ioeventfds 数组中
 * 9: 设置 `ioeventfd_update_pending`
 * 9: 检查根 MR 下面的每个子 MR, 搜集所有的 ioeventfd, 统一注册
 
-MemoryRegion 中有很多 ioeventfd, 他们**以地址从小到大的顺序**排列, `ioeventfd_nb` 是 MemoryRegion 中 ioeventfd 的数量, 通过 for 循环找到本次要添加的 ioeventfd 应该放在 ioeventfd 数组中的什么位置, 为 ioeventfd 数组分配 `原大小+sizeof(ioeventfd)` 的空间, 然后将之前找到的 ioeventfd 数组中位置之后的 ioeventfd 向后移动一个位置, 然后将新的 ioeventfd 插入到 ioeventfd 数组中. 最后设置 ioevetfd_update_pending 标志, 调用 `memory_region_transaction_commit` 更新KVM中的ioeventfd布局.
+MemoryRegion 中有很多 ioeventfd, 他们**以地址从小到大的顺序**排列, `ioeventfd_nb` 是 MemoryRegion 中 ioeventfd 的数量, 通过 for 循环找到本次要添加的 ioeventfd 应该放在 ioeventfd 数组中的什么位置, 为 ioeventfd 数组分配 `原大小+sizeof(ioeventfd)` 的空间, 然后将之前找到的 ioeventfd 数组中位置之后的 ioeventfd 向后移动一个位置, 然后将新的 ioeventfd 插入到 ioeventfd 数组中. 最后设置 ioevetfd_update_pending 标志, 调用 `memory_region_transaction_commit` 更新 KVM 中的 ioeventfd 布局.
 
-`memory_region_transaction_commit` 最终走到系统调用, 下发ioctl命令字给 KVM, 注册 ioeventfd
+`memory_region_transaction_commit` 最终走到系统调用, 下发 ioctl 命令字给 KVM, 注册 ioeventfd
 
 ```cpp
 memory_region_transaction_commit
@@ -610,7 +610,7 @@ memory_region_transaction_commit
 						kvm_vm_ioctl(kvm_state, KVM_IOEVENTFD, &kick)
 ```
 
-即 `memory_region_add_eventfd` 最终会调用 `memory_region_transaction_commit`, 而后者会调用 `eventfd_add` 函数, 该 `eventfd_add` 函数在qemu中的定义如下: 
+即 `memory_region_add_eventfd` 最终会调用 `memory_region_transaction_commit`, 而后者会调用 `eventfd_add` 函数, 该 `eventfd_add` 函数在 qemu 中的定义如下:
 
 ```cpp
 // PIO
@@ -633,44 +633,44 @@ kvm_io_ioeventfd_add
 
 ```cpp
 kvm_io_ioeventfd_add
-=> fd = event_notifier_get_fd(e) // 获取之前注册的EventNotifier中的eventfd的fd
+=> fd = event_notifier_get_fd(e) // 获取之前注册的 EventNotifier 中的 eventfd 的 fd
 => kvm_set_ioeventfd_pio(fd, section->offset_within_address_space,
               data, true, int128_get64(section->size),match_data);
-   => // 定义一个kvm_ioeventfd结构类型变量kick, 将要注册的ioeventfd的data_match,io地址, flags(MMIO/PIO),io地址范围, fd填充进去
-   => // 确定flags中是否要设置KVM_IOEVENTFD_FLAG_DATAMATCH, 表明需要全匹配才让kvm走irqfd路径
-   => // 确定flags中是否要设置KVM_IOEVENTFD_FLAG_DEASSIGN, 该flag在ioctl后告知kvm, 需要将某地址和该ioeventfd解除关联
-   => kvm_vm_ioctl(kvm_state, KVM_IOEVENTFD, &kick) // 将ioeventfd注册进kvm
+   => // 定义一个 kvm_ioeventfd 结构类型变量 kick, 将要注册的 ioeventfd 的 data_match,io 地址, flags(MMIO/PIO),io 地址范围, fd 填充进去
+   => // 确定 flags 中是否要设置 KVM_IOEVENTFD_FLAG_DATAMATCH, 表明需要全匹配才让 kvm 走 irqfd 路径
+   => // 确定 flags 中是否要设置 KVM_IOEVENTFD_FLAG_DEASSIGN, 该 flag 在 ioctl 后告知 kvm, 需要将某地址和该 ioeventfd 解除关联
+   => kvm_vm_ioctl(kvm_state, KVM_IOEVENTFD, &kick) // 将 ioeventfd 注册进 kvm
 
 ```
 
-`kvm_io_ioeventfd_add` 的逻辑很简单, 就是先获取本次要注册到 kvm 的ioeventfd 的相关信息, 然后调用 ioctl 注册进 kvm.
+`kvm_io_ioeventfd_add` 的逻辑很简单, 就是先获取本次要注册到 kvm 的 ioeventfd 的相关信息, 然后调用 ioctl 注册进 kvm.
 
 kvm_mem_ioeventfd_add
 
 ```cpp
 kvm_mem_ioeventfd_add
-=> fd = event_notifier_get_fd(e) // 获取之前注册的EventNotifier中的eventfd的fd
+=> fd = event_notifier_get_fd(e) // 获取之前注册的 EventNotifier 中的 eventfd 的 fd
 => kvm_set_ioeventfd_mmio(fd, section->offset_within_address_space,
                data, true, int128_get64(section->size),match_data);
-   => // 定义一个kvm_ioeventfd结构类型变量iofd, 将要注册的ioeventfd的data_match,io地址, flags(MMIO/PIO),io地址范围, fd填充进去
-   => // 确定flags中是否要设置KVM_IOEVENTFD_FLAG_DATAMATCH, 表明需要全匹配才让kvm走irqfd路径
-   => // 确定flags中是否要设置KVM_IOEVENTFD_FLAG_DEASSIGN, 该flag在ioctl后告知kvm, 需要将某地址和该ioeventfd解除关联
-   => kvm_vm_ioctl(kvm_state, KVM_IOEVENTFD, &iofd);// 将ioeventfd注册进kvm
+   => // 定义一个 kvm_ioeventfd 结构类型变量 iofd, 将要注册的 ioeventfd 的 data_match,io 地址, flags(MMIO/PIO),io 地址范围, fd 填充进去
+   => // 确定 flags 中是否要设置 KVM_IOEVENTFD_FLAG_DATAMATCH, 表明需要全匹配才让 kvm 走 irqfd 路径
+   => // 确定 flags 中是否要设置 KVM_IOEVENTFD_FLAG_DEASSIGN, 该 flag 在 ioctl 后告知 kvm, 需要将某地址和该 ioeventfd 解除关联
+   => kvm_vm_ioctl(kvm_state, KVM_IOEVENTFD, &iofd);// 将 ioeventfd 注册进 kvm
 ```
 
-可以看到, `kvm_mem_ioeventfd_add` 与 `kvm_io_ioeventfd_add` 的处理步骤几乎完全一样, 只是在 `kvm_ioeventfd` 结构中将 flags 置为0, 标志这是一个 MMIO ioeventfd 注册.
+可以看到, `kvm_mem_ioeventfd_add` 与 `kvm_io_ioeventfd_add` 的处理步骤几乎完全一样, 只是在 `kvm_ioeventfd` 结构中将 flags 置为 0, 标志这是一个 MMIO ioeventfd 注册.
 
 # 4. 总结
 
-整个 ioeventfd 的逻辑流程如下: 
+整个 ioeventfd 的逻辑流程如下:
 
-1. QEMU 分配一个eventfd, 并将该eventfd加入KVM维护的eventfd数组中
-2. QEMU向KVM发送更新eventfd数组内容的请求
-3. QEMU构造一个包含IO地址, IO地址范围等元素的ioeventfd结构, 并向KVM发送注册ioeventfd请求
-4. KVM根据传入的ioeventfd参数内容确定该段IO地址所属的总线, 并在该总线上注册一个ioeventfd虚拟设备, 该虚拟设备的write方法也被注册
-5. Guest执行OUT类指令(包括MMIO Write操作)
-6. VMEXIT到KVM
-7. 调用虚拟设备的write方法
-8. write方法中检查本次OUT类指令访问的IO地址和范围是否符合ioeventfd设置的要求
-9. 如果符合则调用eventfd_signal触发一次POLLIN事件并返回Guest
-10. QEMU监测到ioeventfd上出现了POLLIN, 则调用相应的处理函数处理IO
+1. QEMU 分配一个 eventfd, 并将该 eventfd 加入 KVM 维护的 eventfd 数组中
+2. QEMU 向 KVM 发送更新 eventfd 数组内容的请求
+3. QEMU 构造一个包含 IO 地址, IO 地址范围等元素的 ioeventfd 结构, 并向 KVM 发送注册 ioeventfd 请求
+4. KVM 根据传入的 ioeventfd 参数内容确定该段 IO 地址所属的总线, 并在该总线上注册一个 ioeventfd 虚拟设备, 该虚拟设备的 write 方法也被注册
+5. Guest 执行 OUT 类指令(包括 MMIO Write 操作)
+6. VMEXIT 到 KVM
+7. 调用虚拟设备的 write 方法
+8. write 方法中检查本次 OUT 类指令访问的 IO 地址和范围是否符合 ioeventfd 设置的要求
+9. 如果符合则调用 eventfd_signal 触发一次 POLLIN 事件并返回 Guest
+10. QEMU 监测到 ioeventfd 上出现了 POLLIN, 则调用相应的处理函数处理 IO

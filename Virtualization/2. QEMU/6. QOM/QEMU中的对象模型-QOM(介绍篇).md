@@ -4,44 +4,44 @@
 <!-- code_chunk_output -->
 
 - [概述](#概述)
-- [为什么QEMU中要实现对象模型](#为什么qemu中要实现对象模型)
-  - [各种架构CPU的模拟和实现](#各种架构cpu的模拟和实现)
-  - [模拟device与bus的关系](#模拟device与bus的关系)
-- [QOM模型的数据结构](#qom模型的数据结构)
-  - [TypeImpl: 对数据类型的抽象数据结构](#typeimpl对数据类型的抽象数据结构)
+- [为什么 QEMU 中要实现对象模型](#为什么-qemu-中要实现对象模型)
+  - [各种架构 CPU 的模拟和实现](#各种架构-cpu-的模拟和实现)
+  - [模拟 device 与 bus 的关系](#模拟-device-与-bus-的关系)
+- [QOM 模型的数据结构](#qom-模型的数据结构)
+  - [TypeImpl: 对数据类型的抽象数据结构](#typeimpl-对数据类型的抽象数据结构)
   - [ObjectClass: 是所有类的基类](#objectclass-是所有类的基类)
-  - [Object: 是所有对象的base Object](#object-是所有对象的base-object)
+  - [Object: 是所有对象的 base Object](#object-是所有对象的-base-object)
   - [TypeInfo](#typeinfo)
-- [怎样使用QOM模型创建新类型](#怎样使用qom模型创建新类型)
+- [怎样使用 QOM 模型创建新类型](#怎样使用-qom-模型创建新类型)
 - [参考](#参考)
 
 <!-- /code_chunk_output -->
 
 # 概述
 
-QEMU提供了一套面向对象编程的模型——QOM, 即QEMU Object Module, 几乎所有的设备如CPU、内存、总线等都是利用这一面向对象的模型来实现的. QOM模型的实现代码位于**qom/文件夹**下的文件中. 
+QEMU 提供了一套面向对象编程的模型——QOM, 即 QEMU Object Module, 几乎所有的设备如 CPU、内存、总线等都是利用这一面向对象的模型来实现的. QOM 模型的实现代码位于**qom/文件夹**下的文件中.
 
-# 为什么QEMU中要实现对象模型
+# 为什么 QEMU 中要实现对象模型
 
-## 各种架构CPU的模拟和实现
+## 各种架构 CPU 的模拟和实现
 
-QEMU中要实现对各种CPU架构的模拟, 而且对于一种架构的CPU, 比如X86\_64架构的CPU, 由于包含的特性不同, 也会有**不同的CPU模型**. 
+QEMU 中要实现对各种 CPU 架构的模拟, 而且对于一种架构的 CPU, 比如 X86\_64 架构的 CPU, 由于包含的特性不同, 也会有**不同的 CPU 模型**.
 
-任何CPU中都有**CPU通用的属性**, 同时也包含各自特有的属性. 
+任何 CPU 中都有**CPU 通用的属性**, 同时也包含各自特有的属性.
 
-为了便于模拟这些CPU模型, 面向对象的编程模型是必不可少的. 
+为了便于模拟这些 CPU 模型, 面向对象的编程模型是必不可少的.
 
-## 模拟device与bus的关系
+## 模拟 device 与 bus 的关系
 
-在**主板**上, **一个device！！！** 会通过**bus！！！** 与**其他的device！！！** 相连接, **一个device**上可以通过**不同的bus端口**连接到**其他的device**, 而其他的device也可以进一步通过bus与其他的设备连接, 同时一个bus上也可以连接多个device, 这种**device连bus**、**bus连device的关系**, qemu是需要模拟出来的. 
+在**主板**上, **一个 device！！！** 会通过**bus！！！** 与**其他的 device！！！** 相连接, **一个 device**上可以通过**不同的 bus 端口**连接到**其他的 device**, 而其他的 device 也可以进一步通过 bus 与其他的设备连接, 同时一个 bus 上也可以连接多个 device, 这种**device 连 bus**、**bus 连 device 的关系**, qemu 是需要模拟出来的.
 
-为了方便模拟设备的这种特性, 面向对象的编程模型也是必不可少的. 
+为了方便模拟设备的这种特性, 面向对象的编程模型也是必不可少的.
 
-# QOM模型的数据结构
+# QOM 模型的数据结构
 
-这些数据结构中TypeImpl定义在**qom/object.c**中, **ObjectClass**、**Object**、**TypeInfo**定义在include/qom/object.h中.  
+这些数据结构中 TypeImpl 定义在**qom/object.c**中, **ObjectClass**、**Object**、**TypeInfo**定义在 include/qom/object.h 中.
 
-在include/qom/object.h的注释中, 对它们的每个字段都有比较明确的说明, 并且说明了QOM模型的用法.  
+在 include/qom/object.h 的注释中, 对它们的每个字段都有比较明确的说明, 并且说明了 QOM 模型的用法.
 
 ## TypeImpl: 对数据类型的抽象数据结构
 
@@ -61,7 +61,7 @@ struct TypeImpl
 
     void *class_data;
 
-    /*实例的Contructor & Destructor*/
+    /*实例的 Contructor & Destructor*/
     void (*instance_init)(Object *obj);
     void (*instance_post_init)(Object *obj);
     void (*instance_finalize)(Object *obj);
@@ -69,7 +69,7 @@ struct TypeImpl
     bool abstract;  /*表示类是否是抽象类*/
 
     const char *parent;  /*父类的名字*/
-    TypeImpl *parent_type;  /*指向父类TypeImpl的指针*/
+    TypeImpl *parent_type;  /*指向父类 TypeImpl 的指针*/
 
     ObjectClass *class;  /*该类型对应的类的指针*/
 
@@ -77,7 +77,7 @@ struct TypeImpl
     InterfaceImpl interfaces[MAX_INTERFACES];
 };
 
-其中InterfaceImpl的定义如下, 只是一个类型的名字
+其中 InterfaceImpl 的定义如下, 只是一个类型的名字
 struct InterfaceImpl
 {
     const char *typename;
@@ -102,15 +102,15 @@ struct ObjectClass
 };
 ```
 
-## Object: 是所有对象的base Object
+## Object: 是所有对象的 base Object
 
 ```c
 struct Object
 {
     /*< private >*/
     ObjectClass *class;
-    ObjectFree *free;  /*当对象的引用为0时, 清理垃圾的回调函数*/
-    GHashTable *properties; /*Hash表记录Object的属性*/
+    ObjectFree *free;  /*当对象的引用为 0 时, 清理垃圾的回调函数*/
+    GHashTable *properties; /*Hash 表记录 Object 的属性*/
     uint32_t ref;    /*该对象的引用计数*/
     Object *parent;
 };
@@ -118,11 +118,11 @@ struct Object
 
 ## TypeInfo
 
-是用户用来定义一个Type的工具型的数据结构, 用户定义了一个TypeInfo, 然后调用type_register(TypeInfo )或者type_register_static(TypeInfo )函数, 就会生成相应的TypeImpl实例, 将这个TypeInfo注册到全局的TypeImpl的hash表中. 
+是用户用来定义一个 Type 的工具型的数据结构, 用户定义了一个 TypeInfo, 然后调用 type_register(TypeInfo )或者 type_register_static(TypeInfo )函数, 就会生成相应的 TypeImpl 实例, 将这个 TypeInfo 注册到全局的 TypeImpl 的 hash 表中.
 
 ```c
-/*TypeInfo的属性与TypeImpl的属性对应, 
-实际上qemu就是通过用户提供的TypeInfo创建的TypeImpl的对象
+/*TypeInfo 的属性与 TypeImpl 的属性对应,
+实际上 qemu 就是通过用户提供的 TypeInfo 创建的 TypeImpl 的对象
 */
 struct TypeInfo
 {
@@ -146,13 +146,13 @@ struct TypeInfo
 };
 ```
 
-# 怎样使用QOM模型创建新类型
+# 怎样使用 QOM 模型创建新类型
 
-使用QOM模型**创建新类型**时, 需要用到以上的**OjectClass**、**Object**和**TypeInfo**. 
+使用 QOM 模型**创建新类型**时, 需要用到以上的**OjectClass**、**Object**和**TypeInfo**.
 
-关于QOM的用法, 在include/qom/object.h一开始就有一长串的注释, 这一长串的注释说明了创建新类型时的各种用法. 我们下面是对这些用法的简要说明. 
+关于 QOM 的用法, 在 include/qom/object.h 一开始就有一长串的注释, 这一长串的注释说明了创建新类型时的各种用法. 我们下面是对这些用法的简要说明.
 
-1. 从最简单的开始, 创建一个最小的type:
+1. 从最简单的开始, 创建一个最小的 type:
 
 ```c
 #include "qdev.h"
@@ -166,7 +166,7 @@ struct TypeInfo
 typedef DeviceClass MyDeviceClass;
 typedef struct MyDevice
 {
-	DeviceState parent;  //父对象必须是该对象数据结构的第一个属性, 以便实现父对象向子对象的cast
+	DeviceState parent;  //父对象必须是该对象数据结构的第一个属性, 以便实现父对象向子对象的 cast
 
 	int reg0, reg1, reg2;
 } MyDevice;
@@ -185,7 +185,7 @@ static void my_device_register_types(void)
 type_init(my_device_register_types)
 ```
 
-2. 为了方便编程, 对于每个新类型, 都会定义由**ObjectClass**动态cast到MyDeviceClass的方法, 也会定义由Object动态cast到MyDevice的方法. 以下涉及的函数`OBJECT_GET_CLASS`、`OBJECT_CLASS_CHECK`、`OBJECT_CHECK`都在include/qemu/object.h中定义. 
+2. 为了方便编程, 对于每个新类型, 都会定义由**ObjectClass**动态 cast 到 MyDeviceClass 的方法, 也会定义由 Object 动态 cast 到 MyDevice 的方法. 以下涉及的函数`OBJECT_GET_CLASS`、`OBJECT_CLASS_CHECK`、`OBJECT_CHECK`都在 include/qemu/object.h 中定义.
 
 ```c
 #define MY_DEVICE_GET_CLASS(obj) \
@@ -196,7 +196,7 @@ type_init(my_device_register_types)
 	OBJECT_CHECK(MyDevice, obj, TYPE_MY_DEVICE)
 ```
 
-3. 如果我们在定义新类型中, 实现了父类的虚拟方法, 那么需要定义新的class的初始化函数, 并且在TypeInfo数据结构中, 给TypeInfo的class\_init字段赋予该初始化函数的函数指针. 
+3. 如果我们在定义新类型中, 实现了父类的虚拟方法, 那么需要定义新的 class 的初始化函数, 并且在 TypeInfo 数据结构中, 给 TypeInfo 的 class\_init 字段赋予该初始化函数的函数指针.
 
 ```c
 #include "qdev.h"
@@ -215,7 +215,7 @@ static const TypeInfo my_device_info = {
 };
 ```
 
-4. 当我们需要从一个类创建一个派生类时, 如果需要覆盖 类原有的虚拟方法, 派生类中, 可以增加相关的属性将类原有的虚拟函数指针保存, 然后给虚拟函数赋予新的函数指针, 保证父类原有的虚拟函数指针不会丢失. 
+4. 当我们需要从一个类创建一个派生类时, 如果需要覆盖 类原有的虚拟方法, 派生类中, 可以增加相关的属性将类原有的虚拟函数指针保存, 然后给虚拟函数赋予新的函数指针, 保证父类原有的虚拟函数指针不会丢失.
 
 ```c
 typedef struct MyState MyState;

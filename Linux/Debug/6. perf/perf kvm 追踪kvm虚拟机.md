@@ -5,10 +5,10 @@
 
 - [1. 用途](#1-用途)
 - [2. 使用方法](#2-使用方法)
-- [3. 获取guest的kallsyms和modules文件](#3-获取guest的kallsyms和modules文件)
-- [4. 利用sshfs自动读取guest的kallsyms和modules文件](#4-利用sshfs自动读取guest的kallsyms和modules文件)
-- [5. 记录guest的性能事件](#5-记录guest的性能事件)
-- [6. 分析guest上的性能事件](#6-分析guest上的性能事件)
+- [3. 获取 guest 的 kallsyms 和 modules 文件](#3-获取-guest-的-kallsyms-和-modules-文件)
+- [4. 利用 sshfs 自动读取 guest 的 kallsyms 和 modules 文件](#4-利用-sshfs-自动读取-guest-的-kallsyms-和-modules-文件)
+- [5. 记录 guest 的性能事件](#5-记录-guest-的性能事件)
+- [6. 分析 guest 上的性能事件](#6-分析-guest-上的性能事件)
 - [7. perf kvm stat record/report 使用](#7-perf-kvm-stat-recordreport-使用)
 - [8. 相关资料](#8-相关资料)
 - [9. 例子](#9-例子)
@@ -19,7 +19,7 @@
 
 # 1. 用途
 
-利用kvm子工具, 我们可以在host上监测guest的性能事件. 
+利用 kvm 子工具, 我们可以在 host 上监测 guest 的性能事件.
 
 # 2. 使用方法
 
@@ -36,10 +36,10 @@ perf kvm [--host] [--guest] [--guestkallsyms=<path> --guestmodules=<path>
          | --guestvmlinux=<path>] {top|record|report|diff|buildid-list|stat}
 ```
 
-perf kvm有几个变体:
+perf kvm 有几个变体:
 
 * `perf kvm [options] top <command>`: 用于实时生成并显示虚拟机操作系统的性能数据
-* `perf kvm record <command>`: 记录性能数据并保存到文件. 
+* `perf kvm record <command>`: 记录性能数据并保存到文件.
     * 默认情况下, 使用`--guest`, `perf.data.guest`
     * `--host`, `perf.data.kvm`
     * `--guest`, `perf.data.guest`
@@ -49,9 +49,9 @@ perf kvm有几个变体:
 * `perf kvm diff`: 显示两个`perf kvm record`记录的数据的不同
 * `perf kvm buildid-list`:
 * `perf kvm stat <command>`: 执行一个命令并收集性能统计数据.
-    - `perf kvm stat record/report`可以生成KVM events的统计分析. 目前, vmexit、mmio和ioport event是支持的.
-    - `perf kvm stat record <command>`记录kvm events和command的起始和结束之间的所有events.
-* `perf kvm stat report`: 报告统计数据, 包括events处理时间, 采样等等.
+    - `perf kvm stat record/report`可以生成 KVM events 的统计分析. 目前, vmexit、mmio 和 ioport event 是支持的.
+    - `perf kvm stat record <command>`记录 kvm events 和 command 的起始和结束之间的所有 events.
+* `perf kvm stat report`: 报告统计数据, 包括 events 处理时间, 采样等等.
 
 
 
@@ -68,11 +68,11 @@ perf kvm有几个变体:
         --vcpu <n>        vcpu id to report
 ```
 
-# 3. 获取guest的kallsyms和modules文件
+# 3. 获取 guest 的 kallsyms 和 modules 文件
 
-为了能够让kvm子工具正确解析guest的符号, 我们首先需要把guest系统的/proc/kallsyms和 /proc/modules文件拷贝到host中. 
+为了能够让 kvm 子工具正确解析 guest 的符号, 我们首先需要把 guest 系统的/proc/kallsyms 和 /proc/modules 文件拷贝到 host 中.
 
-在host中运行下面命令: 
+在 host 中运行下面命令:
 
 ```
 # ssh guest "cat /proc/kallsyms" > /tmp/guest.kallsyms
@@ -80,17 +80,17 @@ perf kvm有几个变体:
 # ssh guest "cat /proc/modules" > /tmp/guest.modules
 ```
 
-其中guest为host中guest os的名字, 我们也可以用IP地址来代替guest的名字. 
+其中 guest 为 host 中 guest os 的名字, 我们也可以用 IP 地址来代替 guest 的名字.
 
-注意: 我们这里不用scp命令拷贝文件的原因是因为有时scp在拷贝guest的modules文件时会返回空文件. 
+注意: 我们这里不用 scp 命令拷贝文件的原因是因为有时 scp 在拷贝 guest 的 modules 文件时会返回空文件.
 
-# 4. 利用sshfs自动读取guest的kallsyms和modules文件
+# 4. 利用 sshfs 自动读取 guest 的 kallsyms 和 modules 文件
 
-perf kvm可以利用sshfs来挂载guest的根文件系统, 这样它就可以直接读取guest的kallsyms和modules文件了. 
+perf kvm 可以利用 sshfs 来挂载 guest 的根文件系统, 这样它就可以直接读取 guest 的 kallsyms 和 modules 文件了.
 
-sshfs需要fuse(the Filesystem in Userspace)如果你的系统中没有安装fuse, 需要首先安装fuse. 
+sshfs 需要 fuse(the Filesystem in Userspace)如果你的系统中没有安装 fuse, 需要首先安装 fuse.
 
-在host中运行下列命令: 
+在 host 中运行下列命令:
 
 ```
 # mkdir -p /tmp/guestmount
@@ -100,17 +100,17 @@ sshfs需要fuse(the Filesystem in Userspace)如果你的系统中没有安装fus
 # sshfs -o allow_other,direct_io guest:/ /tmp/guestmount/24764
 ```
 
-这样我们就可以利用perf kvm的—guestmount参数来指定guest的文件系统了. 
+这样我们就可以利用 perf kvm 的—guestmount 参数来指定 guest 的文件系统了.
 
-当我们用完perf kvm后需要卸载guest的文件系统: 
+当我们用完 perf kvm 后需要卸载 guest 的文件系统:
 
 ```
 # fusermount -u /tmp/guestmount/24764
 ```
 
-# 5. 记录guest的性能事件
+# 5. 记录 guest 的性能事件
 
-经过了上面的准备工作我们就可以记录guest的性能事件了, 利用perf kvm record命令来记录guest的性能事件: 
+经过了上面的准备工作我们就可以记录 guest 的性能事件了, 利用 perf kvm record 命令来记录 guest 的性能事件:
 
 ```
 # perf kvm --host --guest --guestkallsyms=/tmp/guest.kallsyms --guestmodules=/tmp/guest.modules record -a
@@ -124,19 +124,19 @@ sshfs需要fuse(the Filesystem in Userspace)如果你的系统中没有安装fus
 ./perf kvm stat record -a sleep 1
 ```
 
-注: 如果 `--host` 和 `--guest` 均在命令中使用, 输出将被储存在 `perf.data.kvm` 中. 如果只有 `--host` 被使用, 文件将被命名为 `perf.data.host`. 同样地, 如果仅有 `--guest` 被使用, 文件将被命名为 `perf.data.guest`. 
+注: 如果 `--host` 和 `--guest` 均在命令中使用, 输出将被储存在 `perf.data.kvm` 中. 如果只有 `--host` 被使用, 文件将被命名为 `perf.data.host`. 同样地, 如果仅有 `--guest` 被使用, 文件将被命名为 `perf.data.guest`.
 
-上面这个命令的意思是**同时记录host**和**guest**上**所有进程的性能事件**, 这里默认的**采样事件**为**cycles**, 我们可以用`-e`参数来指定我们感兴趣的采样事件. 
+上面这个命令的意思是**同时记录 host**和**guest**上**所有进程的性能事件**, 这里默认的**采样事件**为**cycles**, 我们可以用`-e`参数来指定我们感兴趣的采样事件.
 
-我们可以发送SIGINT命令结束采样, 注意如果perf被非SIGINT指令结束, 比如SIGTERM 或者SIGQUIT, 那么perf kvm report命令将不能正确的解析采样文件. 
+我们可以发送 SIGINT 命令结束采样, 注意如果 perf 被非 SIGINT 指令结束, 比如 SIGTERM 或者 SIGQUIT, 那么 perf kvm report 命令将不能正确的解析采样文件.
 
-默认情况下, 如果我们只记录host的性能事件那么生成的采样文件的名字为: perf.data.host, 如果我们只记录guest的性能事件, 那么生成的采样文件的名字为: perf.data.guest. 如果我们同时记录host和guest的性能事件, 那么生成的采样文件的名字为: perf.data.kvm. 
+默认情况下, 如果我们只记录 host 的性能事件那么生成的采样文件的名字为: perf.data.host, 如果我们只记录 guest 的性能事件, 那么生成的采样文件的名字为: perf.data.guest. 如果我们同时记录 host 和 guest 的性能事件, 那么生成的采样文件的名字为: perf.data.kvm.
 
-按 Ctrl-C 停止纪录. 
+按 Ctrl-C 停止纪录.
 
-# 6. 分析guest上的性能事件
+# 6. 分析 guest 上的性能事件
 
-有了上面的采样文件, 我们就可以利用perf kvm report来查看性能事件了, 执行以下命令: 
+有了上面的采样文件, 我们就可以利用 perf kvm report 来查看性能事件了, 执行以下命令:
 
 ```
 # perf kvm --host --guest --guestkallsyms=/tmp/guest.kallsyms --guestmodules=/tmp/guest.modules report -i /tmp/perf.data.kvm
@@ -146,29 +146,29 @@ sshfs需要fuse(the Filesystem in Userspace)如果你的系统中没有安装fus
 perf kvm --host --guest --guestmodules=guest-modules report -i perf.data.kvm --force > analyze
 ```
 
-我们会得到如图1-01的分析结果: 
+我们会得到如图 1-01 的分析结果:
 
 ![2020-01-29-00-44-46.png](./images/2020-01-29-00-44-46.png)
 
-其中**模块名前有guest前缀**的都是**guest中发生的采样事件**, 模块名为unknown的为guest中运行的workload, 因为没有该workload的符号表, 所以此处不能解析出workload的名字. 其余都是host中的采样事件. 
+其中**模块名前有 guest 前缀**的都是**guest 中发生的采样事件**, 模块名为 unknown 的为 guest 中运行的 workload, 因为没有该 workload 的符号表, 所以此处不能解析出 workload 的名字. 其余都是 host 中的采样事件.
 
-如果我们仔细观察我们用来记录guest采样事件的命令就会发现, 我们**只能**提供**一个guest**的**kallsyms**和**modules**文件. 所以, 也就只能解析一个guest的符号, 当host有多个guest时, 可能符号解析会出错. 当然, 我们也可以同时监测多个guest的性能事件, 然后根据各个guest的kallsyms和modules文件**手动解析**这些符号. 
+如果我们仔细观察我们用来记录 guest 采样事件的命令就会发现, 我们**只能**提供**一个 guest**的**kallsyms**和**modules**文件. 所以, 也就只能解析一个 guest 的符号, 当 host 有多个 guest 时, 可能符号解析会出错. 当然, 我们也可以同时监测多个 guest 的性能事件, 然后根据各个 guest 的 kallsyms 和 modules 文件**手动解析**这些符号.
 
-将来perf kvm可能通过增加guest的PID的方式来分别指定每个guest的kallsyms和modules文件, 那么, 就可以正确解析每个guest的符号. 
+将来 perf kvm 可能通过增加 guest 的 PID 的方式来分别指定每个 guest 的 kallsyms 和 modules 文件, 那么, 就可以正确解析每个 guest 的符号.
 
-通过上面的介绍, 我们可以看到, 利用perf kvm子工具, 我们可以方便的在host中监测guest中的性能事件, 这对于我们分析guest的性能是非常方便的. Perf kvm子工具还支持其它的perf的命令, 比如: stat等. 
+通过上面的介绍, 我们可以看到, 利用 perf kvm 子工具, 我们可以方便的在 host 中监测 guest 中的性能事件, 这对于我们分析 guest 的性能是非常方便的. Perf kvm 子工具还支持其它的 perf 的命令, 比如: stat 等.
 
 
 # 7. perf kvm stat record/report 使用
 
-1. 
+1.
 
 
-perf文档: 
+perf 文档:
 tools/perf/Documentation/
 
 
-1. host和vm跑benchamark, 确定具体benchmark的差异
+1. host 和 vm 跑 benchamark, 确定具体 benchmark 的差异
 2. 可以参照 https://lwn.net/Articles/513317/
 
 第一步, record
@@ -220,21 +220,21 @@ https://blog.csdn.net/x_i_y_u_e/article/details/48466031
 
 ## 9.1. 背景
 
-benchmark或业务性能较差
+benchmark 或业务性能较差
 
 ```
 ./perf kvm stat record -a -p XXX sleep 10
 ./perf kvm stat report
 ```
 
-可以看到有大量IO指令, 进一步分析IO具体是什么
+可以看到有大量 IO 指令, 进一步分析 IO 具体是什么
 
 ```
 ./perf kvm stat report --event=ioport
 ```
 
 
-1. 抓取正常情况下kvm性能数据
+1. 抓取正常情况下 kvm 性能数据
 
 
 ```
@@ -253,7 +253,7 @@ Analyze events for all VMs, all VCPUs:
 Total Samples:624041, Total events handled time:356509.21us.
 ```
 
-再跑benchmark抓取数据
+再跑 benchmark 抓取数据
 
 ```
 ./perf kvm stat record -a -p 178264  sleep 10
@@ -290,9 +290,9 @@ Analyze events for all VMs, all VCPUs:
 Total Samples:679918, Total events handled time:481784.64us.
 ```
 
-msr和vintr变多, 尤其msr, 进一步分析msr是什么
+msr 和 vintr 变多, 尤其 msr, 进一步分析 msr 是什么
 
-在guest中
+在 guest 中
 
 
 ```
@@ -305,7 +305,7 @@ Available samples
 0 msr:rdpmc
 ```
 
-在host上, 抓取kvm_msr的benchmark前后的msr信息, 间隔10s
+在 host 上, 抓取 kvm_msr 的 benchmark 前后的 msr 信息, 间隔 10s
 
 ```
 cd /sys/kernel/debug/tracing/events/kvm/kvm_msr
@@ -313,14 +313,14 @@ echo 1 > enable; sleep 10; echo 0 > enable
 cat /sys/kernel/debug/tracing/trace
 ```
 
-通过脚本分析msr_write, 发现
+通过脚本分析 msr_write, 发现
 
 ```
 origin:    {'838': 3200, '80b': 1, '830': 1}
 benchmark: {'838': 19686, '80b': 9, '830': 11176}
 ```
 
-可以看到830和838的操作多太多
+可以看到 830 和 838 的操作多太多
 
 830: Interrupt Command Register (ICR)
 
@@ -338,6 +338,6 @@ benchmark: {'838': 19686, '80b': 9, '830': 11176}
 
 1. ./perf kvm stat record -a -p XXX sleep 10
 
-为何要sleep? 怎么控制时间? timeout?
+为何要 sleep? 怎么控制时间? timeout?
 
-2. msr变多? 如何监控
+2. msr 变多? 如何监控

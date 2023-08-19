@@ -1,4 +1,4 @@
-使用mce-inject工具, 但是您需要加载mce_inject内核模块. 
+使用 mce-inject 工具, 但是您需要加载 mce_inject 内核模块.
 
 ```
 modprobe mce_inject
@@ -10,7 +10,7 @@ modprobe mce_inject
 CONFIG_X86_MCE_INJECT
 ```
 
-接下来, 您需要下载mce_inject工具的源代码, 安装依赖项并编译它: 
+接下来, 您需要下载 mce_inject 工具的源代码, 安装依赖项并编译它:
 
 ```
 $ git clone https://github.com/andikleen/mce-inject.git
@@ -19,7 +19,7 @@ $ cd mce-inject
 $ make
 ```
 
-在mce-inject目录下, 添加文件, 注意修改address即可
+在 mce-inject 目录下, 添加文件, 注意修改 address 即可
 
 ```
 #correct

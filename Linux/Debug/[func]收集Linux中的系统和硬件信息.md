@@ -3,16 +3,16 @@
 
 <!-- code_chunk_output -->
 
-- [1. 查看系统信息 --- uname](#1-查看系统信息-uname)
-- [2. 查看Linux系统硬件信息 --- lshw](#2-查看linux系统硬件信息-lshw)
-- [3. 查看Linux CPU信息 --- lscpu](#3-查看linux-cpu信息-lscpu)
-- [4. 收集Linux块设备信息 --- lsblk](#4-收集linux块设备信息-lsblk)
-- [5. 打印USB控制器信息 --- lsusb](#5-打印usb控制器信息-lsusb)
-- [6. 打印PCI设备信息 --- lspci](#6-打印pci设备信息-lspci)
-- [7. 打印SCSI设备信息 --- lsscsi](#7-打印scsi设备信息-lsscsi)
-- [8. 打印有关SATA设备的信息 --- hdparm](#8-打印有关sata设备的信息-hdparm)
-- [9. 打印Linux文件系统信息 --- fdisk](#9-打印linux文件系统信息-fdisk)
-- [10. 提取有关硬件组件的信息 --- dmidecode](#10-提取有关硬件组件的信息-dmidecode)
+- [1. 查看系统信息 --- uname](#1-查看系统信息---uname)
+- [2. 查看 Linux 系统硬件信息 --- lshw](#2-查看-linux-系统硬件信息---lshw)
+- [3. 查看 Linux CPU 信息 --- lscpu](#3-查看-linux-cpu-信息---lscpu)
+- [4. 收集 Linux 块设备信息 --- lsblk](#4-收集-linux-块设备信息---lsblk)
+- [5. 打印 USB 控制器信息 --- lsusb](#5-打印-usb-控制器信息---lsusb)
+- [6. 打印 PCI 设备信息 --- lspci](#6-打印-pci-设备信息---lspci)
+- [7. 打印 SCSI 设备信息 --- lsscsi](#7-打印-scsi-设备信息---lsscsi)
+- [8. 打印有关 SATA 设备的信息 --- hdparm](#8-打印有关-sata-设备的信息---hdparm)
+- [9. 打印 Linux 文件系统信息 --- fdisk](#9-打印-linux-文件系统信息---fdisk)
+- [10. 提取有关硬件组件的信息 --- dmidecode](#10-提取有关硬件组件的信息---dmidecode)
 - [11. 概要](#11-概要)
 - [12. 参考](#12-参考)
 
@@ -20,7 +20,7 @@
 
 # 1. 查看系统信息 --- uname
 
-使用uname命令没有任何选项将打印**系统信息**或**UNAME \-s**命令将打印**系统的内核名称**. 
+使用 uname 命令没有任何选项将打印**系统信息**或**UNAME \-s** 命令将打印**系统的内核名称**.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# uname
@@ -29,48 +29,48 @@ Linux
 Linux
 ```
 
-要查看**网络的主机名**, 请使用uname命令"\-n"开关, 如图所示. 
+要查看**网络的主机名**, 请使用 uname 命令"\-n"开关, 如图所示.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# uname -n
 SH-IDC1-10-5-8-97
 ```
 
-要获取有关**内核版本**, 使用'\-v'开关信息. 可看到这是2017年8月版本的.
+要获取有关**内核版本**, 使用'\-v'开关信息. 可看到这是 2017 年 8 月版本的.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# uname -v
 #1 SMP Tue Aug 22 21:09:27 UTC 2017
 ```
 
-**内核版本的信息(即发行编号**), 请使用"-r"开关. 
+**内核版本的信息(即发行编号**), 请使用"-r"开关.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# uname -r
 3.10.0-693.el7.x86_64
 ```
 
-**机器硬件的名称**, 使用"-m"开关: 
+**机器硬件的名称**, 使用"-m"开关:
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# uname -m
 x86_64
 ```
 
-**所有这些信息**可以通过一次如下所示运行"的uname -a"命令进行打印. 
+**所有这些信息**可以通过一次如下所示运行"的 uname -a"命令进行打印.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# uname -a
 Linux SH-IDC1-10-5-8-97 3.10.0-693.el7.x86_64 #1 SMP Tue Aug 22 21:09:27 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
 ```
 
-# 2. 查看Linux系统硬件信息 --- lshw
+# 2. 查看 Linux 系统硬件信息 --- lshw
 
-在这里, 您可以使用**lshw工具**来收集有关您的**硬件部件**, 如CPU,  磁盘 ,  内存 , USB控制器等大量信息 lshw是一个相对较小的工具, 也有一些可以在提取信息, 它使用几个选项.  
+在这里, 您可以使用**lshw 工具**来收集有关您的**硬件部件**, 如 CPU,  磁盘 ,  内存 , USB 控制器等大量信息 lshw 是一个相对较小的工具, 也有一些可以在提取信息, 它使用几个选项.
 
-通过**lshw提供的信息**聚集**不同的/proc文件**.  
+通过**lshw 提供的信息**聚集**不同的/proc 文件**.
 
-注 : 请注意, 以超级用户(root)或sudo用户执行的lshw命令.  
+注 : 请注意, 以超级用户(root)或 sudo 用户执行的 lshw 命令.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lshw | more
@@ -106,7 +106,7 @@ iosbootspecification uefi
 ......
 ```
 
-可以通过使用\-short选择打印您的**硬件信息的汇总**. 
+可以通过使用\-short 选择打印您的**硬件信息的汇总**.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lshw -short
@@ -128,7 +128,7 @@ H/W path          Device          Class          Description
 ......
 ```
 
-如果想生成**一个HTML文件输出**, 可以使用该选项-html. 
+如果想生成**一个 HTML 文件输出**, 可以使用该选项-html.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lshw -html > /root/lshw.html
@@ -136,9 +136,9 @@ H/W path          Device          Class          Description
 
 ![](./images/2019-04-20-22-48-19.png)
 
-# 3. 查看Linux CPU信息 --- lscpu
+# 3. 查看 Linux CPU 信息 --- lscpu
 
-要查看你的CPU信息, 请使用lscpu命令, 因为它显示你的CPU体系结构的信息, 如从**sysfs**中和的/**proc/cpuinfo** CPU的数量, 内核, CPU系列型号, CPU高速缓存, 线程等. 
+要查看你的 CPU 信息, 请使用 lscpu 命令, 因为它显示你的 CPU 体系结构的信息, 如从**sysfs**中和的/**proc/cpuinfo** CPU 的数量, 内核, CPU 系列型号, CPU 高速缓存, 线程等.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lscpu
@@ -165,14 +165,14 @@ L1d 缓存:           32K
 L1i 缓存:           32K
 L2 缓存:            1024K
 L3 缓存:            22528K
-NUMA 节点0 CPU:     0-15,32-47
-NUMA 节点1 CPU:     16-31,48-63
+NUMA 节点 0 CPU:     0-15,32-47
+NUMA 节点 1 CPU:     16-31,48-63
 Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb cat_l3 cdp_l3 intel_pt tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm mpx rdt_a avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local dtherm ida arat pln pts
 ```
 
-# 4. 收集Linux块设备信息 --- lsblk
+# 4. 收集 Linux 块设备信息 --- lsblk
 
-**块设备是存储设备**, 诸如**硬盘, 闪存驱动器**等lsblk命令用于报告关于**块设备的信息**如下. 
+**块设备是存储设备**, 诸如**硬盘, 闪存驱动器**等 lsblk 命令用于报告关于**块设备的信息**如下.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lsblk
@@ -185,7 +185,7 @@ sdb      8:16   0   1.3T  0 disk
 sdc      8:32   0 893.8G  0 disk
 ```
 
-如果你想查看系统上**所有的块设备**则包括\-a选项. 
+如果你想查看系统上**所有的块设备**则包括\-a 选项.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lsblk -a
@@ -198,9 +198,9 @@ sdb      8:16   0   1.3T  0 disk
 sdc      8:32   0 893.8G  0 disk
 ```
 
-# 5. 打印USB控制器信息 --- lsusb
+# 5. 打印 USB 控制器信息 --- lsusb
 
-所述的**lsusb**命令用于报告关于**USB控制器**和所有**连接到他们的设备**的信息. 
+所述的**lsusb**命令用于报告关于**USB 控制器**和所有**连接到他们的设备**的信息.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lsusb
@@ -210,15 +210,15 @@ Bus 001 Device 002: ID 0557:7000 ATEN International Co., Ltd Hub
 Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 ```
 
-可以使用\-v选项生成**每个USB设备**的**详细信息**. 
+可以使用\-v 选项生成**每个 USB 设备**的**详细信息**.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lsusb -v
 ```
 
-# 6. 打印PCI设备信息 --- lspci
+# 6. 打印 PCI 设备信息 --- lspci
 
-**PCI设备**可以包括**USB接口**, **显卡**, **网卡**等lspci的工具, 用于生成有关系统上的**所有PCI控制器**以及**连接到这些设备的信息**.  要打印有关PCI设备的信息, 请运行以下命令. 
+**PCI 设备**可以包括**USB 接口**, **显卡**, **网卡**等 lspci 的工具, 用于生成有关系统上的**所有 PCI 控制器**以及**连接到这些设备的信息**.  要打印有关 PCI 设备的信息, 请运行以下命令.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lspci
@@ -230,7 +230,7 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 ......
 ```
 
-使用\-t选项以**树的形式**产生输出. 
+使用\-t 选项以**树的形式**产生输出.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lspci -t
@@ -262,7 +262,7 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 ......
 ```
 
-使用\-v选项, 产生**每个连接的设备的详细信息**. 
+使用\-v 选项, 产生**每个连接的设备的详细信息**.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lspci -v | more
@@ -281,9 +281,9 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 ......
 ```
 
-# 7. 打印SCSI设备信息 --- lsscsi
+# 7. 打印 SCSI 设备信息 --- lsscsi
 
-要查看所有的SCSI / SATA设备, 使用如下命令使用lsscsi.  如果您没有安装使用lsscsi工具, 运行以下命令来安装它. 
+要查看所有的 SCSI / SATA 设备, 使用如下命令使用 lsscsi.  如果您没有安装使用 lsscsi 工具, 运行以下命令来安装它.
 
 ```
 $ sudo apt-get install lsscsi        [on Debian derivatives]
@@ -291,7 +291,7 @@ $ sudo apt-get install lsscsi        [on Debian derivatives]
 # dnf install lsscsi                 [On Fedora 21+ Onwards]
 ```
 
-安装后, 运行使用lsscsi命令, 如下所示: 
+安装后, 运行使用 lsscsi 命令, 如下所示:
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lsscsi
@@ -300,7 +300,7 @@ $ sudo apt-get install lsscsi        [on Debian derivatives]
 [0:2:2:0]    disk    AVAGO    MR9361-8i        4.68  /dev/sdc
 ```
 
-使用\-s选项, 以**显示设备尺寸**. 
+使用\-s 选项, 以**显示设备尺寸**.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# lsscsi -s
@@ -309,7 +309,7 @@ $ sudo apt-get install lsscsi        [on Debian derivatives]
 [0:2:2:0]    disk    AVAGO    MR9361-8i        4.68  /dev/sdc    959GB
 ```
 
-# 8. 打印有关SATA设备的信息 --- hdparm
+# 8. 打印有关 SATA 设备的信息 --- hdparm
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# hdparm /dev/sda1
@@ -322,7 +322,7 @@ SG_IO: bad/missing sense data, sb[]:  70 00 05 00 00 00 00 0d 00 00 00 00 20 00 
  geometry      = 65270/255/63, sectors = 2097152, start = 2048
 ```
 
-打印有关设备的几何interms的**柱面, 磁头, 扇区, 大小和起始的设备偏移信息**, 使用\-g选项.  
+打印有关设备的几何 interms 的**柱面, 磁头, 扇区, 大小和起始的设备偏移信息**, 使用\-g 选项.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# hdparm -g /dev/sda1
@@ -331,11 +331,11 @@ SG_IO: bad/missing sense data, sb[]:  70 00 05 00 00 00 00 0d 00 00 00 00 20 00 
  geometry      = 65270/255/63, sectors = 2097152, start = 2048
 ```
 
-# 9. 打印Linux文件系统信息 --- fdisk
+# 9. 打印 Linux 文件系统信息 --- fdisk
 
-要收集有关**文件系统的分区的信息**, 您可以使用fdisk命令.  
+要收集有关**文件系统的分区的信息**, 您可以使用 fdisk 命令.
 
-虽然**fdisk命令**的主要功能是**修改文件系统的分区**, 它也可以用来**查看有关文件系统上的不同分区的信息**.  
+虽然**fdisk 命令**的主要功能是**修改文件系统的分区**, 它也可以用来**查看有关文件系统上的不同分区的信息**.
 
 ```
 [root@SH-IDC1-10-5-8-97 ~]# fdisk -l
@@ -370,15 +370,15 @@ I/O 大小(最小/最佳): 262144 字节 / 262144 字节
 
 # 10. 提取有关硬件组件的信息 --- dmidecode
 
-还可以使用的dmidecode实用工具通过读取DMI表中的数据提取硬件信息. 
+还可以使用的 dmidecode 实用工具通过读取 DMI 表中的数据提取硬件信息.
 
-具体查看dmidecode
+具体查看 dmidecode
 
 # 11. 概要
 
-大多数这些命令的文件, 用在/ proc目录提取系统信息. 
+大多数这些命令的文件, 用在/ proc 目录提取系统信息.
 
 # 12. 参考
 
-- 该目录下: <获取CPU信息的命令>
+- 该目录下: <获取 CPU 信息的命令>
 - https://www.howtoing.com/tag/linux-tricks/

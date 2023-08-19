@@ -1,26 +1,26 @@
-关于KVM时钟
+关于 KVM 时钟
 
-参考: 
+参考:
 
-时钟模拟之PIT(8254): http://blog.chinaunix.net/uid-25739055-id-4093065.html
+时钟模拟之 PIT(8254): http://blog.chinaunix.net/uid-25739055-id-4093065.html
 
-kvmclock时钟虚拟化源代码分析: http://oenhan.com/kvm-pv-kvmclock-tsc
+kvmclock 时钟虚拟化源代码分析: http://oenhan.com/kvm-pv-kvmclock-tsc
 
 时钟虚拟化: http://blog.csdn.net/wanthelping/article/details/47069085
 
-Qemu-KVM模拟APIC Timer中断: https://www.iyunv.com/thread-125093-1-1.html
+Qemu-KVM 模拟 APIC Timer 中断: https://www.iyunv.com/thread-125093-1-1.html
 
-KVM time虚拟: https://tcbbd.moe/linux/qemu-kvm/kvm-time/
+KVM time 虚拟: https://tcbbd.moe/linux/qemu-kvm/kvm-time/
 
 
 
 ```
 From: Wanpeng Li <wanpengli@tencent.com>
 
-per-vCPU timer_advance_ns should be set to 0 if timer mode is not tscdeadline 
-otherwise we waste cpu cycles in the function lapic_timer_int_injected(), 
-especially on AMD platform which doesn't support tscdeadline mode. We can 
-reset timer_advance_ns to the initial value if switch back to tscdealine 
+per-vCPU timer_advance_ns should be set to 0 if timer mode is not tscdeadline
+otherwise we waste cpu cycles in the function lapic_timer_int_injected(),
+especially on AMD platform which doesn't support tscdeadline mode. We can
+reset timer_advance_ns to the initial value if switch back to tscdealine
 timer mode.
 
 Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
@@ -47,9 +47,9 @@ index 654649b..abc296d 100644
 +		lapic_timer_advance_dynamic)
 +		apic->lapic_timer.timer_advance_ns = 0;
  }
- 
+
  /*
--- 
+--
 2.7.4
 ```
 

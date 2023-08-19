@@ -1,4 +1,3 @@
-
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
@@ -9,13 +8,13 @@
 - [4. 查看所有快捷键](#4-查看所有快捷键)
 - [5. 文本编辑](#5-文本编辑)
     - [5.1. 清除多余的行尾空格](#51-清除多余的行尾空格)
-- [6. MPE使用](#6-mpe使用)
+- [6. MPE 使用](#6-mpe-使用)
 
 <!-- /code_chunk_output -->
 
 # 1. 界面语言
 
-按F1快捷键或者Comm + Shift + P, 切入到命令行模式. 输入"Configure Language"(如果是中文版要切换到英文版输入"配置语言"). 
+按 F1 快捷键或者 Comm + Shift + P, 切入到命令行模式. 输入"Configure Language"(如果是中文版要切换到英文版输入"配置语言"). 
 
 英文: "en"
 
@@ -29,7 +28,7 @@
 
 # 3. 万能入口
 
-通过Com + shift + P可调出主命令框, 几乎所有功能可从这里获得
+通过 Com + shift + P 可调出主命令框, 几乎所有功能可从这里获得
 
 # 4. 查看所有快捷键
 
@@ -45,7 +44,7 @@
 
 ![2019-09-02-09-30-53.png](./images/2019-09-02-09-30-53.png)
 
-# 6. MPE使用
+# 6. MPE 使用
 
 https://zhuanlan.zhihu.com/p/56699805
 

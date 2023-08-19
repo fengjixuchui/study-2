@@ -15,49 +15,49 @@
 
 # 1. 背景介绍
 
-gdb 调试多任务程序时会有些麻烦:  fork 之后没法同时跟踪父进程和子进程, 如果在子进程里设置了一个 breakpoint, 那么子进程将会收到一个 SIGTRAP 信号并退出. 
+gdb 调试多任务程序时会有些麻烦:  fork 之后没法同时跟踪父进程和子进程, 如果在子进程里设置了一个 breakpoint, 那么子进程将会收到一个 SIGTRAP 信号并退出.
 
-[gdb 手册](https://sourceware.org/gdb/current/onlinedocs/gdb/Forks.html#Forks)里提到了一种小技巧, 那就是在想要插入 breakpoint 的位置添加 sleep() 调用. 但经过笔者试验, 添加以下代码更加适合: 
+[gdb 手册](https://sourceware.org/gdb/current/onlinedocs/gdb/Forks.html#Forks)里提到了一种小技巧, 那就是在想要插入 breakpoint 的位置添加 sleep() 调用. 但经过笔者试验, 添加以下代码更加适合:
 
 ```cpp
 static volatile int hold = 1;
 while (hold);
 ```
 
-然后, 重新编译程序并执行. 这样, 当程序运行到 while 位置的时候就会循环在那里, 接下来就可以调试了. 
+然后, 重新编译程序并执行. 这样, 当程序运行到 while 位置的时候就会循环在那里, 接下来就可以调试了.
 
 # 2. 调试步骤
 
-多任务基本调试步骤如下: 
+多任务基本调试步骤如下:
 
 1. ps -ef | grep xxx, 找到你关心的进程
 2. gdb attach pid, 关联到当前 pid 对应的 program
 3. info threads, 查看哪个线程正在执行你关心的 path
 4. thread xx, 切换到那个线程
-5. set hold=0, 设置 hold 为 0, 使程序继续运行. 
+5. set hold=0, 设置 hold 为 0, 使程序继续运行.
 
-如果发生了**进程间通信**, **数据流**从 **A** 发送往 **B** 了, 此时便可以采取上述方法, **同时跟踪 A 和 B**. 每次发生了 `pipe/socket` 通信, 就重复上述步骤. 通过这种方式, 一些很复杂的多任务程序也可以清晰调试. 
+如果发生了**进程间通信**, **数据流**从 **A** 发送往 **B** 了, 此时便可以采取上述方法, **同时跟踪 A 和 B**. 每次发生了 `pipe/socket` 通信, 就重复上述步骤. 通过这种方式, 一些很复杂的多任务程序也可以清晰调试.
 
 # 3. 调试案例
 
-Libvirt 是用于管理虚拟化平台的开源的 API, 后台程序和管理工具. 它可以用于管理 KVM、Xen、VMware ESX, QEMU 和其他虚拟化技术. 
+Libvirt 是用于管理虚拟化平台的开源的 API, 后台程序和管理工具. 它可以用于管理 KVM、Xen、VMware ESX, QEMU 和其他虚拟化技术.
 
-接下来以 libvirt 的分析过程为例来介绍 gdb 的多任务调试. 
+接下来以 libvirt 的分析过程为例来介绍 gdb 的多任务调试.
 
-libvirt 的基本操作和大概结构是这样的: 
+libvirt 的基本操作和大概结构是这样的:
 
 * libvirt 组件有一个 shell, 被称为 virsh, 提供类似 shell 的界面, 可以输入 start、shutdown 等命令操作虚拟机
 
 * libvirt 有一个守护进程, libvirtd, 其对 virsh 的命令做出响应
     * 以 non-root 执行 virsh start 时, 将以 qemu://session 的方式运行. libvirtd 将启动一个 non-root 的子进程来与 virsh 进行 socket 通信
     * 以 root 执行 virsh start 时, 将以 qemu://system 方式运行, **libvirtd** 直接与 **virsh** 进行 **socket 通信**
-* 无论是上述哪种方式, 都会创建**多个(一般16个)线程**, 该线程的的作用是将 **socket** 传递过来的各个命令和配置进行解析, 最终形成一个 cmd. 
+* 无论是上述哪种方式, 都会创建**多个(一般 16 个)线程**, 该线程的的作用是将 **socket** 传递过来的各个命令和配置进行解析, 最终形成一个 cmd.
 
 * 子线程会将 cmd 通过 pipe 传递给 libvirtd, libvirtd 会 fork 出一个子进程, 并 exec cmd
 
-但如果我们想弄清楚 virsh 启动 qemu 的全过程的细节, 即在 virsh 里敲入 start xxx_domain, 到 exec qemu bin, 这中间究竟发生了什么细节呢?这就必须要 gdb 调试了. 可以想象, 这过程中必定有大量的进程间通信(socket、pipe), 这时就出现了文章开头说明的问题: **当前 thread** 将**数据流**发给了**另外的 thread**, 而另外的 thread 却没法跟踪并停止. 
+但如果我们想弄清楚 virsh 启动 qemu 的全过程的细节, 即在 virsh 里敲入 start xxx_domain, 到 exec qemu bin, 这中间究竟发生了什么细节呢?这就必须要 gdb 调试了. 可以想象, 这过程中必定有大量的进程间通信(socket、pipe), 这时就出现了文章开头说明的问题: **当前 thread** 将**数据流**发给了**另外的 thread**, 而另外的 thread 却没法跟踪并停止.
 
-1. 我们通过 log 大概知道了 qemuProcessStart 是启动的必经之路, 因此在这个函数里添加代码: 
+1. 我们通过 log 大概知道了 qemuProcessStart 是启动的必经之路, 因此在这个函数里添加代码:
 
 ```cpp
 int
@@ -89,7 +89,7 @@ root     16529     1  0 16:34 ?        00:00:00 /usr/local/sbin/libvirtd --liste
 # virsh start xxx
 ```
 
-5. 按下 Ctrl+c 停止 gdb, 查看所有 threads: 
+5. 按下 Ctrl+c 停止 gdb, 查看所有 threads:
 
 ```
 (gdb) info threads
@@ -112,7 +112,7 @@ Id   Target Id         Frame
 (gdb) set hold=0
 ```
 
-接下来就可以继续调试下去了. 
+接下来就可以继续调试下去了.
 
 通过这种办法就可以得知整个过程. 以下是通过重复上述步骤获取到的知识:
 
@@ -135,7 +135,7 @@ Id   Target Id         Frame
 2756 }
 ```
 
-- libvirtd 收到 cmd 后, 会执行 virExec, 
+- libvirtd 收到 cmd 后, 会执行 virExec,
 
 ```
 #0 virExec (cmd=cmd@entry=0x7f72bc0026d0) at util/vircommand.c:491
@@ -155,11 +155,11 @@ Id   Target Id         Frame
 753         if (virSetUIDGIDWithCaps(cmd->uid, cmd->gid, groups, ngroups,
 ...
 790     if (cmd->env)
-791         execve(binary, cmd->args, cmd->env); <--- 启动了qemu
+791         execve(binary, cmd->args, cmd->env); <--- 启动了 qemu
 ...
 ```
 
-在执行了 execve 之后, 当前父进程就会结束退出了. 如果想要继续跟踪子进程 qemu, 那么仍然需要重复上述过程. 
+在执行了 execve 之后, 当前父进程就会结束退出了. 如果想要继续跟踪子进程 qemu, 那么仍然需要重复上述过程.
 
 # 4. libvirt 分析小结
 

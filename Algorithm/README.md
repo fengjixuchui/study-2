@@ -1,6 +1,6 @@
 算法和数据结构相关知识内容笔记
 
-参考: 
+参考:
 
 http://blog.csdn.net/Lnho2015/article/category/5756995/2
 

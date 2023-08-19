@@ -1,4 +1,4 @@
-介绍kconfig的一些内容
+介绍 kconfig 的一些内容
 
 kernel kconfig: [kconfig-language](https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt)
 
@@ -7,7 +7,7 @@ kernel kconfig: [kconfig-language](https://www.kernel.org/doc/Documentation/kbui
 
 Kbuild 只要是一些 shell 逻辑和编译前端逻辑, 需要了解 shell , flex 和 bison 语言
 
-相关文档: 三个pdf以及`<flex与bison中文版第二版>`
+相关文档: 三个 pdf 以及`<flex 与 bison 中文版第二版>`
 
 词义堆栈:
 
@@ -16,6 +16,6 @@ Kbuild 只要是一些 shell 逻辑和编译前端逻辑, 需要了解 shell , f
 
 Linux Kernel Code Static Check: http://llxwj.top/post/linux/linux-kernel-code-static-check/
 
-linux kernel make构建分析: https://www.cnblogs.com/rongpmcu/p/7662793.html
+linux kernel make 构建分析: https://www.cnblogs.com/rongpmcu/p/7662793.html
 
 Linux 内核编译: https://gohalo.me/post/kernel-compile.html

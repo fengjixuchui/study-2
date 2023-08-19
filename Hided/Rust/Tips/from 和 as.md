@@ -35,13 +35,13 @@ error[E0277]: the trait bound `usize: std::convert::From<u64>` is not satisfied
 
 as 转换与 From 转换有着根本的不同. From 转换是简单 且安全的", 而 as 转换纯粹是安全的".考虑数字类型时, From 转换仅在保证输出相同 时存在, 即没有信息丢失(没有截断或地板或精度损失).但是, as 类型转换没有这个限制.
 
-引用文档, 
+引用文档,
 
 [usize] 的大小是引用内存中任何位置需要多少字节.例如, 在 32 位目标上, 这是 4 个字节, 而在 64 位目标上, 这是 8 个字节."
 
 由于大小取决于目标架构, 并且无法在编译前确定, 因此无法保证数字类型和 usize 之间的 From 转换是可能的.但是, as 转换将始终按照列出的规则运行 这里.
 
-例如, 在 32 位系统上, usize 等价于 u32.由于 usize 小于 u64, 因此在将 u64 转换为 usize<时可能会丢失信息(截断)/code>, 因此 From 转换不存在.但是, usize 的大小始终保证为 8 位或更大, 并且 u8 到 usize From转换永远存在.
+例如, 在 32 位系统上, usize 等价于 u32.由于 usize 小于 u64, 因此在将 u64 转换为 usize<时可能会丢失信息(截断)/code>, 因此 From 转换不存在.但是, usize 的大小始终保证为 8 位或更大, 并且 u8 到 usize From 转换永远存在.
 
 
 https://stackoverflow.com/questions/47786322/why-is-type-conversion-from-u64-to-usize-allowed-using-as-but-not-from

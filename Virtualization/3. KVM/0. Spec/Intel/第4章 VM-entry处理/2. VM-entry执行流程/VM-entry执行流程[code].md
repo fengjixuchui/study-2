@@ -18,7 +18,7 @@ SYM_FUNC_START(__vmx_vcpu_run)
     call vmx_vmenter
 
     /* Jump on VM-Fail. */
-    // 如果CF=1或者ZF=1, 表明 VMfailInvalid 或者 VMfailValid
+    // 如果 CF=1 或者 ZF=1, 表明 VMfailInvalid 或者 VMfailValid
     jbe 2f
     ......
 1:
@@ -31,9 +31,9 @@ SYM_FUNC_START(__vmx_vcpu_run)
 SYM_FUNC_END(__vmx_vcpu_run)
 ```
 
-如果成功 `VM-entry + VM-exit`, 则会直接跳转到 `vmx_vmexit` 处. 
+如果成功 `VM-entry + VM-exit`, 则会直接跳转到 `vmx_vmexit` 处.
 
-**如果CF=1或者ZF=1**(jbe的作用), 则会跳到 2 处, 设置**返回值为1**, 然后会返回.
+**如果 CF=1 或者 ZF=1**(jbe 的作用), 则会跳到 2 处, 设置**返回值为 1**, 然后会返回.
 
 ```
 /**
@@ -52,7 +52,7 @@ SYM_FUNC_END(__vmx_vcpu_run)
  */
 SYM_FUNC_START_LOCAL(vmx_vmenter)
     /* EFLAGS.ZF is set if VMCS.LAUNCHED == 0 */
-    // 如果zf=1, 即VMCS.LAUNCHED = 0, 首次进入
+    // 如果 zf=1, 即 VMCS.LAUNCHED = 0, 首次进入
     // 跳到 2
     je 2f
 
@@ -79,8 +79,8 @@ SYM_FUNC_END(vmx_vmenter)
 
 疑问: 什么情况下会走到 3
 
-* `JBE X`的意思是 "小于等于则跳转"(即"**如果CF=1或者ZF=1**")
-* `JE X`的意思是 "等于则跳转"(即"**如果rflags.ZF=1, 则跳到 X**")
+* `JBE X`的意思是 "小于等于则跳转"(即"**如果 CF=1 或者 ZF=1**")
+* `JE X`的意思是 "等于则跳转"(即"**如果 rflags.ZF=1, 则跳到 X**")
 * `ud2`的意思是 "抛出操作码无效异常", 即产生 `#UD` 异常
 
 1. 产生异常

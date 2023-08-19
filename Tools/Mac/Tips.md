@@ -1,4 +1,3 @@
-
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
@@ -27,10 +26,10 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 defaults write com.apple.finder AppleShowAllFiles -bool false
 ```
 
-最后需要重启Finder:
+最后需要重启 Finder:
 
 ```
-重启Finder: 窗口左上角的苹果标志-->强制退出-->Finder-->重新启动
+重启 Finder: 窗口左上角的苹果标志-->强制退出-->Finder-->重新启动
 ```
 
 # 2 剪切功能实现

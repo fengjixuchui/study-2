@@ -42,8 +42,8 @@ perf daemon ping [<options>]]
                           config file path
 ```
 
-* 
-* 
+*
+*
 
 ##
 

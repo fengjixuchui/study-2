@@ -1,11 +1,11 @@
     # learn-bpf
-    
+
     This program has been tested with 4.12.5-200.fc25.x86_64.
-    
+
     memcpy_kprobe inserts kprobe at the entry of kernel memcpy() and prints bpf
     kernel messages in trace buffer. memcpy_stat prepares a table in kernel
     space itself for the count of memcpy() called with different sizes.
-    
+
     # make
     # ./memcpy_kprobe
        memcpy_kprobe-24908 [005] d... 151374.866218: : memcpy size 2
@@ -16,7 +16,7 @@
        memcpy_kprobe-24908 [005] d... 151374.866232: : memcpy size 1
        memcpy_kprobe-24908 [005] d... 151374.866234: : memcpy size 1
        memcpy_kprobe-24908 [005] d... 151374.866237: : memcpy size 2
-    
+
     # ./memcpy_stat
             Size            Count
        0                    134
@@ -37,13 +37,12 @@
      897 -  960             0
      961 - 1024*            107
     * Size > 1024 have been counted in this interval
-  
+
 eBPF history and program description
 ====================================
 
 Writing a simple eBPF application for Kernel Tracing
 =====================================================
-
 
 
 eBPF an introduction
@@ -55,7 +54,7 @@ In the year 1992, Steven McCanne and Van Jacobson from Lawrence Berkeley
 Laboratory [1] proposed a solution to BSD Unix systems for minimising
 unwanted network packet copy to user space by implementing an in-kernel
 packet filter. This filter is known as Berkeley Packet Filter(BPF). It was
-latter introduced in Linux Kernel version 2.1.75 in 1997. 
+latter introduced in Linux Kernel version 2.1.75 in 1997.
 
 This filter was aimed to filter all the unwanted packets as early as
 possible, so the filtering mechanism had to be shifted from user space
@@ -149,7 +148,7 @@ Lets first understand couple of useful entity to interact with ebpf kernel:
 
 user  can interact using bpf() system call whose prototype is int bpf(int
 cmd, union bpf_attr *attr, unsigned int size);
-            
+
 One can see `man bpf` for detail about the different possible arguments.
 Here, I am providing summary of those arguments.
 
@@ -250,7 +249,7 @@ prints stats on console.
 Above two simple example can help one to understand, how a user can write
 kernel ebpf code for kernel tracing and statistics preparation.
 
-[1] http://www.tcpdump.org/papers/bpf-usenix93.pdf 
+[1] http://www.tcpdump.org/papers/bpf-usenix93.pdf
 [2] https://lwn.net/Articles/437884/
 [3] https://www.kernel.org/doc/Documentation/networking/filter.txt
 [4] http://events.linuxfoundation.org/sites/events/files/slides/Performance%20Monitoring%20and%20Analysis%20Using%20perf%20and%20BPF_1.pdf

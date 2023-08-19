@@ -1,5 +1,5 @@
 
-浅析qemu iothread: https://blog.csdn.net/huang987246510/article/details/93912197
+浅析 qemu iothread: https://blog.csdn.net/huang987246510/article/details/93912197
 
 
 `iothread_complete`(iothread.c) -> `iothread_run`
@@ -50,7 +50,7 @@ device_init_func()
 
        ├─ object_set_properties_from_keyval(&dev->parent_obj, dev->opts, from_json,
        └─ qdev_realize(DEVICE(dev), bus, errp)
-          ├─ 
+          ├─
 	  └─ object_property_set_bool(OBJECT(dev), "realized", true, errp);
 	     ├─ QBool *qbool = qbool_from_bool(value);
 	     └─ object_property_set_qobject(obj, name, QOBJECT(qbool), errp);
@@ -83,7 +83,7 @@ device_init_func()
 
 `virtio_iommu_class_init` -> `vdc->realize = virtio_iommu_device_realize;`
 
-`virtio_iommu_device_realize` 
+`virtio_iommu_device_realize`
 
 
 

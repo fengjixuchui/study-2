@@ -3,13 +3,13 @@
 
 <!-- code_chunk_output -->
 
-- [1. 下载qcow2镜像](#1-下载qcow2镜像)
+- [1. 下载 qcow2 镜像](#1-下载-qcow2-镜像)
 - [2. 镜像密码修改](#2-镜像密码修改)
-  - [2.1. guestfish工具](#21-guestfish工具)
-  - [2.2. qemu-nbd方式](#22-qemu-nbd方式)
-- [3. 开启root的ssh登录](#3-开启root的ssh登录)
-- [4. 暂时启动guest](#4-暂时启动guest)
-- [5. 修改default.target](#5-修改defaulttarget)
+  - [2.1. guestfish 工具](#21-guestfish-工具)
+  - [2.2. qemu-nbd 方式](#22-qemu-nbd-方式)
+- [3. 开启 root 的 ssh 登录](#3-开启-root-的-ssh-登录)
+- [4. 暂时启动 guest](#4-暂时启动-guest)
+- [5. 修改 default.target](#5-修改-defaulttarget)
 - [6. 基本设置](#6-基本设置)
 - [7. 扩大根分区](#7-扩大根分区)
   - [7.1. 磁盘整体扩容](#71-磁盘整体扩容)
@@ -31,9 +31,9 @@
 
 <!-- /code_chunk_output -->
 
-# 1. 下载qcow2镜像
+# 1. 下载 qcow2 镜像
 
-根据ubuntu发行版, 找最新的下载
+根据 ubuntu 发行版, 找最新的下载
 
 链接:
 
@@ -54,7 +54,7 @@ $1$WcWo5KOD$o6Fsb.72vc9yH3Uv.0P1h0
 
 然后可以选择通过 guestfish 工具修改或者 qemu_nbd 方式修改
 
-## 2.1. guestfish工具
+## 2.1. guestfish 工具
 
 ```
 apt install libguestfs-tools
@@ -118,7 +118,7 @@ syslog:*:18737:0:99999:7:::
 
 将 `root:` 后面的第一个 `*` 替换为加密之后的密码
 
-替换后第一行为/etc/shadow第一行为
+替换后第一行为/etc/shadow 第一行为
 
 ```
 root:$1$WcWo5KOD$o6Fsb.72vc9yH3Uv.0P1h0:18873:0:99999:7:::
@@ -126,11 +126,11 @@ root:$1$WcWo5KOD$o6Fsb.72vc9yH3Uv.0P1h0:18873:0:99999:7:::
 
 > 也可以直接删掉第一个 `*`, 从而 root 用户没有密码
 
-## 2.2. qemu-nbd方式
+## 2.2. qemu-nbd 方式
 
-见 `Virtualization\Tools\qemu-nbd方式挂载镜像.md`
+见 `Virtualization\Tools\qemu-nbd 方式挂载镜像.md`
 
-# 3. 开启root的ssh登录
+# 3. 开启 root 的 ssh 登录
 
 编辑 `/etc/ssh/sshd_config`, 修改下面两行内容
 
@@ -149,11 +149,11 @@ PermitRootLogin yes
 PasswordAuthentication yes
 ```
 
-# 4. 暂时启动guest
+# 4. 暂时启动 guest
 
-如果没有enable virtio 的话, 可以使用下面命令:
+如果没有 enable virtio 的话, 可以使用下面命令:
 
-> sudo /usr/local/bin/qemu-system-x86_64 -name ubuntu -accel kvm -cpu host -m 32G -smp 48,sockets=1,cores=24,threads=2 ./ubuntu-22.04.qcow2 -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -nographic -full-screen
+> sudo /usr/local/bin/qemu-system-x86_64 -name ubuntu -accel kvm -cpu host -m 2G -smp 4 ./ubuntu-22.04.qcow2 -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -nographic -full-screen
 
 > BOOT_IMAGE=/boot/vmlinuz-5.15.0-25-generic root=LABEL=cloudimg-rootfs ro console=tty1 console=ttyS0
 
@@ -169,12 +169,12 @@ sudo /usr/local/bin/qemu-system-x86_64 -name ubuntu -accel kvm -cpu host -m 32G 
 
 sudo /usr/local/bin/qemu-system-x86_64 -name ubuntu -accel kvm -cpu host,-xsave,-xsavec,-xsaveopt,-xsaves -m 32G -smp 48,sockets=1,cores=24,threads=2 ./ubuntu-22.04.qcow2 -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -nographic -full-screen
 
-如果host上支持 virtio, 可以使用下面命令
+如果 host 上支持 virtio, 可以使用下面命令
 
 > /usr/local/bin/qemu-system-x86_64 -name ubuntu-hirsute --enable-kvm -cpu host -smp 4,sockets=1,cores=2,threads=2 -m 3G -device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 -drive file=./debian-10.12.2-20220419-openstack-amd64.qcow2,if=none,id=drive-virtio-disk1,format=qcow2,cache=none -device virtio-blk-pci,scsi=off,bus=pci.0,addr=0x3,drive=drive-virtio-disk1,id=virtio-disk1,bootindex=1 -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -nographic -full-screen
 
 
-# 5. 修改default.target
+# 5. 修改 default.target
 
 systemctl set-default multi-user
 
@@ -182,7 +182,7 @@ Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi
 
 # 6. 基本设置
 
-开启ssh语法高亮以及内置命令别名
+开启 ssh 语法高亮以及内置命令别名
 
 ```
 vi /root/.bashrc
@@ -232,7 +232,7 @@ alias mv='mv -i'
 
 # 7. 扩大根分区
 
-Linux 扩容 / 根分区(LVM+非LVM)参照: https://zhuanlan.zhihu.com/p/83340525
+Linux 扩容 / 根分区(LVM+非 LVM)参照: https://zhuanlan.zhihu.com/p/83340525
 
 磁盘空间扩容: https://blog.csdn.net/byn12345/article/details/88829984
 
@@ -255,7 +255,7 @@ Format specific information:
     refcount bits: 16
 ```
 
-建议直接扩大到50G
+建议直接扩大到 50G
 
 ## 7.2. 查看磁盘扩容后状态
 
@@ -322,7 +322,7 @@ Partition 1 has been deleted.
 
 ## 7.5. 创建分区
 
-创建分区, 分区号还是1, 注意分区起始位置, 不要删除ext4的签名
+创建分区, 分区号还是 1, 注意分区起始位置, 不要删除 ext4 的签名
 
 ```
 Command (m for help): n
@@ -387,16 +387,16 @@ tmpfs          tmpfs  4.0M     0  4.0M   0% /sys/fs/cgroup
 tmpfs          tmpfs  299M  4.0K  299M   1% /run/user/0
 ```
 
-* lsblk有变化, 这是磁盘的变化
+* lsblk 有变化, 这是磁盘的变化
 
-* df没变化, 文件系统还没有变化
+* df 没变化, 文件系统还没有变化
 
 ## 7.8. 刷新根分区
 
-使用 resize2fs或xfs_growfs 对挂载目录在线扩容
+使用 resize2fs 或 xfs_growfs 对挂载目录在线扩容
 
-* resize2fs 针对文件系统ext2 ext3 ext4
-* xfs_growfs 针对文件系统xfs
+* resize2fs 针对文件系统 ext2 ext3 ext4
+* xfs_growfs 针对文件系统 xfs
 
 ```
 # resize2fs /dev/vda1
@@ -422,6 +422,11 @@ tmpfs          tmpfs  299M  4.0K  299M   1% /run/user/0
 
 qemu-img create -f qcow2 data.qcow2 50G
 
+```
+#/etc/fstab
+
+/dev/vdb1              /data                    ext4    defaults        0 0
+```
 
 # 9. 修改镜像内容
 
@@ -429,7 +434,7 @@ qemu-img create -f qcow2 data.qcow2 50G
 
 # 10. 键盘输入设置
 
-ubuntu中启用page up/down进行补全功能: https://blog.csdn.net/jingtaohuang/article/details/109628105
+ubuntu 中启用 page up/down 进行补全功能: https://blog.csdn.net/jingtaohuang/article/details/109628105
 
 `/etc/inputrc` 中这两行取消注释
 
@@ -467,7 +472,7 @@ GRUB_CMDLINE_LINUX=""
 # update-grub
 ```
 
-ubuntu修改默认启动内核: https://cdmana.com/2021/03/20210328153654881n.html
+ubuntu 修改默认启动内核: https://cdmana.com/2021/03/20210328153654881n.html
 
 # 13. 防火墙
 
@@ -489,6 +494,7 @@ ll /etc/sysconfig/selinux
 
 https://www.linode.com/docs/guides/install-vnc-on-ubuntu-21-04/
 
+vnc 锁屏设置: https://blog.csdn.net/qq_35229961/article/details/107029202
 
 apt install tigervnc-standalone-server
 
@@ -507,13 +513,8 @@ A view-only password is not used
 
 tigervncserver -geometry 1280x1024 -localhost no (可用)
 
-vncserver -localhost no -geometry 1280x1024 :1
 
 
-
-tigervncserver -geometry 1280x1024 -localhost no -xstartup /usr/bin/xterm
-
-tigervncserver -xstartup /usr/bin/mate-session -geometry 800x600 -localhost no
 
 
 

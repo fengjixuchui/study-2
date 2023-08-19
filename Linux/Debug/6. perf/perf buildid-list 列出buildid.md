@@ -5,7 +5,7 @@
 
 列出 `perf.data` 文件(默认)中的 buildids, 其他工具从而可以用 buildid 来获取具有匹配到的符号表的软件包, 这样 `perf report` 便可以使用.
 
-> 每个ELF文件都有一个唯一的buildid. buildid被perf用来关联性能数据与ELF文件.
+> 每个 ELF 文件都有一个唯一的 buildid. buildid 被 perf 用来关联性能数据与 ELF 文件.
 
 # 2. 使用方法
 
@@ -36,8 +36,8 @@ perf buildid-list <options>
     -v, --verbose         be more verbose
 ```
 
-* 
-* 
+*
+*
 
 ##
 

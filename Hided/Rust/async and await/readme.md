@@ -22,7 +22,6 @@ async fn main() {
 }
 ```
 
-
 使用 nightly 的 rust
 
 ```
@@ -63,7 +62,7 @@ tokio::runtime::Builder::new_multi_thread().enable_all().build().unwrap().block_
 }))
 ```
 
-抛去那么多 attribute , 大概流程就是不挺的 loop , 查看 Future(这里的 op) 是否 ready. 如果已经是 ready 的状态, 那么就会对该结果进行处理, 然后退出; 否则(Pending的状态)就继续等待, 让 runtime 调度其他 task .
+抛去那么多 attribute , 大概流程就是不挺的 loop , 查看 Future(这里的 op) 是否 ready. 如果已经是 ready 的状态, 那么就会对该结果进行处理, 然后退出; 否则(Pending 的状态)就继续等待, 让 runtime 调度其他 task .
 
 Future 在 tokio 里就"是"一个 task(确切说是 future.await?), tokio runtime 负责调度 task , task 有些像 goroutine, 不过 Rust 本身不自带 runtime 的实现.
 
@@ -137,7 +136,7 @@ fn print_lines() -> impl Future<Item = (), Error = io::Error> {
 }
 ```
 
-Note: 上面代码 poll 结果还有 NotReady, 应该是 RFC 更新不及时吧, 最新版的 Future 应该都是 Pendding了.
+Note: 上面代码 poll 结果还有 NotReady, 应该是 RFC 更新不及时吧, 最新版的 Future 应该都是 Pendding 了.
 
 从上面两处说明, 我们也可以大概了解这种 generator 机制了: Ready 的时候返回结果, Pending 的时候让出调度.
 

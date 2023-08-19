@@ -1,10 +1,11 @@
+
 https://blog.csdn.net/chuck_huang/article/details/78733543
 
 https://blog.csdn.net/u010383937/article/details/78595874
 
 ## 1. memblock 介绍
 
-memblock 内存管理机制主要用于Linux Kernel 启动阶段(kernel启动 -> kernel 通用内存管理初始化完成.)或者可以认为free\_initmem为止.在启动阶段,内存分配器并不需要很复杂,memblock是**基于静态数组**,采用的**逆向最先适配**的分配策略.
+memblock 内存管理机制主要用于 Linux Kernel 启动阶段(kernel 启动 -> kernel 通用内存管理初始化完成.)或者可以认为 `free_initmem` 为止.在启动阶段,内存分配器并不需要很复杂,memblock 是**基于静态数组**,采用的**逆向最先适配**的分配策略.
 
 ## 2. memblock 数据结构
 
@@ -28,7 +29,7 @@ struct memblock {
 
 - current\_limit 内存分配最大限制值
 
-memblock 的内存分为3类, memory, reserved, 和 physmem
+memblock 的内存分为 3 类, memory, reserved, 和 physmem
 
 - memory 可用的内存的集合
 
@@ -46,5 +47,5 @@ struct memblock_type {
 };
 ```
 
-memblock_type 用于描述在当前的memblock中**此类型**的memory region的数量
+memblock_type 用于描述在当前的 memblock 中**此类型**的 memory region 的数量
 

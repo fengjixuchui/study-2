@@ -2,12 +2,12 @@
 `Systemtap` 是内核调试的强大工具, `systemtap` 从版本 `1.0` 开始变支持 `arm` 处理器, 但是只支持 `OMAP` 的, 由于"工作"需要将 `systemtap` 移植到运行 `Android`.
 
 
-`systemtap` 里面有三个重要的工具: translator, compiler, staprun. 
-translator负责将stp脚本翻译为c代码; 
-compiler根据runtime环境和内核路径来生成module; 
-staprun负责装载、卸载模块, 输出模块探测的信息. 
+`systemtap` 里面有三个重要的工具: translator, compiler, staprun.
+translator 负责将 stp 脚本翻译为 c 代码;
+compiler 根据 runtime 环境和内核路径来生成 module;
+staprun 负责装载、卸载模块, 输出模块探测的信息.
 
-translator和compiler都是在宿主机上运行, staprun在目标板上运行. 
+translator 和 compiler 都是在宿主机上运行, staprun 在目标板上运行.
 
 官方资料 http://omappedia.org/wiki/Systemtap
 
@@ -19,13 +19,13 @@ translator和compiler都是在宿主机上运行, staprun在目标板上运行.
 
 正常情况下, `SystemTap` 仅仅会运行在部署了 `SystemTap` 的系统上. 这意味着, 如果你想在 `10` 个系统上运行 `SystemTap`, 你必须把 `SystemTap` 部署到所有的系统上. 有时候, 这可能既不可行也不理想. 比如, 公司政策禁止管理员在指定的机器上安装 `RPM` 包来提供编译和 `debug` 信息, 从而防止 `SystemTap` 的部署. 为了解决这一问题, `SystemTap` 允许你使用 `Cross-instrumentation`.
 
-`Cross-instrumentation` 是一个从一台计算机上的 `SystemTap` 脚本生成 `SystemTap` 测量模块并在另一台计算机上使用的过程. 这个过程提供了以下好处: 
+`Cross-instrumentation` 是一个从一台计算机上的 `SystemTap` 脚本生成 `SystemTap` 测量模块并在另一台计算机上使用的过程. 这个过程提供了以下好处:
 
 *	各种主机的内核信息包可以被安装在单台主机上
 
 *	每台目标机器仅仅需要被安装一个 `RPM` 包, 为了使用生成的 `SystemTap` 测量模块 : `systemtap-runtime` 包
 
-为了简单起见, 在这一节中使用以下术语: 
+为了简单起见, 在这一节中使用以下术语:
 
 *	测量模块 - 从 `SystemTap` 脚本构建的内核模. `SystemTap` 模块在主机系统上被构建, 将在目标系统的内核上被加载.
 
@@ -95,22 +95,22 @@ staprun simple.ko
 [SystemTap 学习笔记 - 安装篇](https://segmentfault.com/a/1190000000671438)
 
 
-[systemtap交叉编译](http://blog.chinaunix.net/uid-10705106-id-3886742.html)
+[systemtap 交叉编译](http://blog.chinaunix.net/uid-10705106-id-3886742.html)
 
 
-[omap移植systemtap](http://blog.csdn.net/sunnybeike/article/details/7776800)
+[omap 移植 systemtap](http://blog.csdn.net/sunnybeike/article/details/7776800)
 
 
-[移植安装SystemTap到Android的板子上](http://www.codeweblog.com/%E7%A7%BB%E6%A4%8D%E5%AE%89%E8%A3%85systemtap%E5%88%B0android%E7%9A%84%E6%9D%BF%E5%AD%90%E4%B8%8A/)
+[移植安装 SystemTap 到 Android 的板子上](http://www.codeweblog.com/%E7%A7%BB%E6%A4%8D%E5%AE%89%E8%A3%85systemtap%E5%88%B0android%E7%9A%84%E6%9D%BF%E5%AD%90%E4%B8%8A/)
 
 
-[systemtap在android、pandaboard上的移植](http://blog.csdn.net/lzuzhp06/article/details/7778189)
+[systemtap 在 android、pandaboard 上的移植](http://blog.csdn.net/lzuzhp06/article/details/7778189)
 
 
-[systemtap安装&内核调试环境配置](http://blog.csdn.net/sunnybeike/article/details/7752005)
+[systemtap 安装&内核调试环境配置](http://blog.csdn.net/sunnybeike/article/details/7752005)
 
 
-[SystemTap的使用](http://blog.chinaunix.net/uid-7585066-id-2048719.html)
+[SystemTap 的使用](http://blog.chinaunix.net/uid-7585066-id-2048719.html)
 
 
 

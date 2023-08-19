@@ -1,4 +1,3 @@
-
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
@@ -91,7 +90,7 @@ $ brew install tmux
 
 ## 2.2. 启动与退出
 
-安装完成后, 键入tmux命令, 就进入了 Tmux 窗口.
+安装完成后, 键入 tmux 命令, 就进入了 Tmux 窗口.
 
 ```
 $ tmux
@@ -103,15 +102,15 @@ $ tmux
 
 ![2019-12-23-09-08-34.png](./images/2019-12-23-09-08-34.png)
 
-按下Ctrl+d或者显式输入exit命令, 就可以退出 Tmux 窗口.
+按下 Ctrl+d 或者显式输入 exit 命令, 就可以退出 Tmux 窗口.
 
 ## 2.3. 前缀键
 
-Tmux 窗口有大量的快捷键. 所有快捷键都要通过前缀键唤起. **默认的前缀键**是**Ctrl+b**, 即先按下Ctrl+b, 快捷键才会生效.
+Tmux 窗口有大量的快捷键. 所有快捷键都要通过前缀键唤起. **默认的前缀键**是**Ctrl+b**, 即先按下 Ctrl+b, 快捷键才会生效.
 
-举例来说, 帮助命令的快捷键是Ctrl+b ?. 它的用法是, 在 Tmux 窗口中, 先按下Ctrl+b, 再按下?, 就会显示帮助信息.
+举例来说, 帮助命令的快捷键是 Ctrl+b ?. 它的用法是, 在 Tmux 窗口中, 先按下 Ctrl+b, 再按下?, 就会显示帮助信息.
 
-然后, 按下 ESC 键或q键, 就可以退出帮助.
+然后, 按下 ESC 键或 q 键, 就可以退出帮助.
 
 注: 很多将其改为 `Ctrl+a`
 
@@ -119,7 +118,7 @@ Tmux 窗口有大量的快捷键. 所有快捷键都要通过前缀键唤起. **
 
 ## 3.1. 新建会话
 
-第一个启动的 Tmux 窗口, 编号是0, 第二个窗口的编号是1, 以此类推. 这些窗口对应的会话, 就是 0 号会话、1 号会话.
+第一个启动的 Tmux 窗口, 编号是 0, 第二个窗口的编号是 1, 以此类推. 这些窗口对应的会话, 就是 0 号会话、1 号会话.
 
 使用编号区分会话, 不太直观, 更好的方法是为会话起名.
 
@@ -131,7 +130,7 @@ $ tmux new -s <session-name>
 
 ## 3.2. 分离会话
 
-在 Tmux 窗口中, 按下Ctrl+b d或者输入tmux detach命令, 就会将当前会话与窗口分离.
+在 Tmux 窗口中, 按下 Ctrl+b d 或者输入 tmux detach 命令, 就会将当前会话与窗口分离.
 
 ```
 $ tmux detach
@@ -141,7 +140,7 @@ $ tmux detach
 
 ## 3.3. 查看会话
 
-tmux ls命令可以查看当前所有的 Tmux 会话.
+tmux ls 命令可以查看当前所有的 Tmux 会话.
 
 ```
 $ tmux ls
@@ -151,7 +150,7 @@ $ tmux list-session
 
 ## 3.4. 接入会话
 
-tmux attach命令用于重新接入某个已存在的会话.
+tmux attach 命令用于重新接入某个已存在的会话.
 
 ```
 # 使用会话编号
@@ -163,7 +162,7 @@ $ tmux attach -t <session-name>
 
 ## 3.5. 杀死会话
 
-tmux kill-session命令用于杀死某个会话.
+tmux kill-session 命令用于杀死某个会话.
 
 ```
 # 使用会话编号
@@ -175,7 +174,7 @@ $ tmux kill-session -t <session-name>
 
 ## 3.6. 切换会话
 
-tmux switch命令用于切换会话.
+tmux switch 命令用于切换会话.
 
 ```
 # 使用会话编号
@@ -186,13 +185,13 @@ $ tmux switch -t <session-name>
 ```
 
 ## 3.7. 重命名会话
-tmux rename-session命令用于重命名会话.
+tmux rename-session 命令用于重命名会话.
 
 ```
 $ tmux rename-session -t 0 <new-name>
 ```
 
-上面命令将0号会话重命名.
+上面命令将 0 号会话重命名.
 
 ## 3.8. 会话快捷键
 
@@ -208,10 +207,10 @@ Ctrl+b $: 重命名当前会话.
 
 综上所述, 以下是 Tmux 的最简操作流程.
 
-1. 新建会话tmux new -s my_session.
+1. 新建会话 tmux new -s my_session.
 2. 在 Tmux 窗口运行所需的程序.
-3. 按下快捷键Ctrl+b d将会话分离.
-4. 下次使用时, 重新连接到会话tmux attach-session -t my_session.
+3. 按下快捷键 Ctrl+b d 将会话分离.
+4. 下次使用时, 重新连接到会话 tmux attach-session -t my_session.
 
 # 5. 窗格操作
 
@@ -221,7 +220,7 @@ Tmux 可以将窗口分成多个窗格(pane), 每个窗格运行不同的命令.
 
 ## 5.1. 划分窗格
 
-tmux split-window命令用来划分窗格.
+tmux split-window 命令用来划分窗格.
 
 ```
 # 划分上下两个窗格
@@ -233,7 +232,7 @@ $ tmux split-window -h
 
 ## 5.2. 移动光标
 
-tmux select\-pane命令用来移动光标位置.
+tmux select\-pane 命令用来移动光标位置.
 
 ```
 # 光标切换到上方窗格
@@ -251,7 +250,7 @@ $ tmux select-pane -R
 
 ## 5.3. 交换窗格位置
 
-tmux swap\-pane命令用来交换窗格位置.
+tmux swap\-pane 命令用来交换窗格位置.
 
 ```
 # 当前窗格上移
@@ -288,7 +287,7 @@ Ctrl+b q: 显示窗格编号.
 
 ## 6.1. 新建窗口
 
-tmux new\-window命令用来创建新窗口.
+tmux new\-window 命令用来创建新窗口.
 
 ```
 $ tmux new-window
@@ -299,7 +298,7 @@ $ tmux new-window -n <window-name>
 
 ## 6.2. 切换窗口
 
-tmux select\-window命令用来切换窗口.
+tmux select\-window 命令用来切换窗口.
 
 ```
 # 切换到指定编号的窗口
@@ -311,7 +310,7 @@ $ tmux select-window -t <window-name>
 
 ## 6.3. 重命名窗口
 
-tmux rename\-window命令用于为当前窗口起名(或重命名).
+tmux rename\-window 命令用于为当前窗口起名(或重命名).
 
 ```
 $ tmux rename-window <new-name>
@@ -355,7 +354,7 @@ Tmux 也有一个插件管理系统, 名字就叫做 `Tmux Plugin Manager`.
 
 ## 8.1. 下载和安装
 
-`Tmux Plugin Manager`托管在GitHub上, 地址: https://github.com/tmux-plugins/tpm .
+`Tmux Plugin Manager`托管在 GitHub 上, 地址: https://github.com/tmux-plugins/tpm .
 
 下载:
 
@@ -363,7 +362,7 @@ Tmux 也有一个插件管理系统, 名字就叫做 `Tmux Plugin Manager`.
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
-在Tmux配置文件`~/.tmux.conf`底部加上:
+在 Tmux 配置文件`~/.tmux.conf`底部加上:
 
 ```
 # List of plugins
@@ -393,7 +392,7 @@ tmux source ~/.tmux.conf
 在默认的配置中, 我们已经添加了两个插件: tpm 和 tmux-sensible.
 
 * tpm 是 Tmux Plugin Manager 本身;
-* tmux-sensible 在tmux的session窗口之间切换, `前缀键+g`
+* tmux-sensible 在 tmux 的 session 窗口之间切换, `前缀键+g`
 
 然而, tpm 本身是已经通过 git clone 命令下载到本地了, `tmux-sensible` 却没有. 所以, 我们这里需要通过 `prefix shift-i` 来安装它. `prefix shift-i` 中, i 是 install 的缩写. 执行它会根据配置文件中的插件列表, 安装所有插件.
 
@@ -434,9 +433,9 @@ prefix alt-u        # uninstall plugins not on the plugin list
 
 ## 8.4. tmux-resurrect
 
-Tmux一个缺点, Tmux 会话无法在系统重启之后比较容易地恢复.
+Tmux 一个缺点, Tmux 会话无法在系统重启之后比较容易地恢复.
 
-`tmux-resurrect` 插件也是托管在Github上, https://github.com/tmux-plugins/tmux-resurrect .
+`tmux-resurrect` 插件也是托管在 Github 上, https://github.com/tmux-plugins/tmux-resurrect .
 
 ### 8.4.1. 安装
 
@@ -481,7 +480,7 @@ prefix Ctrl-r       # reload tmux session from local file
 
 ## 8.5. Tmux Continuum
 
-Tmux Resurrect 工作很好, 只是备份和还原都是手动完成. 而 Tmux Resurrect 是将Tmux会话的保存及还原自动化, 定时备份, 在Tmux启动时还原.
+Tmux Resurrect 工作很好, 只是备份和还原都是手动完成. 而 Tmux Resurrect 是将 Tmux 会话的保存及还原自动化, 定时备份, 在 Tmux 启动时还原.
 
 类似处理
 

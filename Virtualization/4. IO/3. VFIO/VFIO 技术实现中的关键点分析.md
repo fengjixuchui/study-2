@@ -25,13 +25,13 @@
 
 PCI 配置空间 和 PCI 内部空间(BAR)
 
-CPU只能直接访问 内存(Memory)地址空间或者 IO 地址空间, 所以 PCI 的两种配置空间都是要 map 到 内存地址空间或者 IO 地址空间的.
+CPU 只能直接访问 内存(Memory)地址空间或者 IO 地址空间, 所以 PCI 的两种配置空间都是要 map 到 内存地址空间或者 IO 地址空间的.
 
 CPU 指定内存地址 或 Port, RC 来办事
 
 * 访问 PCI 配置空间的某个位置: BDF + 配置空间偏移, ID 路由
 
-* 访问 BAR: PCIe设备内部空间在内存中的映射地址, 地址路由
+* 访问 BAR: PCIe 设备内部空间在内存中的映射地址, 地址路由
 
 ## PCI Config Space 模拟
 
@@ -65,16 +65,16 @@ int vfio_config_init(struct vfio_pci_device *vdev)
     memset(map + PCI_STD_HEADER_SIZEOF, PCI_CAP_ID_INVALID,
            pdev->cfg_size - PCI_STD_HEADER_SIZEOF);
     ......
-    ret = vfio_cap_init(vdev);   /* 初始化PCI Capability, 主要用来填充模拟的vconfig */
+    ret = vfio_cap_init(vdev);   /* 初始化 PCI Capability, 主要用来填充模拟的 vconfig */
     if (ret)
     	goto out;
-    ret = vfio_ecap_init(vdev);  /* 初始化PCI Extended Capability, 主要用来填充模拟的vconfig */
+    ret = vfio_ecap_init(vdev);  /* 初始化 PCI Extended Capability, 主要用来填充模拟的 vconfig */
     ......
 ```
 
 对于**每个设备**而言, VFIO 内核模块为其分配了一个 `pci_config_map` 结构, **每个 PCI Capability** 都有一个与之对应的 `perm_bits`(`drivers/vfio/pci/vfio_pci_core.c`), 我们可以**重写其 hook 函数**来截获对这个 Capability 的访问 (读/写).
 
-`vfio_pci_init_perm_bits` 函数中就已经对不同的PCI Capability访问权限做了设置, 例如Power Management这类Capability就做了特殊的权限控制.
+`vfio_pci_init_perm_bits` 函数中就已经对不同的 PCI Capability 访问权限做了设置, 例如 Power Management 这类 Capability 就做了特殊的权限控制.
 
 ```cpp
 int __init vfio_pci_init_perm_bits(void)
@@ -141,7 +141,7 @@ QEMU 的 `vfio_realize` 函数中, **QEMU** 会读取**物理设备的 PCI 配�
 
 > legacy endpoint 既支持 Memory Map, 还支持 IO Map
 
-PCI设备的**I/O地址空间**是通过**PCI BAR空间**报告给操作系统的. 在**设备直通**的场景下 guest OS 到底该如何访问设备 I/O 空间? 有两种方法可选:
+PCI 设备的**I/O 地址空间**是通过**PCI BAR 空间**报告给操作系统的. 在**设备直通**的场景下 guest OS 到底该如何访问设备 I/O 空间? 有两种方法可选:
 
 方法 A: **直接呈现**, 将设备在主机上的 PCI BAR 呈现给 guest, 并通过 VMCS 的 **I/O bitmap** 和 **EPT 页表**使 guest 访问设备的 `PIO` 和 `MMIO` 都**不引起 VM-Exit**, 这样 guest 驱动程序可以**直接访问**设备的 I/O 地址空间.
 
@@ -154,7 +154,7 @@ PCI设备的**I/O地址空间**是通过**PCI BAR空间**报告给操作系统�
 * 对于**直通设备**的 **PIO** 访问而言, 通过设置 VMCS 的 **I/O bitmap** 控制 guest 访问退出到 VMM 中然后通过**转换表** (模拟的方式) 将 PIO 操作转发到真实物理设备上.
 * 对于 **MMIO** 的访问, 可以通过 **EPT** 方式将虚拟的 MMIO 地址空间**映射**到物理设备的 MMIO 地址空间上, 这样 guest 访问 MMIO 时并**不需要 VM-Exit**.
 
-我们知道PCI直通设备的PIO和MMIO访问方式是通过BAR空间给guest操作系统报告的(BIOS 分配的, 操作系统只是使用). 比如下面这个, BAR0 起始地址为 9b000000, 大小 16M, non-prefetchable表明一般为设备Register区域; BAR5 地址是 3000, 大小 128 字节, 为设备的 PIO 区域.
+我们知道 PCI 直通设备的 PIO 和 MMIO 访问方式是通过 BAR 空间给 guest 操作系统报告的(BIOS 分配的, 操作系统只是使用). 比如下面这个, BAR0 起始地址为 9b000000, 大小 16M, non-prefetchable 表明一般为设备 Register 区域; BAR5 地址是 3000, 大小 128 字节, 为设备的 PIO 区域.
 
 ```
 # lspci -vvvs 01:00.0
@@ -172,22 +172,22 @@ PCI设备的**I/O地址空间**是通过**PCI BAR空间**报告给操作系统�
 从代码上对 VFIO 的 BAR 空间分析. **QEMU** 在初始化过程中, `vfio_realize` 函数中会对直通设备的 MMIO 空间进行映射, 大致包含以下几个步骤:
 
 * 调用 `vfio_populate_device -> vfio_get_region_info` 从 VFIO 中**查询**出设备在 host 上呈现的 **BAR 空间信息**
-* 调用 `vfio_region_mmap` 把设备的 BAR 空间重映射 (mmap) 到 **QEMU 进程的虚拟地址空间**, 这样KVM就会为MMIO建立**EPT页表**, 虚拟机后续访问BAR空间就可以不用发生VM-Exit 如此一来就变得很高效.
-* 将该段虚拟机地址空间标记为 RAM 类型注册给虚拟机. 调用 `pci_register_bar` 来注册BAR空间信息, type这里可以PIO或者MMIO
+* 调用 `vfio_region_mmap` 把设备的 BAR 空间重映射 (mmap) 到 **QEMU 进程的虚拟地址空间**, 这样 KVM 就会为 MMIO 建立**EPT 页表**, 虚拟机后续访问 BAR 空间就可以不用发生 VM-Exit 如此一来就变得很高效.
+* 将该段虚拟机地址空间标记为 RAM 类型注册给虚拟机. 调用 `pci_register_bar` 来注册 BAR 空间信息, type 这里可以 PIO 或者 MMIO
 
-查询: 通过调用设备fd上的ioctl传入 VFIO_DEVICE_GET_REGION_INFO 命令, 通过这个调用可以查询到对应BAR空间的size和offset信息.
+查询: 通过调用设备 fd 上的 ioctl 传入 VFIO_DEVICE_GET_REGION_INFO 命令, 通过这个调用可以查询到对应 BAR 空间的 size 和 offset 信息.
 
 `if (ioctl(vbasedev->fd, VFIO_DEVICE_GET_REGION_INFO, *info))`
 
-PCI BAR空间重映射: 在vfio_region_mmap函数中, 我们摘取最关键部分进行简单分析.  VFIO内核中提供了一个名为vfio_pci_mmap的函数, 该函数中调用了remap_pfn_range, 将物理设备的PCI BAR重新映射到了进程的虚拟地址空间.  这样进程中, 对该区域进行mmap后, 拿到虚拟地址后就可以直接通过读写该段地址来访问物理设备的BAR空间.  在该函数中, 将该段重映射虚拟地址空间作为RAM Device分配给guest, 在memory_region_init_ram_device_ptr函数中会将该段内容标志为RAM,  如此一来KVM会调用kvm_set_user_memory_region为该段内存区域建立GPA到HPA的EPT映射关系, 这样一来Guest内部通过MMIO访问设备BAR空间就不用发生VM-Exit.  当QEMU讲该段虚拟地址空间分配给guest后, seabios初始化时枚举PCI设备的时候, 会将该段内存区域映射到guest的物理地址空间, guest驱动再将该段区域映射到 guest内核虚拟地址空间通过访问该段区域来驱动设备.
+PCI BAR 空间重映射: 在 vfio_region_mmap 函数中, 我们摘取最关键部分进行简单分析.  VFIO 内核中提供了一个名为 vfio_pci_mmap 的函数, 该函数中调用了 remap_pfn_range, 将物理设备的 PCI BAR 重新映射到了进程的虚拟地址空间.  这样进程中, 对该区域进行 mmap 后, 拿到虚拟地址后就可以直接通过读写该段地址来访问物理设备的 BAR 空间.  在该函数中, 将该段重映射虚拟地址空间作为 RAM Device 分配给 guest, 在 memory_region_init_ram_device_ptr 函数中会将该段内容标志为 RAM,  如此一来 KVM 会调用 kvm_set_user_memory_region 为该段内存区域建立 GPA 到 HPA 的 EPT 映射关系, 这样一来 Guest 内部通过 MMIO 访问设备 BAR 空间就不用发生 VM-Exit.  当 QEMU 讲该段虚拟地址空间分配给 guest 后, seabios 初始化时枚举 PCI 设备的时候, 会将该段内存区域映射到 guest 的物理地址空间, guest 驱动再将该段区域映射到 guest 内核虚拟地址空间通过访问该段区域来驱动设备.
 
 ```cpp
 int vfio_region_mmap(VFIORegion *region)
 {
     ......
     for (i = 0; i < region->nr_mmaps; i++) {
-        /* 将物理设备的PCI BAR空间mmap到进程的虚拟地址空间内
-         * region->vbasedev->fd 为设备的fd
+        /* 将物理设备的 PCI BAR 空间 mmap 到进程的虚拟地址空间内
+         * region->vbasedev->fd 为设备的 fd
          */
         region->mmaps[i].mmap = mmap(NULL, region->mmaps[i].size, prot,
                                      MAP_SHARED, region->vbasedev->fd,

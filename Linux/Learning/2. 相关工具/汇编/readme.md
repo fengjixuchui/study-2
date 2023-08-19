@@ -1,1 +1,1 @@
-《x86汇编语言: 从实模式到保护模式》, 见`Architecture/Learning/x86汇编语言_从实模式到保护模式`
+《x86 汇编语言: 从实模式到保护模式》, 见`Architecture/Learning/x86 汇编语言_从实模式到保护模式`

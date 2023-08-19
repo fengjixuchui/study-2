@@ -1,11 +1,11 @@
 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=858a43aae23672d46fe802a41f4748f322965182
 
 
-检查下flushmask是否为NULL
+检查下 flushmask 是否为 NULL
 
-为NULL表示, 表明没有running的vCPUs, 都是preempted vCPUs
+为 NULL 表示, 表明没有 running 的 vCPUs, 都是 preempted vCPUs
 
-不用调用 native_flush_tlb_others
+不用调用 `native_flush_tlb_others`
 
 
 ebizzy -M

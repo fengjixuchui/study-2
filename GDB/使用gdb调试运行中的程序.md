@@ -1,21 +1,21 @@
 
 下面介绍我调试时经常遇到的三种问题, 如果大家也有类似的问题交流一下解决方法:
 
-情景1: 在不中止程序服务的情况下, 怎么调试正在运行时的程序
+情景 1: 在不中止程序服务的情况下, 怎么调试正在运行时的程序
 
-情景2: 需要同时看几个变量的值或者批量查看多个core文件的堆栈信息怎么办
+情景 2: 需要同时看几个变量的值或者批量查看多个 core 文件的堆栈信息怎么办
 
-情景3: 遇到需要查看, 队列, 链表, 树, 堆等数据结构里的变量怎么办
+情景 3: 遇到需要查看, 队列, 链表, 树, 堆等数据结构里的变量怎么办
 
-1. 情景1: 在不中止程序服务的情况下, 怎么调试正在运行时的程序
+1. 情景 1: 在不中止程序服务的情况下, 怎么调试正在运行时的程序
 
 我们在生产环境或者测试环境, 会遇到一些异常, 我们需要知道程序中的变量或者内存的值来确定程序运行状态
 
-之前听过@淘宝褚霸讲过用systemstap可以实现这种功能, 但systamstap写起来复杂一些, 还有时候在低内核版本的操作系统上用stap之后, 程序或者操作系统都有可能死掉.
+之前听过@淘宝褚霸讲过用 systemstap 可以实现这种功能, 但 systamstap 写起来复杂一些, 还有时候在低内核版本的操作系统上用 stap 之后, 程序或者操作系统都有可能死掉.
 
-看过多隆调试程序时用pstack(修改了pstack代码, 用gdb实现的, 详见http://blog.yufeng.info/archives/873)查看和修改一个正在执行程序的全局变量, 感觉很神奇, 尝试用gdb实现这种功能:
+看过多隆调试程序时用 pstack(修改了 pstack 代码, 用 gdb 实现的, 详见 http://blog.yufeng.info/archives/873)查看和修改一个正在执行程序的全局变量, 感觉很神奇, 尝试用 gdb 实现这种功能:
 
-保存下面代码到文件runstack.sh
+保存下面代码到文件 runstack.sh
 
 ```bash
 #!/bin/sh
@@ -37,7 +37,7 @@ EOF`
 echo "$result" | egrep -A 1000 -e "^\(gdb\)" | egrep -B 1000 -e "^\(gdb\)"
 ```
 
-用于测试runstack.sh调试的c代码
+用于测试 runstack.sh 调试的 c 代码
 
 ```cpp
 #include <stdio.h>
@@ -97,7 +97,7 @@ int main()
 }
 ```
 
-编译c代码: `gcc -g -o read_input read_input.c`
+编译 c 代码: `gcc -g -o read_input read_input.c`
 
 执行 `. /read_input` 我们开始使用`runstack.sh`来调试
 
@@ -110,7 +110,7 @@ int main()
 shihao 10933 0.0 0.0 3668 332 pts/4 S+ 09: 41 0: 00 ./read_input
 ```
 
-10933是一个read_input程序的进程号
+10933 是一个 read_input 程序的进程号
 
 1)打印代码
 
@@ -157,7 +157,7 @@ shihao 10933 0.0 0.0 3668 332 pts/4 S+ 09: 41 0: 00 ./read_input
 (gdb) quit
 ```
 
-全局变量count变成100了.
+全局变量 count 变成 100 了.
 
 注: 1)有一些程序经过操作系统优化过, 直接用上面的方法可能有找不到符号表的情况
 
@@ -178,11 +178,11 @@ EOF`
 
 2)需要有查看和修改运行的进程的权限
 
-2. 情景2: 需要同时看几个变量的值或者批量查看多个core文件的信息怎么办
+2. 情景 2: 需要同时看几个变量的值或者批量查看多个 core 文件的信息怎么办
 
 1)多个变量的情景
 
-我们同时看一下count和input_list里面的值和堆栈信息, 我们可以写一个script.gdb
+我们同时看一下 count 和 input_list 里面的值和堆栈信息, 我们可以写一个 script.gdb
 
 ```
 $ cat script.gdb
@@ -210,17 +210,17 @@ $3 = "12345\n", "
 
 这样就可以同时做多个操作
 
-2)批处理查看core的情况
+2)批处理查看 core 的情况
 
-有的时候会出现很多core文件, 我们想知道哪些core文件是因为相同的原因, 哪些是不相同的, 看一个两个的时候还比较轻松
+有的时候会出现很多 core 文件, 我们想知道哪些 core 文件是因为相同的原因, 哪些是不相同的, 看一个两个的时候还比较轻松
 
 ```
 $ ls core.*
 core.12281 core.12282 core.12283 core.12284 core.12286 core.12287 core.12288 core.12311 core.12313 core.12314
 ```
 
-像上面有很多core文件, 一个一个用gdb去执行bt去看core在哪里有点麻烦, 我们想有把所有的core文件的堆栈和变量信息打印出来
-我对runstack稍作修改就可以实现我们的需求, 我们起名叫corestack.sh
+像上面有很多 core 文件, 一个一个用 gdb 去执行 bt 去看 core 在哪里有点麻烦, 我们想有把所有的 core 文件的堆栈和变量信息打印出来
+我对 runstack 稍作修改就可以实现我们的需求, 我们起名叫 corestack.sh
 
 ```bash
 #!/bin/sh
@@ -264,9 +264,9 @@ function=) at assert.c: 78
 (gdb) quit
 ```
 
-查看多个core文件堆栈信息的准备工作差不多了, 我们写个脚本就可以把所有的core文件堆栈打印出来了
+查看多个 core 文件堆栈信息的准备工作差不多了, 我们写个脚本就可以把所有的 core 文件堆栈打印出来了
 
-执行以下: 
+执行以下:
 
 ```
 for i in `ls core.*`; do ./corestack.sh ./read_input $i "bt"; done
@@ -289,17 +289,17 @@ function=) at assert.c: 78
 (gdb) quit
 ```
 
-ok, 我们看到了所有core文件的堆栈.
+ok, 我们看到了所有 core 文件的堆栈.
 
-3. 情景3: 遇到需要查看, 队列, 链表, 树, 堆等数据结构里的变量怎么办?
+3. 情景 3: 遇到需要查看, 队列, 链表, 树, 堆等数据结构里的变量怎么办?
 
-下面介绍链表怎么处理, 对其他数据结构感兴趣的同学可以自己尝试编写一些gdb脚本(麻烦@周哲士豪一下我, 我也学习学习),
+下面介绍链表怎么处理, 对其他数据结构感兴趣的同学可以自己尝试编写一些 gdb 脚本(麻烦@周哲士豪一下我, 我也学习学习),
 
-希望我们可以实现一个gdb调试工具箱
+希望我们可以实现一个 gdb 调试工具箱
 
-gdb是支持编写的脚本的 http://sourceware.org/gdb/onlinedocs/gdb/Command-Files.html
+gdb 是支持编写的脚本的 http://sourceware.org/gdb/onlinedocs/gdb/Command-Files.html
 
-我们写个plist.gdb, 用while循环来遍历链表
+我们写个 plist.gdb, 用 while 循环来遍历链表
 
 ```
 $ cat plist.gdb
@@ -312,7 +312,7 @@ while($list)
 end
 ```
 
-我们执行一下: 
+我们执行一下:
 
 ```
 runstack.sh 13434 "source plist.gdb"
@@ -324,7 +324,7 @@ $5 = {next = 0×0, data = "123\n", " }
 (gdb) quit
 ```
 
-实际上我们可以把plist写成自定义函数, 执行gdb的时候会在当前目下查找. gdbinit文件加载到gdb:
+实际上我们可以把 plist 写成自定义函数, 执行 gdb 的时候会在当前目下查找. gdbinit 文件加载到 gdb:
 
 ```
 $ cat .gdbinit
@@ -340,7 +340,7 @@ define plist
 end
 ```
 
-这样就可以用plist命令遍历list的值
+这样就可以用 plist 命令遍历 list 的值
 
 ```
 $ runstack.sh 13434 "plist &input_list"
@@ -358,13 +358,13 @@ http://csrd.ruoguschool.com/p=1663/
 
 霸爷的博客: http://blog.yufeng.info/archives/873
 
-gdb从脚本加载命令: http://blog.lifeibo.com/p=380
+gdb 从脚本加载命令: http://blog.lifeibo.com/p=380
 
-gdb官方文档: http://sourceware.org/gdb/onlinedocs/gdb/Command-Files.html
+gdb 官方文档: http://sourceware.org/gdb/onlinedocs/gdb/Command-Files.html
 
-gdb回退: http://sourceware.org/gdb/news/reversible.html
+gdb 回退: http://sourceware.org/gdb/news/reversible.html
 
-gdb stl调试脚本: http://www.yolinux.com/TUTORIALS/src/dbinit_stl_views-1.03.txt
+gdb stl 调试脚本: http://www.yolinux.com/TUTORIALS/src/dbinit_stl_views-1.03.txt
 
 gdb 高级调试方法: http://blog.csdn.net/wwwsq/article/details/7086151
 
