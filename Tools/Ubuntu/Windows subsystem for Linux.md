@@ -15,9 +15,9 @@
 
 替换掉/etc/shadow 或者修改里面内容, 将 root 密码删掉(置空)
 
-修改 ssh 服务的配置文件(一般在/etc/ssh/sshd_config), 参照当前目录下文件. 
+修改 ssh 服务的配置文件(一般在 `/etc/ssh/sshd_config`), 参照当前目录下文件.
 
-在/root/.bashrc 尾添加下面内容
+在 `/root/.bashrc` 尾添加下面内容
 
 ```
 service ssh status > /dev/null
@@ -32,9 +32,9 @@ fi
 
 ### 5. 修改 ubuntu 的软件源
 
-ubuntu 的软件源文件是/etc/apt/sources.list. 
+ubuntu 的软件源文件是/etc/apt/sources.list.
 
-查看当前 OS 的版本: 
+查看当前 OS 的版本:
 
 ```
 root@Gerry:~# cat /etc/issue
@@ -50,7 +50,7 @@ Codename:       xenial
 
 清华镜像源配置: https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/
 
-根据版本选择一个源. 
+根据版本选择一个源.
 
 ### 6. 更新下所有软件
 

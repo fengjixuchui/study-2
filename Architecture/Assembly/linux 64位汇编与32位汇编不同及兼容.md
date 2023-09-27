@@ -2,9 +2,9 @@
 
 ## 一、不同
 
-1. 系统调用号不同. 比如 x86 中 sys_write 是 4sys_exit 是 1;而 x86_64 中 sys_write 是 1, sys_exit 是 60. linux 系统调用号实际上定义在/usr/include/asm/unistd_32.h 和/usr/include/asm/unistd_64.h 中.
+1. 系统调用号不同. 比如 x86 中 sys_write 是 4, sys_exit 是 1; 而 x86_64 中 sys_write 是 1, `sys_exit` 是 60. linux 系统调用号实际上定义在 `/usr/include/asm/unistd_32.h` 和 `/usr/include/asm/unistd_64.h` 中.
 
-2. 系统调用所使用的寄存器不同 x86_64 中使用与 eax 对应的 rax 传递系统调用号但是 x86_64 中分别使用 rdi/rsi/rdx 传递前三个参数而不是 x86 中的 ebx/ecx/edx.
+2. 系统调用所使用的寄存器不同 x86_64 中使用与 eax 对应的 rax 传递系统调用号但是 x86_64 中分别使用 `rdi/rsi/rdx` 传递前三个参数而不是 x86 中的 ebx/ecx/edx.
 
 - 对于 32 位程序应调用 int $0x80 进入系统调用将系统调用号传入 eax 各个参数按照 ebx、ecx、edx 的顺序传递到寄存器中系统调用返回值储存到 eax 寄存器.
 

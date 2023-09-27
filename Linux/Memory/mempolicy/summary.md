@@ -1,3 +1,4 @@
+
 参考内核文档: `Documentation/admin-guide/mm/numa_memory_policy.rst`
 
 memory policy 是决定在 NUMA 系统上从哪个节点分配内存的策略, 它是一类提供给能更好利用 NUMA 系统进行内存分配的应用程序使用的编程接口,
@@ -9,7 +10,7 @@ Linux 分四种类型 policy, 分别是:
 
 - `System Default Policy`, 它是在没用应用下面其他 policy 时的**默认 policy**, 具体行为是: **系统启动过程中**, 采用**interleave 策略**分配内存, 即在所有**可满足需求的节点**上**交叉分配**, 防止启动时在**某个节点上负载过重**; 在**系统启动后**, 采用**local allocation**, 即在 task 运行的 cpu 所在的 node 上进行内存分配.
 
-- `Task/Process Policy`, 它是**task 用来制定其内存分配时的策略**, 如果**没有定义**, 将 fall back 到 system default policy. fork()等可继承(inheritable), 父进程创建子进程时可以建立 policy, 见`Memory Policy APIs <memory_policy_apis>`节. 多线程任务, 只有拥有 policy 的线程以及该线程创建的子线程才有 task policy. 任务策略仅适用于在安装策略后分配的页面
+- `Task/Process Policy`, 它是 **task 用来制定其内存分配时的策略**, 如果**没有定义**, 将 fall back 到 system default policy. fork()等可继承(inheritable), 父进程创建子进程时可以建立 policy, 见`Memory Policy APIs <memory_policy_apis>`节. 多线程任务, 只有拥有 policy 的线程以及该线程创建的子线程才有 task policy. 任务策略仅适用于在安装策略后分配的页面
 
 - `VMA Policy`, 它是针对在**某段 VMA 进行内存分配**时策略, 如果没有定义, 将 fall back 到 Task/Process Policy, 如果 Task/Process Policy 没有定义, 递归 fall back 到 system default policy.
 

@@ -3,24 +3,24 @@
 
 <!-- code_chunk_output -->
 
-- [1 微处理器发展模式](#1-微处理器发展模式)
-  - [1.1 Tick\-Tock 模式](#11-tick-tock-模式)
-  - [1.2 Process\-Architecture\-Optimization 模式](#12-process-architecture-optimization-模式)
-- [2 产品发布路线图](#2-产品发布路线图)
-- [3 P6](#3-p6)
-- [4 Core](#4-core)
-- [5 Nehalem](#5-nehalem)
-- [6 Sandy Bridge](#6-sandy-bridge)
-- [7 Haswell](#7-haswell)
-- [8 Skylake](#8-skylake)
-- [9 What’s new!](#9-whats-new)
+- [微处理器发展模式](#微处理器发展模式)
+  - [Tick-Tock 模式](#tick-tock-模式)
+  - [Process-Architecture-Optimization 模式](#process-architecture-optimization-模式)
+- [产品发布路线图](#产品发布路线图)
+- [P6](#p6)
+- [Core](#core)
+- [Nehalem](#nehalem)
+- [Sandy Bridge](#sandy-bridge)
+- [Haswell](#haswell)
+- [Skylake](#skylake)
+- [What’s new!](#whats-new)
 - [参考](#参考)
 
 <!-- /code_chunk_output -->
 
-# 1 微处理器发展模式
+# 微处理器发展模式
 
-## 1.1 Tick\-Tock 模式
+## Tick-Tock 模式
 
 Tick-Tock 是 Intel 公司发展微处理器芯片设计制造业务的一种发展战略模式在 2007 年正式提出.
 
@@ -35,7 +35,7 @@ Intel 指出
 
 此策略常被许多计算机玩家戏称"挤牙膏策略"因为每一代新处理器性能和前一代处理器性能的差距很短就好像 Haswell 的 4790K 和 Skylake 的 6700K 那样
 
-## 1.2 Process\-Architecture\-Optimization 模式
+## Process-Architecture-Optimization 模式
 
 2016 年 3 月 22 日 Intel 在 [Form 10-K](https://www.wikiwand.com/en/Form_10-K) 报告中宣布, 弃用"Tick\-Tock"模式, 采用三步"Process\-Architecture\-Optimization"模式, 即"制程、架构、优化". 具体来讲, 将 Tick Tock 放缓至三年一循环即增加优化环节进一步减缓实际更新的速度.
 
@@ -49,7 +49,7 @@ Intel 指出
 - 架构: 在制程不变的情况下更新处理器架构以提高性能
 - 优化: 在制程及架构不变的情况下进行修复及优化将 BUG 减到最低并提升处理器时脉
 
-# 2 产品发布路线图
+# 产品发布路线图
 
 ![config](./images/55.png)
 
@@ -84,7 +84,7 @@ Intel 7th generation Core  | Kabylake
 Intel 8th generation Core  | Coffee Lake
 Intel 9th generation Core  | Coffee Lake Refresh
 
-# 3 P6
+# P6
 
 [P6](https://www.wikiwand.com/en/P6_(microarchitecture)) 是 Intel 在 1995 年推出的**第六代微架构**它的后继者是 2000 年的 NetBurst 微架构但是最后在 Pentium M 之间又出现 P6 的踪影. 而 Pentium M 的 P6 的后继者则是 Intel Core 微架构.
 
@@ -116,7 +116,7 @@ P6 的末尾阶段首次出现了双核当时的双核还是基本上像是把�
 
 P6 中文维基: https://zh.wikipedia.org/wiki/P6%E5%BE%AE%E6%9E%B6%E6%A7%8B
 
-# 4 Core
+# Core
 
 ![](./images/2019-04-18-14-04-54.png)
 
@@ -128,7 +128,7 @@ Core 架构把 NetBurst 做深了的流水线级数又砍下来了**主频**虽�
 
 从 **Core** 架构开始是**真的走向多核**了就不再是以前"胶水粘的"伪双核了这时候已经有最高 4 核的处理器设计了.
 
-# 5 Nehalem
+# Nehalem
 
 ![](./images/2019-04-18-14-06-17.png)
 
@@ -161,7 +161,7 @@ Core 这个名字变成了桌面 PC 以及笔记本处理器的系列名后面�
 
 Xeon 系列也从 Westmere 开始推出了第一代 E 命名的 E7-x8xx 系列.
 
-# 6 Sandy Bridge
+# Sandy Bridge
 
 ![](./images/2019-04-18-14-07-54.png)
 
@@ -200,7 +200,7 @@ Tick 到 22nm 的下一代架构叫 Ivy Bridge 三代 Core i 系列和二代 Xeo
 - PCIE 3.0
 - 其他各个部分都做了很多提升
 
-# 7 Haswell
+# Haswell
 
 ![](./images/2019-04-18-14-14-35.png)
 
@@ -222,7 +222,7 @@ Tick 到 22nm 的下一代架构叫 Ivy Bridge 三代 Core i 系列和二代 Xeo
 
 14nm 的 Tick 到了 Broadwell 五代 Core i 系列和四代 Xeon E 系列. 各种指令集升级、支持了很多新功能特性.
 
-# 8 Skylake
+# Skylake
 
 14nm 的 Tock 到了 Skylake 进入 XXlake 时代六代 Core i 系列.
 
@@ -242,7 +242,7 @@ Skylake 优化版的下一代是 Kaby Lake 即七代 Core i 系列. 相比 Skyla
 
 Kaby Lake 继续优化到了 Coffee Lake 八代 Core i 系列. 这个系列的 i3 提到了 4 核 i5、i7 都从 6 核开始起步然后继续提升主频各种优化等等.
 
-# 9 What’s new!
+# What’s new!
 
 话说 Kaby Lake 和 Coffee Lake 这个时代 Intel 又推出了新的 Core i 系列命名为 Core i9 第一代的桌面版 Core i9 是 Skylake 架构(Skylake-X)第一代笔记本版 i9 是 Coffee Lake 架构.
 

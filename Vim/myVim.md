@@ -10,7 +10,7 @@
 - [5. complete 功能](#5-complete-功能)
   - [5.1. asynccomplete](#51-asynccomplete)
   - [5.2. YouCompleteMe](#52-youcompleteme)
-    - [5.2.1. rust 支持(optional)](#521-rust-支持 optional)
+    - [5.2.1. rust 支持 (optional)](#521-rust-支持-optional)
 - [lsp 功能](#lsp-功能)
   - [项目配置](#项目配置)
     - [法一: compile_commands.json](#法一-compile_commandsjson)
@@ -20,7 +20,7 @@
 - [6. Rust(Optional)](#6-rustoptional)
   - [6.1. 语法增强](#61-语法增强)
   - [6.2. 代码片段](#62-代码片段)
-  - [6.3. 代码 补全 | 检查 | 跳转 利器](#63-代码-补全-检查-跳转-利器)
+  - [6.3. 代码 补全 | 检查 | 跳转 利器](#63-代码-补全--检查--跳转-利器)
 - [7. reference](#7-reference)
 
 <!-- /code_chunk_output -->
@@ -156,7 +156,7 @@ python3 install.py --clangd-completer
 
 
 
-### 5.2.1. rust 支持(optional)
+### 5.2.1. rust 支持 (optional)
 
 * rust 源码: rust src
 * 补全工具: rust analyzer

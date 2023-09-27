@@ -2,7 +2,6 @@
 当 linux 内核分配普通页或者大页时, 都会对相应的 page 结构体做一定的初始化, 初始化的内容因分配的页是大页或者普通页会有一定的区别
 
 ```cpp
-
 alloc_fresh_huge_page(); // 大页 size 小, 从页分配器分配
  ├─ struct page *page = alloc_buddy_huge_page(); // 本质是调用__alloc_pages, 直接分配了一个大页(2M/1G), 一共有很多 page 结构体, 返回首个 page 结构体
  ├─ prep_compound_gigantic_page(page, huge_page_order(h)) // hstate_is_gigantic 时候(目前是 1G size 的大页)

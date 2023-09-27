@@ -3,19 +3,19 @@
 
 <!-- code_chunk_output -->
 
-- [1 概述](#1-概述)
-- [Machine Check MSR](#machine-check-msr)
-  - [IA32_MCG_CAP MSR](#ia32_mcg_cap-msr)
-  - [IA32_MCG_STATUS MSR](#ia32_mcg_status-msr)
-  - [IA32_MCG_CTL MSR](#ia32_mcg_ctl-msr)
-  - [IA32_MCG_EXT_CTL MSR](#ia32_mcg_ext_ctl-msr)
-  - [IA32_MCi_CTL MSRs](#ia32_mci_ctl-msrs)
-  - [IA32_MCi_STATUS MSRS](#ia32_mci_status-msrs)
-- [参考](#参考)
+- [1. 概述](#1-概述)
+- [2. Machine Check MSR](#2-machine-check-msr)
+  - [2.1. IA32_MCG_CAP MSR](#21-ia32_mcg_cap-msr)
+  - [2.2. IA32_MCG_STATUS MSR](#22-ia32_mcg_status-msr)
+  - [2.3. IA32_MCG_CTL MSR](#23-ia32_mcg_ctl-msr)
+  - [2.4. IA32_MCG_EXT_CTL MSR](#24-ia32_mcg_ext_ctl-msr)
+  - [2.5. IA32_MCi_CTL MSRs](#25-ia32_mci_ctl-msrs)
+  - [2.6. IA32_MCi_STATUS MSRS](#26-ia32_mci_status-msrs)
+- [3. 参考](#3-参考)
 
 <!-- /code_chunk_output -->
 
-# 1 概述
+# 1. 概述
 
 Intel 从奔腾 4 开始的 CPU 中增加了一种机制, 称为 MCA——Machine Check Architecture, 它用来检测硬件(这里的 Machine 表示的就是硬件)错误, 比如系统总线错误、ECC 错误等等.
 
@@ -25,7 +25,7 @@ Intel 从奔腾 4 开始的 CPU 中增加了一种机制, 称为 MCA——Machin
 
 当然 CPU 还会检测到**可纠正的 MCE**, 当可纠正的 MCE 数量**超过一定的阈值**时, 会触发**CMCI**(`Corrected Machine Check Error Interrupt`), 此时软件可以捕捉到**该中断**并进行相应的处理. CMCI 是在 MCA 之后才加入的, 算是对 MCA 的一个增强, 在此**之前**软件只能通过**轮询可纠正 MCE 相关的 MSR**才能实现相关的操作.
 
-# Machine Check MSR
+# 2. Machine Check MSR
 
 MCA 是通过一系列的 MSR 来实现, 这里介绍下这些 MSR 寄存器, 首先看下面的图:
 
@@ -41,7 +41,7 @@ MCA 通过若干 Bank 的 MSR 寄存器来表示各种类型的 MCE.
 
 下面简单介绍一下这些寄存器.
 
-## IA32_MCG_CAP MSR
+## 2.1. IA32_MCG_CAP MSR
 
 这个 MSR 描述了当前 CPU 处理 MCA 的能力, 具体每个位的作用如下所示:
 
@@ -67,7 +67,7 @@ MCA 通过若干 Bank 的 MSR 寄存器来表示各种类型的 MCE.
 
 * BIT27: 1 表示支持 Local Machine Check Exception;
 
-## IA32_MCG_STATUS MSR
+## 2.2. IA32_MCG_STATUS MSR
 
 该 MSR 记录了**MCE 发生时 CPU 的状态**, 主要的 BIT 位介绍如下:
 
@@ -84,13 +84,13 @@ MCA 通过若干 Bank 的 MSR 寄存器来表示各种类型的 MCE.
 - bit 2: 设置后说明生成机器检查异常.  软件可以设置或清除此标志.  设置 MCIP 时发生第二次机器检查事件将导致处理器进入关闭状态.
 - bit 3: 设置后说明生成本地`machine-check exception`. 这表示当前的机器检查事件仅传递给此逻辑处理器.
 
-## IA32_MCG_CTL MSR
+## 2.3. IA32_MCG_CTL MSR
 
 这个寄存器的存在依赖于`IA32_MCG_CAP`这个 MSR 的`BIT8`.
 
 这个寄存器主要用来 Disable(写 1)或者 Enable(写全 0)**MCA 功能**.
 
-## IA32_MCG_EXT_CTL MSR
+## 2.4. IA32_MCG_EXT_CTL MSR
 
 这个寄存器同样依赖于 IA32_MCA_CAP 这个 MSR, 这次依赖的是 BIT9. 该 MSR 的 BIT 位说明如下图所示:
 
@@ -102,7 +102,7 @@ MCA 通过若干 Bank 的 MSR 寄存器来表示各种类型的 MCE.
 
 这些寄存器的第一个是 IA32_MC0_CTL, 它的地址一般都是 400H. 之后接着的是 IA32_MC0_STATUS, IA32_MC0_ADDR, IA32_MC0_MISC, 但是在之后并不是 IA32_MC0_CTL2, 而是 IA32_MC1_CTL; 对于 IA32_MCi_CTL2 来说, 它的地址跟上面的这些不在一起, 第一个 IA32_MC0_CTL2 是在 280H, 之后是 IA32_MC1_CTL2 在 281H, 以此类推.
 
-## IA32_MCi_CTL MSRs
+## 2.5. IA32_MCi_CTL MSRs
 
 每个 Bank 的 CTL 的作用是用来控制在发生哪些 MCA 的时候来触发#MC:
 
@@ -110,7 +110,7 @@ MCA 通过若干 Bank 的 MSR 寄存器来表示各种类型的 MCE.
 
 这里的 64 个 BIT 位, 设置某个 BIT 位就会使对应 BIT 位的 MCA 类型在发生时触发#MC.
 
-## IA32_MCi_STATUS MSRS
+## 2.6. IA32_MCi_STATUS MSRS
 
 这类 MSR 的作用就是显示 MCE 信息:
 
@@ -253,6 +253,6 @@ CPUID Vendor Intel Family 6 Model 85
 [166492.498942] Kernel panic - not syncing: Machine check from unknown source
 ```
 
-# 参考
+# 3. 参考
 
 - x86 架构——MCA: https://blog.csdn.net/jiangwei0512/article/details/62456226 (未完)

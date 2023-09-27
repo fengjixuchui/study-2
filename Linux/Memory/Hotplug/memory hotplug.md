@@ -9,7 +9,7 @@
 
 # hot remove
 
-然后要想 remove, 逻辑上是先 offline(drivers/base/memory.c 的 memory_subsys_offline), 再 remove(mm/memory_hotplug.c 的 remove_memory 调用).
+然后要想 remove, 逻辑上是先 offline(drivers/base/memory.c 的 `memory_subsys_offline`), 再 remove(`mm/memory_hotplug.c` 的 remove_memory 调用).
 
 ## offline
 

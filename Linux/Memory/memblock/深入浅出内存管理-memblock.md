@@ -25,9 +25,9 @@ struct memblock {
 };
 ```
 
-- bottom\_up 内存分配的方向
+- `bottom_up` 内存分配的方向
 
-- current\_limit 内存分配最大限制值
+- `current_limit` 内存分配最大限制值
 
 memblock 的内存分为 3 类, memory, reserved, 和 physmem
 

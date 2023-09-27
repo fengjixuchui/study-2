@@ -34,7 +34,7 @@ org 在编译阶段影响到内存寻址指令的编译(编译器会将所有程
 
 如果没有 org 指令那么编译器计算偏移量(虽然 nasm 中没有 offset 但编译器仍会进行这个运算)是从 0x0000 开始的如果有了 org 就会在最后加上 org 后面跟的数字.
 
-在这个引导程序中: mov ax, BootMessage 在编译时候实际上是将 mov ax, BootMessage 所在的地址与 BootMessage 同当前语句(mov ax, BootMessage)地址的偏移量相加所计算出来的. 没有 org 则偏移量从 0000h 开始于是虽然整个代码被加载到 0x7c00 处但当执行到 mov ax, BootMessage 一句时候由于没有算入偏移量 7c00 从而没有将 BootMessage 字符串首地址放入 ax 以至于发生错误.
+在这个引导程序中: `mov ax, BootMessage` 在编译时候实际上是将 mov ax, BootMessage 所在的地址与 BootMessage 同当前语句(mov ax, BootMessage)地址的偏移量相加所计算出来的. 没有 org 则偏移量从 0000h 开始于是虽然整个代码被加载到 0x7c00 处但当执行到 mov ax, BootMessage 一句时候由于没有算入偏移量 7c00 从而没有将 BootMessage 字符串首地址放入 ax 以至于发生错误.
 
 ndisasm -o 0x0000 boot.bin >> disboot1.asm 所得到的汇编文件
 

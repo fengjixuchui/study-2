@@ -2,13 +2,13 @@ bilibili AV44270790
 
 目前市场上 CPU 主要是两种: Intel 和 AMD
 
-# 1 CPU 参数的认知
+# CPU 参数的认知
 
 CPU 的参数主要有: 系列、核心、频率、架构、缓存
 
-## 1.1 系列
+## 系列
 
-### 1.1.1 Intel
+### Intel
 
 ![config](./images/1.jpeg)
 

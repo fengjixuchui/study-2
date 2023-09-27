@@ -1,19 +1,19 @@
 https://blog.csdn.net/cosmoslhf/article/details/42743101
 
 
-# 1 slab 分配器概述
+# slab 分配器概述
 
 有了伙伴系统 buddy, 我们可以以页为单位获取连续的物理内存了, 即 4K 为单位的获取, 但如果需要频繁的获取/释放并不大的连续物理内存怎么办, 如几十字节几百字节的获取/释放, 这样的话用 buddy 就不太合适了, 这就引出了 slab.
 
 比如我需要一个 100 字节的连续物理内存, 那么内核 slab 分配器会给我提供一个相应大小的连续物理内存单元, 为 128 字节大小(不会是整好 100 字节, 而是这个档的一个对齐值, 如 100 字节对应 128 字节, 30 字节对应 32 字节, 60 字节对应 64 字节), 这个物理内存实际上还是从伙伴系统获取的物理页; 当我不再需要这个内存时应该**释放它**, 释放它并非把它归还给伙伴系统, 而是**归还给 slab 分配器**, 这样等再需要获取时无需再从伙伴系统申请, 这也就是为什么 slab 分配器往往会把**最近释放的内存**(即所谓"**热")分配给申请者**, 这样效率是比较高的.
 
-# 2 创建一个 slab
+# 创建一个 slab
 
-## 2.1 什么叫创建 slab
+## 什么叫创建 slab
 
 上面举了申请 100 字节连续物理内存的例子, 还提到了实际分配的是 128 字节内存, 也就是实际上内核中 slab 分配器对不同长度内存是分档的, 其实这就是 slab 分配器的一个基本原则, 按**申请的内存的大小**分配**相应长度的内存**.
 
-同时也说明一个事实, 内核中一定应该有这样的按**不同长度 slab 内存单元**, 也就是说已经**创建过这样的内存块**, 否则申请时怎能根据大小识别应该分配给怎样大小的内存, 这可以先参加 kmalloc 的实现, kmalloc->\_\_do\_kmalloc, \_\_do\_kmalloc 函数中的如下:
+同时也说明一个事实, 内核中一定应该有这样的按**不同长度 slab 内存单元**, 也就是说已经**创建过这样的内存块**, 否则申请时怎能根据大小识别应该分配给怎样大小的内存, 这可以先参加 kmalloc 的实现, `kmalloc` -> `__do_kmalloc`, `__do_kmalloc` 函数中的如下:
 
 ```cpp
 static __always_inline void *__do_kmalloc(size_t size, gfp_t flags,  void *caller)
@@ -33,7 +33,7 @@ static __always_inline void *__do_kmalloc(size_t size, gfp_t flags,  void *calle
 }
 ```
 
-kmalloc 申请的**物理内存长度为参数 size**, 它需要先**根据这个长度**找到**相应的长度的缓存**, 这个缓存的概念是什么马上就要引出先别着急, 先看函数\_\_find\_general\_cachep:
+kmalloc 申请的**物理内存长度为参数 size**, 它需要先**根据这个长度**找到**相应的长度的缓存**, 这个缓存的概念是什么马上就要引出先别着急, 先看函数 `__find_general_cachep`:
 
 ```cpp
 static inline struct kmem_cache *__find_general_cachep(size_t size,  gfp_t gfpflags)
@@ -65,7 +65,7 @@ static inline struct kmem_cache *__find_general_cachep(size_t size,  gfp_t gfpfl
 }
 ```
 
-这个函数唯一有用的部分就是这里, csizep 初始化成全局变量 malloc\_sizes, 根据全局变量 malloc\_sizes 的 cs\_size 成员和 size 的大小比较, 不断后移 malloc\_sizes, 现在就要看看 malloc\_sizes 是怎么回事:
+这个函数唯一有用的部分就是这里, csizep 初始化成全局变量 `malloc_sizes`, 根据全局变量 `malloc_sizes` 的 `cs_size` 成员和 size 的大小比较, 不断后移 `malloc_sizes`, 现在就要看看 `malloc_sizes` 是怎么回事:
 
 ```cpp
 struct cache_sizes malloc_sizes[] = {
@@ -76,9 +76,9 @@ struct cache_sizes malloc_sizes[] = {
 };
 ```
 
-观察文件 linux/kmalloc\_sizes.h 的情况, 篇幅太大这个文件内容就不列了, 里面都是一堆的 CACHE(X)的宏声明, 根据里边的定制宏情况(L1\_CACHE\_BYTES 值为 32, KMALLOC\_MAX\_SIZE 值为 4194304), 一共声明了 CACHE(32)、CACHE(64)、CACHE(96)、CACHE(128)、CACHE(192)、CACHE(256)、CACHE(512)、CACHE(1024)、CACHE(2048)、CACHE(4096)、CACHE(8192)、CACHE(16384)、CACHE(32768)、CACHE(65536)、CACHE(131072)、CACHE(262144)、CACHE(524288)、CACHE(1048576)、CACHE(2097152)、CACHE(4194304)和最后的 CACHE(0xffffffff)共计 21 个 CACHE(X)的宏声明, 结合结构类型 struct cache\_sizes, 对于 arm 它实际上有两个成员:
+观察文件 `linux/kmalloc_sizes.h` 的情况, 篇幅太大这个文件内容就不列了, 里面都是一堆的 CACHE(X)的宏声明, 根据里边的定制宏情况(`L1_CACHE_BYTES` 值为 32, `KMALLOC_MAX_SIZE` 值为 4194304), 一共声明了 CACHE(32)、CACHE(64)、CACHE(96)、CACHE(128)、CACHE(192)、CACHE(256)、CACHE(512)、CACHE(1024)、CACHE(2048)、CACHE(4096)、CACHE(8192)、CACHE(16384)、CACHE(32768)、CACHE(65536)、CACHE(131072)、CACHE(262144)、CACHE(524288)、CACHE(1048576)、CACHE(2097152)、CACHE(4194304)和最后的 CACHE(0xffffffff)共计 21 个 CACHE(X)的宏声明, 结合结构类型 struct cache_sizes, 对于 arm 它实际上有两个成员:
 
-```
+```cpp
 struct cache_sizes {
     size_t cs_size;
     struct kmem_cache *cs_cachep;
@@ -88,23 +88,23 @@ struct cache_sizes {
 };
 ```
 
-**除 X86 以外**基本都**没有 DMA 必须在物理内存前 16MB 的限制**, 所以包括 arm 的很多体系结构都没有 CONFIG\_ZONE\_DMA, 所以本结构实际上是两个成员 cs_size 和 cs_cachep, 那么这里就比较清晰了, 全局变量 malloc\_sizes 共有 21 个成员, 每个成员都定义了 cs\_size 值, 从 32 到 4194304 加上 0xffffffff, cs\_cachep 都为 NULL; 其实这些值就是 slab 分配器的一个个按长度的分档;
+**除 X86 以外**基本都**没有 DMA 必须在物理内存前 16MB 的限制**, 所以包括 arm 的很多体系结构都没有 `CONFIG_ZONE_DMA`, 所以本结构实际上是两个成员 `cs_size` 和 `cs_cachep`, 那么这里就比较清晰了, 全局变量 `malloc_sizes` 共有 21 个成员, 每个成员都定义了 `cs_size` 值, 从 32 到 4194304 加上 0xffffffff, `cs_cachep` 都为 NULL; 其实这些值就是 slab 分配器的一个个按长度的分档;
 
-回到函数\_\_find\_general\_cachep, 已经很清晰了, 全局变量 malloc\_sizes 的第 0 个成员开始, 当申请的内存长度比该成员的档次值 cs\_size 大, 就换下一个成员, 直到比它小为止, 仍然如申请 100 字节的例子, 在 96 字节的分档时还比申请长度小, 在 128 字节的分档时就可以满足了, 这就是为什么说申请 100 字节实际获取到的是 128 字节的内存单元的原因.
+回到函数 `__find_general_cachep`, 已经很清晰了, 全局变量 `malloc_sizes` 的第 0 个成员开始, 当申请的内存长度比该成员的档次值 `cs_size` 大, 就换下一个成员, 直到比它小为止, 仍然如申请 100 字节的例子, 在 96 字节的分档时还比申请长度小, 在 128 字节的分档时就可以满足了, 这就是为什么说申请 100 字节实际获取到的是 128 字节的内存单元的原因.
 
-回到函数\_\_do\_kmalloc, 接下来调用的是\_\_cache\_alloc, 将按照前面确定的内存分档值给申请者分配一个相应值的内存, 这说明, 内核有能力给分配这样的内存单元;
+回到函数 `__do_kmalloc`, 接下来调用的是__cache_alloc, 将按照前面确定的内存分档值给申请者分配一个相应值的内存, 这说明, 内核有能力给分配这样的内存单元;
 
-内核为什么有能力创建这样的内存单元?slab 分配器并非一开始就能智能的根据内存分档值分配相应长度的内存的, 它需要先创建一个这样的"规则"式的东西, 之后才可以根据这个"规则"分配相应长度的内存, 看看前面的结构 struct cache\_sizes 的定义, 里边的成员 cs\_cachep, 它的结构类型是 struct kmem\_cache*, 这个结构也是同样是刚才提到的缓存的概念, 每种长度的 slab 分配都得通过它对应的 cache 分配, 换句话说就是每种 cache 对应一种长度的 slab 分配, 这里顺便能看看 slab 分配接口, 一个是函数 kmalloc 一个是函数 kmem\_cache\_alloc, kmalloc 的参数比较轻松, 直接输入自己想要的内存长度即可, 由 slab 分配器去找应该是属于哪个长度分档的, 然后由那个分档的 kmem\_cache 结构指针去分配相应长度内存, 而 kmem\_cache\_alloc 就显得比较"专业", 它不是输入我要多少长度内存, 而是直接以 kmem\_cache 结构指针作为参数, 直接指定我要这样长度分档的内存, 稍微看看这两个函数的调用情况就可以发现它们很快都是调用函数\_\_cache\_alloc, 只是前面的这些不同而已.
+内核为什么有能力创建这样的内存单元?slab 分配器并非一开始就能智能的根据内存分档值分配相应长度的内存的, 它需要先创建一个这样的"规则"式的东西, 之后才可以根据这个"规则"分配相应长度的内存, 看看前面的结构 `struct cache_sizes` 的定义, 里边的成员 `cs_cachep`, 它的结构类型是 `struct kmem_cache*`, 这个结构也是同样是刚才提到的缓存的概念, 每种长度的 slab 分配都得通过它对应的 cache 分配, 换句话说就是每种 cache 对应一种长度的 slab 分配, 这里顺便能看看 slab 分配接口, 一个是函数 kmalloc 一个是函数 `kmem_cache_alloc`, kmalloc 的参数比较轻松, 直接输入自己想要的内存长度即可, 由 slab 分配器去找应该是属于哪个长度分档的, 然后由那个分档的 `kmem_cache` 结构指针去分配相应长度内存, 而 `kmem_cache_alloc` 就显得比较"专业", 它不是输入我要多少长度内存, 而是直接以 `kmem_cache` 结构指针作为参数, 直接指定我要这样长度分档的内存, 稍微看看这两个函数的调用情况就可以发现它们很快都是调用函数 `__cache_alloc`, 只是前面的这些不同而已.
 
-比如现在有一个内核模块想要申请一种它自创的结构, 这个结构是 111 字节, 并且它不想获取 128 字节内存就想获取 111 字节长度内存, 那么它需要在 slab 分配器中创建一个这样的"规则", 这个规则规定 slab 分配器当按这种"规则"分配时要给我 111 字节的内存, 这个"规则"的创建方法就是调用函数 kmem\_cache\_create;
+比如现在有一个内核模块想要申请一种它自创的结构, 这个结构是 111 字节, 并且它不想获取 128 字节内存就想获取 111 字节长度内存, 那么它需要在 slab 分配器中创建一个这样的"规则", 这个规则规定 slab 分配器当按这种"规则"分配时要给我 111 字节的内存, 这个"规则"的创建方法就是调用函数 `kmem_cache_create`;
 
-同样, 内核 slab 分配器之所以能够默认的提供 32-4194304 共 20 种内存长度分档, 肯定也是需要创建这样 20 个"规则"的, 这是在初始化时创建的, 由函数 kmem\_cache\_init, 先不要纠结 kmem\_cache\_init, 它里边有一些道理需要在理解 slab 分配器原理后才能更好的理解, 先看 kmem\_cache\_create
+同样, 内核 slab 分配器之所以能够默认的提供 32-4194304 共 20 种内存长度分档, 肯定也是需要创建这样 20 个"规则"的, 这是在初始化时创建的, 由函数 `kmem_cache_init`, 先不要纠结 `kmem_cache_init`, 它里边有一些道理需要在理解 slab 分配器原理后才能更好的理解, 先看 `kmem_cache_create`
 
 ## 2.2 创建 slab 的过程
 
 直接看函数源码:
 
-```
+```cpp
 struct kmem_cache *kmem_cache_create (const char *name, size_t size, size_t align,
          unsigned long flags, void (*ctor)(void *))
 {
@@ -371,7 +371,7 @@ oops:
 }
 ```
 
-直到函数中的"if (slab\_is\_available()) gfp = GFP\_KERNEL;"这里, 前面的都可以不用关注, 分别是运行环境和参数的检查(需要注意本函数会可能睡眠, 所以绝不能在中断中调用本函数)、一堆对齐机制的东西, 看看这一段:
+直到函数中的"if (slab_is_available()) gfp = GFP_KERNEL;"这里, 前面的都可以不用关注, 分别是运行环境和参数的检查(需要注意本函数会可能睡眠, 所以绝不能在中断中调用本函数)、一堆对齐机制的东西, 看看这一段:
 
 ```
 if (slab_is_available())
@@ -383,4 +383,4 @@ else
          gfp = GFP_NOWAIT;
 ```
 
-到这里首先根据当前 slab 是否初始化完成确定变量 gfp 的值, gfp 并不陌生, 它规定了从伙伴系统寻找内存的地点和方式, 这里的在 slab 初始化完成时 gfp 值为 GFP\_KERNEL 说明了为什么可能会睡眠, 而 slab 初始化完成之前 gfp 值为 GFP\_NOWAIT 说明不会睡眠;
+到这里首先根据当前 slab 是否初始化完成确定变量 gfp 的值, gfp 并不陌生, 它规定了从伙伴系统寻找内存的地点和方式, 这里的在 slab 初始化完成时 gfp 值为 GFP_KERNEL 说明了为什么可能会睡眠, 而 slab 初始化完成之前 gfp 值为 GFP_NOWAIT 说明不会睡眠;

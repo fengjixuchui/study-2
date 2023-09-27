@@ -56,7 +56,7 @@ HHKB 提供了 3 种模式选择, 不同模式下可用的副键不同.
 * Mac 模式下 Delete 和 Backspace 效果相同
 * ◇ 键在 Lite 模式下是 Windows 键, 在 Mac 模式下是 Command 键.
 * Wake Up 为 OFF 时, 键盘 30 分钟没输入信号会自动断电来节省电池, USB 供电时不会自动断电.
-* 当 SW4 和 SW5 为 ON 时, 左 Alt 键变成 Fn 键, 右 Alt 键变◇键.
+* 当 SW4 和 SW5 为 ON 时, 左 Alt 键变成 Fn 键, 右 Alt 键变 ◇ 键.
 
 ## 1.3. 蓝牙匹配联机
 

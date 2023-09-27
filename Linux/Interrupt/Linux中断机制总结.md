@@ -257,10 +257,10 @@ do_IRQ 的基本处理过程如下, 其负责中断执行环境建立、vector �
 
 10 种静态定义的软中断类型, 通过枚举实现, 索引号越小, 软中断优先级越高
 
-描述软中断 softirq\_action, 一个**全局软中断描述符数组**, 每种软中断一个
+描述软中断 `softirq_action`, 一个**全局软中断描述符数组**, 每种软中断一个
 
 ```cpp
-[include/linux/interrupt.h]
+// [include/linux/interrupt.h]
 struct softirq_action
 {
 	void	(*action)(struct softirq_action *);
@@ -270,7 +270,7 @@ struct softirq_action
 static struct softirq_action softirq_vec[NR_SOFTIRQS] __cacheline_aligned_in_smp;
 ```
 
-每个 CPU 定义一个软中断状态信息 irq\_cpustat\_t
+每个 CPU 定义一个软中断状态信息 `irq_cpustat_t`
 
 ```cpp
 [include/asm-generic/hardirq.h]
@@ -293,7 +293,7 @@ EXPORT_SYMBOL(irq_stat);
 
 软中断的执行:
 
-(1) 中断退出阶段执行(irq\_exit()): 在**非中断上下文(!interrupt()**), 以及有**pending**情况下才继续.
+(1) 中断退出阶段执行(`irq_exit()`): 在**非中断上下文(!interrupt()**), 以及有**pending** 情况下才继续.
 
 `__do_softirq()`:
 

@@ -5,3 +5,9 @@ http://www.wowotech.net/linux_kenrel/pm_interface.html
 
 http://www.wowotech.net/sort/pm_subsystem
 
+Linux 电源管理-休眠与唤醒(有示例代码): https://www.cnblogs.com/lifexy/p/9629699.html
+
+Linux 的电源管理－休眠与唤醒: https://blog.csdn.net/TommyMusk/article/details/104151986
+
+如何自动唤醒和关闭 Linux: https://linux.cn/article-9115-1.html
+
