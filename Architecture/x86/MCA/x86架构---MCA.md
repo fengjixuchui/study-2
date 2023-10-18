@@ -14,7 +14,7 @@
     - [2.1.3. IA32_MCG_CTL MSR](#213-ia32_mcg_ctl-msr)
     - [2.1.4. IA32_MCG_EXT_CTL MSR](#214-ia32_mcg_ext_ctl-msr)
     - [2.1.5. Enabling Local Machine Check](#215-enabling-local-machine-check)
-  - [2.2. 错误报告寄存器组(Error-Reporting Register Banks)](#22-错误报告寄存器组error-reporting-register-banks)
+  - [2.2. 错误报告寄存器组 (Error-Reporting Register Banks)](#22-错误报告寄存器组-error-reporting-register-banks)
     - [2.2.1. IA32_MCi_CTL MSRs](#221-ia32_mci_ctl-msrs)
     - [2.2.2. IA32_MCi_STATUS MSRS](#222-ia32_mci_status-msrs)
     - [2.2.3. IA32_MCi_ADDR MSRs](#223-ia32_mci_addr-msrs)
@@ -35,7 +35,7 @@ Intel 从奔腾 4 开始的 CPU 中增加了一种机制称为 MCA——Machine 
 
 ## 1.1. 不可纠正的 MCE(uncorrected machine-check error)
 
-当 CPU 检测到**不可纠正的 MCE(Machine Check Error**)时就会触发`#MC`(**Machine Check Exception**, 中断号是十进制 18)通常**软件**会**注册相关的函数**来处理\#MC 在这个函数中会通过读取 MSR 来收集 MCE 的错误信息但是**不被允许重启处理器**.
+当 CPU 检测到**不可纠正的 MCE(Machine Check Error**)时就会触发 `#MC`(**Machine Check Exception**, 中断号是十进制 18)通常**软件**会**注册相关的函数**来处理\#MC 在这个函数中会通过读取 MSR 来收集 MCE 的错误信息但是**不被允许重启处理器**.
 
 - 当然由于发生的**MCE**可能是**非常致命**的**CPU 直接重启**了**没有办法完成 MCE 处理函数**;
 
@@ -44,7 +44,7 @@ Intel 从奔腾 4 开始的 CPU 中增加了一种机制称为 MCA——Machine 
 
 ## 1.2. 可纠正的 MCE(corrected machine-check error)
 
-从 CPUID 的`DisplayFamily_DisplayModel`为`06H_1AH`开始, CPU 可以报告可纠正的机器检查错误信息, 并为软件提供可编程中断来响应 MC 错误, 称为可纠正机器检查错误中断(CMCI).
+从 CPUID 的 `DisplayFamily_DisplayModel` 为 `06H_1AH` 开始, CPU 可以报告**可纠正的机器检查错误信息**, 并为软件提供**可编程中断**来响应 MC 错误, 称为**可纠正机器检查错误中断**(CMCI).
 
 CPU 检测到**可纠正的 MCE**当可纠正的 MCE 数量**超过一定的阈值**时会触发**CMCI(Corrected Machine Check Error Interrupt**)此时软件可以捕捉到该中断并进行相应的处理.
 
@@ -141,7 +141,7 @@ LMCE 的预期用途需要平台软件和系统软件的正确配置.  平台软
 
 当系统软件**启用 LMCE**时**硬件**将确定**是否只能将特定错误**传递给**单个逻辑处理器**.  软件不应假设硬件可以选择作为 LMCE 提供的错误类型.
 
-## 2.2. 错误报告寄存器组(Error-Reporting Register Banks)
+## 2.2. 错误报告寄存器组 (Error-Reporting Register Banks)
 
 以上都是全局的 MSR.
 

@@ -9,7 +9,7 @@
 
         bits 32
 ;-----------------------------------------
-; void clear_4K_page()£ºÇå4KÒ³Ãæ
+; void clear_4K_page(): æ¸… 4K é¡µé¢
 ; input:  
 ;                esi: address
 ;------------------------------------------        
@@ -31,7 +31,7 @@ clear_4K_page_loop:
         ret
 
 ;----------------------------------
-; clear_4K_pages()£ºÇåÊı¸ö4KÒ³
+; clear_4K_pages(): æ¸…æ•°ä¸ª 4K é¡µ
 ; input:
 ;                esi: address,        edi: number
 ;----------------------------------
@@ -49,13 +49,13 @@ clear_4K_pages_done:
         
 
 ;---------------------------------------------------------------
-; init_page(): ³õÊ¼»¯ long mode µÄÒ³½á¹¹
-; ÃèÊö£º
-;        ÔÚ½øÈë long-mode Ä£Ê½Ö®Ç°½øĞĞÒ³±í³õÊ¼»¯
+; init_page(): åˆå§‹åŒ– long mode çš„é¡µç»“æ„
+; æè¿°: 
+;        åœ¨è¿›å…¥ long-mode æ¨¡å¼ä¹‹å‰è¿›è¡Œé¡µè¡¨åˆå§‹åŒ–
 ;----------------------------------------------------------------        
 
 ;*
-;* changlog: ¼ÓÈëBSP´¦ÀíÆ÷¼ì²â, Ö»ÓĞBSPÓĞÈ¨½øĞĞÒ³±í³õÊ¼»¯
+;* changlog: åŠ å…¥ BSP å¤„ç†å™¨æ£€æµ‹, åªæœ‰ BSP æœ‰æƒè¿›è¡Œé¡µè¡¨åˆå§‹åŒ–
 ;*
 bsp_init_page:
 init_page:
@@ -69,7 +69,7 @@ init_page:
 ; video  :      virtual address 0xb8000 map to physicall address 0xb8000 with 4K-page
 ; data   :      virtual address 0x200000 map to physicall address 0x200000 with 2M-page
 ; code64 :      virtual address 0xfffffff800000000 to physicall address 0x600000 with 4K-page
-; apic:         virtual address 0x800000 map to physica address 0xFEE00000(Local APIC ÇøÓò)
+; apic:         virtual address 0x800000 map to physica address 0xFEE00000(Local APIC åŒºåŸŸ)
 ; DS save:      virtual address 400000h map to physical address 400000h
 ; user code64 : virtual address 00007FFF_00000000 map to physical address 800000h
 
@@ -84,22 +84,22 @@ init_page:
         call clear_4K_pages
 
 
-; ÉèÖÃ PML4T ±í£¬PML4T µÄµØÖ·ÔÚ 200000H
+; è®¾ç½® PML4T è¡¨, PML4T çš„åœ°å€åœ¨ 200000H
         mov DWORD [200000h], 201000h | RW | US | P                  ; PML4T[0]
         mov DWORD [200004h], 0
 
-        ;; ÓÉ 0FFFFFF8X_XXXXXXXXX µÄ virutal address ¾ùÊÇÓÃ»§²»¿É·ÃÎÊ
+        ;; ç”± 0FFFFFF8X_XXXXXXXXX çš„ virutal address å‡æ˜¯ç”¨æˆ·ä¸å¯è®¿é—®
         mov DWORD [200000h + 1FFh * 8], 202000h | RW | P     ; PML4T[0x1ff]
         mov DWORD [200000h + 1FFh * 8 + 4], 0
 
         mov DWORD [200000h + 0FFh * 8], 300000h | RW | US | P
         mov DWORD [200000h + 0FFh * 8 + 4], 0
 
-; ÉèÖÃ PDPT ±í£¬ µÚ 0 ¸ö PDPT ±íÔÚ 201000H£¬µÚ 511 ¸ö PDPT ±íÔÚ 202000H
+; è®¾ç½® PDPT è¡¨,  ç¬¬ 0 ä¸ª PDPT è¡¨åœ¨ 201000H, ç¬¬ 511 ä¸ª PDPT è¡¨åœ¨ 202000H
         mov DWORD [201000h], 203000h | RW | US | P                 ; PDPT[0] for PML4T[0]
         mov DWORD [201004h], 0
 
-        ; ÎªÁË 00000000_FFE00000 - 00000000_FFE01FFFh ¶øÓ³Éä
+        ; ä¸ºäº† 00000000_FFE00000 - 00000000_FFE01FFFh è€Œæ˜ å°„
         mov DWORD [201000h + 3 * 8], 210000h | RW | US | P
         mov DWORD [201000h + 3 * + 4], 0
 
@@ -118,18 +118,18 @@ init_page:
         mov DWORD [203000h], 205000h | RW | US | P                 ; PDT[0] for PDPT[0] for PML4T[0]
         mov DWORD [203004h], 0
 
-        ; virtual address 200000h - 3FFFFFh Ó³Éäµ½ 200000h - 3FFFFFh ÉÏ
-        ; ²»¿ÉÖ´ĞĞ£¬ÓÃ»§²»¿É·ÃÎÊ
-        ; ÏµÍ³Êı¾İÇø
+        ; virtual address 200000h - 3FFFFFh æ˜ å°„åˆ° 200000h - 3FFFFFh ä¸Š
+        ; ä¸å¯æ‰§è¡Œ, ç”¨æˆ·ä¸å¯è®¿é—®
+        ; ç³»ç»Ÿæ•°æ®åŒº
         mov DWORD [203000h + 1 * 8], 200000h | PS | RW | P
         mov DWORD [203000h + 1 * 8 + 4], XD
 
         mov DWORD [203000h + 2 * 8], 207000h | RW | P
         mov DWORD [203000h + 2 * 8 + 4], XD
 
-        ; virutal address 800000h - 9FFFFFh Ó³Éäµ½ 0FEE00000h - 0FEFFFFFFh£¨2MÒ³Ãæ£©
-        ; ²»¿ÉÖ´ĞĞ£¬ÓÃ»§²»¿É·ÃÎÊ£¬PCD = PWT = 1
-        ; ÓÃÓÚ local APIC ÇøÓò
+        ; virutal address 800000h - 9FFFFFh æ˜ å°„åˆ° 0FEE00000h - 0FEFFFFFFh(2M é¡µé¢)
+        ; ä¸å¯æ‰§è¡Œ, ç”¨æˆ·ä¸å¯è®¿é—®, PCD = PWT = 1
+        ; ç”¨äº local APIC åŒºåŸŸ
         mov DWORD [203000h + 4 * 8], 0FEE00000h | PCD | PWT | PS | RW | P
         mov DWORD [203000h + 4 * 8 + 4], XD
 
@@ -140,42 +140,42 @@ init_page:
         mov DWORD [204000h + 80h * 8 + 4], 0
 
         ;*
-        ;* 64-bit Ä£Ê½ÏÂµÄ stack pointer ÇøÓò
-        ;* ´Ó 0FFFFFFFF_FFE00000 - 0FFFFFFFF_FFFFFFFF
-        ;* Ê¹ÓÃ 2M Ò³Ó³Éäµ½ 0A00000h µØÖ·
-        ;* Ê¹ÓÃÓÚ kernel stack, IDT stack, sysenter stack, syscall stack ...
+        ;* 64-bit æ¨¡å¼ä¸‹çš„ stack pointer åŒºåŸŸ
+        ;* ä» 0FFFFFFFF_FFE00000 - 0FFFFFFFF_FFFFFFFF
+        ;* ä½¿ç”¨ 2M é¡µæ˜ å°„åˆ° 0A00000h åœ°å€
+        ;* ä½¿ç”¨äº kernel stack, IDT stack, sysenter stack, syscall stack ...
         ;*
         mov DWORD [209000h + 1FFh * 8], 0A00000h | PS | RW | P
         mov DWORD [209000h + 1FFh * 8 + 4], XD
 
-        ; virutal address 00007FFF_00000000h - 00007FFF_001FFFFFh£¨2MÒ³£©
-        ; Ó³Éäµ½ÎïÀíµØÖ· 800000h
-        ; ¿ÉÖ´ĞĞ£¬64 Î»ÓÃ»§´úÂëÖ´ĞĞÇøÓò
+        ; virutal address 00007FFF_00000000h - 00007FFF_001FFFFFh(2M é¡µ)
+        ; æ˜ å°„åˆ°ç‰©ç†åœ°å€ 800000h
+        ; å¯æ‰§è¡Œ, 64 ä½ç”¨æˆ·ä»£ç æ‰§è¡ŒåŒºåŸŸ
         mov DWORD [301000h], 800000h | PS | RW | US | P
         mov DWORD [301004h], 0
         mov DWORD [302000h + 1FFh * 8], 303000h | RW | US | P
         mov DWORD [302000h + 1FFh * 8 + 4], XD
 
         ;*
-        ;* compatibility mode ÏÂÓë 64-bit ¶ÔÓ¦µÄ stack pointer ÇøÓò
-        ;* ´Ó 00000000_FFE00000 - 00000000_FFFFFFFFh
-        ;* Ê¹ÓÃ 2M Ò³Ó³Éäµ½ 600000h µØÖ·
+        ;* compatibility mode ä¸‹ä¸ 64-bit å¯¹åº”çš„ stack pointer åŒºåŸŸ
+        ;* ä» 00000000_FFE00000 - 00000000_FFFFFFFFh
+        ;* ä½¿ç”¨ 2M é¡µæ˜ å°„åˆ° 600000h åœ°å€
         ;* 
         mov DWORD [210000h + 1FFh * 8], 600000h | PS | RW | US | P
         mov DWORD [210000h + 1FFh * 8 + 4], XD
 
 ; set PT
-        ; virutal address 0 - 0FFFh Ó³Éäµ½ÎïÀíµØÖ· 0 - 0FFFh ÉÏ£¨4KÒ³£©
-        ; no present!£¨±£ÁôÎ´Ó³Éä£©
+        ; virutal address 0 - 0FFFh æ˜ å°„åˆ°ç‰©ç†åœ°å€ 0 - 0FFFh ä¸Š(4K é¡µ)
+        ; no present!(ä¿ç•™æœªæ˜ å°„)
         mov DWORD [205000h + 0 * 8], 0000h | RW | US
         mov DWORD [205000h + 0 * 8 + 4], 0
 
-        ; virtual address 0B000 - 0BFFFh Ó³Éäµ½ÎïÀíµØÖ· 0B000 - 0BFFFFh ÉÏ(4KÒ³£©
+        ; virtual address 0B000 - 0BFFFh æ˜ å°„åˆ°ç‰©ç†åœ°å€ 0B000 - 0BFFFFh ä¸Š(4K é¡µ)
         ; r/w = u/s = p = 1
         mov DWORD [205000h + 0Bh * 8], 0B000h | RW | US | P
         mov DWORD [205000h + 0Bh * 8 + 4], 0
         
-        ; virtual address 9000h - 0FFFFh Ó³Éäµ½ÎïÀíµØÖ· 09000h - 0FFFFh ÉÏ
+        ; virtual address 9000h - 0FFFFh æ˜ å°„åˆ°ç‰©ç†åœ°å€ 09000h - 0FFFFh ä¸Š
         mov DWORD [205000h + 09h * 8], 09000h | RW | US | P
         mov DWORD [205000h + 09h * 8 + 4], 0
         mov DWORD [205000h + 0Ah * 8], 0A000h | RW | US | P
@@ -191,9 +191,9 @@ init_page:
         mov DWORD [205000h + 0Fh * 8], 0F000h | RW | US | P
         mov DWORD [205000h + 0Fh * 8 + 4], 0
 
-        ; virtual address 10000h - 13FFFh Ó³Éäµ½ÎïÀíµØÖ· 10000h - 18FFFhÉÏ£¨8¹²¸ö4KÒ³£©
-        ; ¿ÉÖ´ĞĞ£¬r/w = u/s = p = 1
-        ; ÓÃÓÚ long.asm Ä£¿éÖ´ĞĞ¿Õ¼ä
+        ; virtual address 10000h - 13FFFh æ˜ å°„åˆ°ç‰©ç†åœ°å€ 10000h - 18FFFh ä¸Š(8 å…±ä¸ª 4K é¡µ)
+        ; å¯æ‰§è¡Œ, r/w = u/s = p = 1
+        ; ç”¨äº long.asm æ¨¡å—æ‰§è¡Œç©ºé—´
         mov DWORD [205000h + 10h * 8], 10000h | RW | US | P
         mov DWORD [205000h + 10h * 8 + 4], 0
         mov DWORD [205000h + 11h * 8], 11000h | RW | US | P
@@ -216,49 +216,49 @@ init_page:
         mov DWORD [205000h + 20h * 8 + 4], 0
 
 
-        ; virtual address 0B8000h - 0B9FFFh Ó³Éäµ½ÎïÀíµØÖ· 0B8000h - 0B9FFFh ÉÏ£¨2¸ö4KÒ³£©
-        ; ²»¿ÉÖ´ĞĞ£¬r/w = u/s = p = 1
-        ; ÓÃÓÚ video ÇøÓò
+        ; virtual address 0B8000h - 0B9FFFh æ˜ å°„åˆ°ç‰©ç†åœ°å€ 0B8000h - 0B9FFFh ä¸Š(2 ä¸ª 4K é¡µ)
+        ; ä¸å¯æ‰§è¡Œ, r/w = u/s = p = 1
+        ; ç”¨äº video åŒºåŸŸ
         mov DWORD [205000h + 0B8h * 8], 0B8000h | RW | US | P
         mov DWORD [205000h + 0B8h * 8 + 4], XD
         mov DWORD [205000h + 0B9h * 8], 0B9000h | RW | US | P
         mov DWORD [205000h + 0B9h * 8], XD
 
-        ; virutal address 0xfffffff800000000 - 0xfffffff800001fff (2 ¸ö 4K Ò³£©
-        ; Ó³Éäµ½ÎïÀíµØÖ· 410000 - 411FFFh ÉÏ
-        ; ²»¿ÉÖ´ĞĞ£¬ÓÃ»§²»¿É·ÃÎÊ
-        ; kernel Êı¾İÇø
+        ; virutal address 0xfffffff800000000 - 0xfffffff800001fff (2 ä¸ª 4K é¡µ)
+        ; æ˜ å°„åˆ°ç‰©ç†åœ°å€ 410000 - 411FFFh ä¸Š
+        ; ä¸å¯æ‰§è¡Œ, ç”¨æˆ·ä¸å¯è®¿é—®
+        ; kernel æ•°æ®åŒº
         mov DWORD [206000h], 410000h | RW | P
         mov DWORD [206004h], XD
         mov DWORD [206000h + 8], 411000h | RW | P
         mov DWORD [206000h + 8 + 4], XD
 
 
-        ; virtual address 0FFFFFFF8_10000000h - 0FFFFFFF8_10001FFFh£¨2¸ö4KÒ³£©
-        ; Ó³Éäµ½ÎïÀíµØÖ· 412000h - 412FFFh ÉÏ
-        ; ÓÃ»§²»¿É·ÃÎÊ
-        ; kernel Ö´ĞĞÇøÓò
+        ; virtual address 0FFFFFFF8_10000000h - 0FFFFFFF8_10001FFFh(2 ä¸ª 4K é¡µ)
+        ; æ˜ å°„åˆ°ç‰©ç†åœ°å€ 412000h - 412FFFh ä¸Š
+        ; ç”¨æˆ·ä¸å¯è®¿é—®
+        ; kernel æ‰§è¡ŒåŒºåŸŸ
         mov DWORD [208000h], 412000h | RW | P
         mov DWORD [208004h], 0
 
-        ; insterrupt IST1£¬²»¿ÉÖ´ĞĞ
+        ; insterrupt IST1, ä¸å¯æ‰§è¡Œ
         mov DWORD [208000h + 1 * 8], 413000h | RW | P
         mov DWORD [208000h + 1 * 8 + 4], XD
         
-        ; virutal address 00007FFF_FFE00000h - 00007FFF_FFE03FFFh(4¸ö4KÒ³£©
-        ; Ó³Éäµ½ÎïÀíµØÖ· 607000h - 60AFFFh ÉÏ
-        ; ÓÃÓÚ user stack Çø
-        mov DWORD [303000h], 414000h | RW | US | P                        ; ´¦ÀíÆ÷ 0
+        ; virutal address 00007FFF_FFE00000h - 00007FFF_FFE03FFFh(4 ä¸ª 4K é¡µ)
+        ; æ˜ å°„åˆ°ç‰©ç†åœ°å€ 607000h - 60AFFFh ä¸Š
+        ; ç”¨äº user stack åŒº
+        mov DWORD [303000h], 414000h | RW | US | P                        ; å¤„ç†å™¨ 0
         mov DWORD [303000h + 4], 0
-        mov DWORD [303000h + 1 * 8], 415000h | RW | US | P                ; ´¦ÀíÆ÷ 1
+        mov DWORD [303000h + 1 * 8], 415000h | RW | US | P                ; å¤„ç†å™¨ 1
         mov DWORD [303000h + 1 * 8 + 4], 0
-        mov DWORD [303000h + 2 * 8], 416000h | RW | US | P                ; ´¦ÀíÆ÷ 2
+        mov DWORD [303000h + 2 * 8], 416000h | RW | US | P                ; å¤„ç†å™¨ 2
         mov DWORD [303000h + 2 * 8 + 4], 0
-        mov DWORD [303000h + 3 * 8], 417000h | RW | US | P                ; ´¦ÀíÆ÷ 3
+        mov DWORD [303000h + 3 * 8], 417000h | RW | US | P                ; å¤„ç†å™¨ 3
         mov DWORD [303000h + 3 * 8 + 4], 0
 
-            ; virutal address 400000h Ó³Éäµ½ÎïÀíµØÖ· 400000h ÉÏ£¨Ê¹ÓÃ 4K Ò³£©
-        ; ²»¿ÉÖ´ĞĞ£¬ÓÃ»§²»¿É·ÃÎÊ£¬ÓÃÓÚ DS save ÇøÓò
+            ; virutal address 400000h æ˜ å°„åˆ°ç‰©ç†åœ°å€ 400000h ä¸Š(ä½¿ç”¨ 4K é¡µ)
+        ; ä¸å¯æ‰§è¡Œ, ç”¨æˆ·ä¸å¯è®¿é—®, ç”¨äº DS save åŒºåŸŸ
         mov DWORD [207000h], 400000h | RW | P
         mov DWORD [207004h], XD
 init_page_done:
@@ -288,7 +288,7 @@ clear_4K_page64_loop:
         jnz clear_4K_page64_loop
         ret
 ;----------------------------------
-; clear_4K_pages64()£ºÇåÊı¸ö4KÒ³
+; clear_4K_pages64(): æ¸…æ•°ä¸ª 4K é¡µ
 ; input:
 ;                rsi: address,        rdi: number
 ;----------------------------------
@@ -307,7 +307,7 @@ clear_4K_pages64_done:
         
 
 ;---------------------------------------------
-; get_pml4e(): µÃµ½ PML4E Öµ
+; get_pml4e(): å¾—åˆ° PML4E å€¼
 ; input:
 ;       rsi-virtual address
 ; output:
@@ -321,7 +321,7 @@ get_pml4e:
         ret
 
 ;--------------------------------------------
-; get_pdpt(): µÃµ½ PDPT ±í»ùµØÖ·
+; get_pdpt(): å¾—åˆ° PDPT è¡¨åŸºåœ°å€
 ; intpu:
 ;       rsi-virutal address
 ; output:
@@ -339,7 +339,7 @@ get_pdpt:
 
 
 ;--------------------------------------
-; get_pdpe(): µÃµ½ PDPE Öµ
+; get_pdpe(): å¾—åˆ° PDPE å€¼
 ; input:
 ;       rsi-virtual address
 ; output:
@@ -394,15 +394,15 @@ get_pte:
         ret
 
 ;-----------------------------------------------------------------
-; get_maxphyaddr_select_mask(): ¼ÆÊı³ö MAXPHYADDR ÖµµÄ SELECT MASK
+; get_maxphyaddr_select_mask(): è®¡æ•°å‡º MAXPHYADDR å€¼çš„ SELECT MASK
 ; output:
 ;       rax-maxphyaddr select mask
-; ÃèÊö£º
-;       select mask ÖµÓÃÓÚÈ¡µÃ MAXPHYADDR ¶ÔÓ¦µÄÎïÀíµØÖ·Öµ
-; ÀıÈç£º
-;       MAXPHYADDR = 36 Ê±: select mask = 0000000F_FFFFFFFFh
-;       MAXPHYADDR = 40 Ê±: select mask = 000000FF_FFFFFFFFh
-;       MAXPHYADDR = 52 Ê±£ºselect mask = 000FFFFF_FFFFFFFFh
+; æè¿°: 
+;       select mask å€¼ç”¨äºå–å¾— MAXPHYADDR å¯¹åº”çš„ç‰©ç†åœ°å€å€¼
+; ä¾‹å¦‚: 
+;       MAXPHYADDR = 36 æ—¶: select mask = 0000000F_FFFFFFFFh
+;       MAXPHYADDR = 40 æ—¶: select mask = 000000FF_FFFFFFFFh
+;       MAXPHYADDR = 52 æ—¶: select mask = 000FFFFF_FFFFFFFFh
 ;-----------------------------------------------------------------
 get_maxphyaddr_select_mask:
         push rcx
@@ -412,7 +412,7 @@ get_maxphyaddr_select_mask:
         neg rcx
         mov rax, -1
         shl rax, cl
-        shr rax, cl                            ; È¥³ı¸ßÎ»
+        shr rax, cl                            ; å»é™¤é«˜ä½
         mov [maxphyaddr_select_mask], rax
         pop rdx
         pop rcx
@@ -429,12 +429,12 @@ dump_long_page:
         push r12
         push rbx
         push rdx
-; Ê¹ÓÃ r10À´±£´æ virtual address£¬ÒÔ·ÀÔÚµ÷ÓÃ 32Î» lib32 ¿âÀï³åµô¼Ä´æÆ÷Öµ        
+; ä½¿ç”¨ r10 æ¥ä¿å­˜ virtual address, ä»¥é˜²åœ¨è°ƒç”¨ 32 ä½ lib32 åº“é‡Œå†²æ‰å¯„å­˜å™¨å€¼        
         mov r10, rsi                                
         
         call get_maxphyaddr_select_mask
 
-; ´òÓ¡ PML4E        
+; æ‰“å° PML4E        
         mov esi, pml4e_msg
         LIB32_PUTS_CALL
         
@@ -443,10 +443,10 @@ dump_long_page:
         shr rax, 39                                
         and rax, 1FFh                       ; PML4E index
         
-; Ê¹ÓÃ r12 À´±£´æ table entry£¬ÒÔ·ÀÔÚµ÷ÓÃ 32Î» lib32 ¿âÀï³åµô64Î»µÄ¼Ä´æÆ÷
-        mov r12, [rbx + rax * 8]            ; ¶Á pml4e
+; ä½¿ç”¨ r12 æ¥ä¿å­˜ table entry, ä»¥é˜²åœ¨è°ƒç”¨ 32 ä½ lib32 åº“é‡Œå†²æ‰ 64 ä½çš„å¯„å­˜å™¨
+        mov r12, [rbx + rax * 8]            ; è¯» pml4e
         
-; ÅĞ¶Ï P ±êÖ¾        
+; åˆ¤æ–­ P æ ‡å¿—        
         bt r12, 0
         jc pml4e_next
         mov esi, not_available
@@ -467,25 +467,25 @@ pml4e_next:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12
-        bt rsi, 63                              ; XD±êÖ¾Î»
+        bt rsi, 63                              ; XD æ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0FFFh        
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pml4e_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
-        bt r12, 7                               ; ¼ì²â±£ÁôÎ»ÊÇ·ñÎª 0
+        bt r12, 7                               ; æ£€æµ‹ä¿ç•™ä½æ˜¯å¦ä¸º 0
         mov edi, 0
         mov esi, reserved_error
         cmovnc esi, edi
         LIB32_PUTS_CALL
 
-; ´òÓ¡ pdpte
+; æ‰“å° pdpte
         mov esi, pdpte_msg
         LIB32_PUTS_CALL        
         mov rax, r10        
@@ -502,7 +502,7 @@ pml4e_next:
 pdpte_next:
         bt r12, 7                               ; PS = 1 ?
         jnc dump_pdpte_4k_2m
-; 1G page µÄ pdpte ½á¹¹
+; 1G page çš„ pdpte ç»“æ„
         ;mov rax, 0x000fffffc0000000
         mov rax, 0FFFFFFFFFFFFE000h
         and rax, [maxphyaddr_select_mask]
@@ -515,25 +515,25 @@ pdpte_next:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12         
-        bt rsi, 63                               ; XD±êÖ¾Î»
+        bt rsi, 63                               ; XD æ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff        
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pdpte_long_1g_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
-        test r12, 3FFFE000h                     ; ¼ì²â±£ÁôÎ»ÊÇ·ñÎª 0
+        test r12, 3FFFE000h                     ; æ£€æµ‹ä¿ç•™ä½æ˜¯å¦ä¸º 0
         mov edi, 0
         mov esi, reserved_error
         cmovz esi, edi
         LIB32_PUTS_CALL
         jmp dump_long_page_done                
-;;¡¡4K, 2M Ò³µÄ pdpte ½á¹¹                         
+;;ã€€4K, 2M é¡µçš„ pdpte ç»“æ„                         
 dump_pdpte_4k_2m:
         mov rax, 0FFFFFFFFFFFFF000h
         and rax, [maxphyaddr_select_mask]
@@ -547,20 +547,20 @@ dump_pdpte_4k_2m:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12
-        bt rsi, 63                                 ; XD±êÖ¾Î»
+        bt rsi, 63                                 ; XD æ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pdpte_long_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
 
-; ´òÓ¡ PDE                 
+; æ‰“å° PDE                 
         mov esi, pde_msg
         LIB32_PUTS_CALL        
         mov rax, r10
@@ -577,7 +577,7 @@ dump_pdpte_4k_2m:
 pde_next:        
         bt r12, 7                                  ; PS = 1 ?
         jnc dump_pde_4k
-; 2m page µÄ pde ½á¹¹
+; 2m page çš„ pde ç»“æ„
 ;        mov rax, 0x000ffffffff00000
         mov rax, 0FFFFFFFFFFFFE000h
         and rax, [maxphyaddr_select_mask]
@@ -590,25 +590,25 @@ pde_next:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12
-        bt rsi, 63                                 ; XD±êÖ¾Î»
+        bt rsi, 63                                 ; XD æ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pde_long_2m_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
-        test r12, 01FE000h                      ; ¼ì²â±£ÁôÎ»ÊÇ·ñÎª 0
+        test r12, 01FE000h                      ; æ£€æµ‹ä¿ç•™ä½æ˜¯å¦ä¸º 0
         mov edi, 0
         mov esi, reserved_error
         cmovz esi, edi
         LIB32_PUTS_CALL
         jmp dump_long_page_done        
-; ´òÓ¡ 4K page µÄ¡¡pde
+; æ‰“å° 4K page çš„ã€€pde
 dump_pde_4k:
         mov rax, 0FFFFFFFFFFFFF000h
         and rax, [maxphyaddr_select_mask]
@@ -622,20 +622,20 @@ dump_pde_4k:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12 
-        bt rsi, 63                                 ; XD±êÖ¾Î»
+        bt rsi, 63                                 ; XD æ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pde_long_4k_flags
         LIB32_DUMP_FLAGS_CALL
         LIB32_PRINTLN_CALL
                 
-; ´òÓ¡ pte
+; æ‰“å° pte
         mov esi, pte_msg
         LIB32_PUTS_CALL        
         mov rax, r10
@@ -662,14 +662,14 @@ pte_next:
         mov esi, attr_msg
         LIB32_PUTS_CALL
         mov rsi, r12         
-        bt rsi, 63                                 ; XD±êÖ¾Î»
+        bt rsi, 63                                 ; XD æ ‡å¿—ä½
         setc dil
         movzx rdi, dil
         shl rdi, 13
         and rsi, 0x1fff
         or rsi, rdi
         shl rsi, 18
-        LIB32_REVERSE_CALL                        ; ·´×ª
+        LIB32_REVERSE_CALL                        ; åè½¬
         mov esi, eax
         mov edi, pte_long_4k_flags
         LIB32_DUMP_FLAGS_CALL

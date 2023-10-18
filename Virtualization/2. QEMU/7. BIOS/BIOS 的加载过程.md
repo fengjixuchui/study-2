@@ -3,13 +3,13 @@
 
 <!-- code_chunk_output -->
 
-- [1. QEMU 中使用 BIOS 简介](#1-qemu-中使用-bios-简介)
-  - [1.1. 清单 1 QEMU 源码树中的 BIOS 文件](#11-清单-1-qemu-源码树中的-bios-文件)
-  - [1.2. 清单 2 QEMU 源码树以子模块方式保存的 BIOS 代码](#12-清单-2-qemu-源码树以子模块方式保存的-bios-代码)
-  - [1.3. 清单 3 QEMU 的 Makefile 中关于 BIOS 的拷贝操作](#13-清单-3-qemu-的-makefile-中关于-bios-的拷贝操作)
+- [1. 简介](#1-简介)
+  - [1.1. BIOS 二进制文件](#11-bios-二进制文件)
+  - [1.2. BIOS 子模块源码](#12-bios-子模块源码)
+  - [1.3. Makefile 中关于 BIOS 的拷贝操作](#13-makefile-中关于-bios-的拷贝操作)
 - [2. QEMU 加载 BIOS 过程分析](#2-qemu-加载-bios-过程分析)
-  - [2.1. 清单 4 1.7.0 版本 x86_64 QEMU 中支持的类型](#21-清单-4-170-版本-x86_64-qemu-中支持的类型)
-  - [2.2. 清单 5 QEMU 中 MemoryRegion 结构体](#22-清单-5-qemu-中-memoryregion-结构体)
+  - [2.1. x86_64 QEMU 中支持的类型](#21-x86_64-qemu-中支持的类型)
+  - [2.2. QEMU 中 MemoryRegion 结构体](#22-qemu-中-memoryregion-结构体)
   - [2.3. 清单 6 old_pc_system_rom_init 函数中将 BIOS 映射到物理内存空间的代码:](#23-清单-6-old_pc_system_rom_init-函数中将-bios-映射到物理内存空间的代码)
 - [3. 小结](#3-小结)
 
@@ -17,73 +17,99 @@
 
 https://www.linuxidc.com/Linux/2014-12/110472.htm
 
-QEMU 是一个广泛使用的开源计算机仿真器和虚拟机, 它提供了虚拟机硬件的虚拟化功能, 其使用的某些特定硬件的固件则由一些开源项目提供. 本文将介绍 QEMU 代码中使用到的 BIOS, 通过分析 QEMU 代码, 讲解 BIOS 是如何加载到虚拟机的物理内存.
+本文将介绍 QEMU 代码中使用到的 BIOS, 通过分析 QEMU 代码, 讲解 BIOS 是如何加载到虚拟机的物理内存.
 
-# 1. QEMU 中使用 BIOS 简介
+# 1. 简介
 
-BIOS 提供主板或者显卡的固件信息以及基本输入输出功能, QEMU 使用的是一些开源的项目, 如 Bochs、openBIOS 等.
+BIOS 提供**主板或者显卡**的**固件信息**以及**基本输入输出功能**, QEMU 使用的是一些开源的项目, 如 Bochs、openBIOS 等.
 
-QEMU 中使用到的 BIOS 以及固件一部分以二进制文件的形式保存在**源码树的 pc-bios 目录下**, pc-bios 目录里包含了 QEMU 使用到的**固件**.
+QEMU 中使用到的 BIOS 以及固件一部分以**二进制文件的形式**保存在**源码树的 pc-bios 目录下**, pc-bios 目录里包含了 QEMU 使用到的**固件**.
 
-还有一些**BIOS 以 git 源代码子模块**的形式**保存在 QEMU 的源码仓库**中, 当编译 QEMU 程序的时候, 也同时编译出这些 BIOS 或者固件的二进制文件.
+还有一些 BIOS 以 **git 源代码子模块**的形式**保存在 QEMU 的源码仓库**中, 当编译 QEMU 程序的时候, 也同时编译出这些 BIOS 或者固件的二进制文件.
 
 QEMU 支持多种启动方式, 比如说 efi、pxe 等, 都包含在该目录下, 这些都需要特定 BIOS 的支持.
 
-## 1.1. 清单 1 QEMU 源码树中的 BIOS 文件
+## 1.1. BIOS 二进制文件
 
-![config](images/1.png)
+```
+# ls pc-bios/
+bamboo.dtb                      efi-e1000.rom                           optionrom                 README
+bamboo.dts                      efi-eepro100.rom                        palcode-clipper           s390-ccw
+bios-256k.bin                   efi-ne2k_pci.rom                        petalogix-ml605.dtb       s390-ccw.img
+bios.bin                        efi-pcnet.rom                           petalogix-ml605.dts       s390-netboot.img
+bios-microvm.bin                efi-rtl8139.rom                         petalogix-s3adsp1800.dtb  skiboot.lid
+canyonlands.dtb                 efi-virtio.rom                          petalogix-s3adsp1800.dts  slof.bin
+canyonlands.dts                 efi-vmxnet3.rom                         pvh.bin                   u-boot.e500
+descriptors                     hppa-firmware.img                       pxe-e1000.rom             u-boot-sam460-20100605.bin
+edk2-aarch64-code.fd.bz2        keymaps                                 pxe-eepro100.rom          vgabios-ati.bin
+edk2-arm-code.fd.bz2            kvmvapic.bin                            pxe-ne2k_pci.rom          vgabios.bin
+edk2-arm-vars.fd.bz2            linuxboot.bin                           pxe-pcnet.rom             vgabios-bochs-display.bin
+edk2-i386-code.fd.bz2           linuxboot_dma.bin                       pxe-rtl8139.rom           vgabios-cirrus.bin
+edk2-i386-secure-code.fd.bz2    meson.build                             pxe-virtio.rom            vgabios-qxl.bin
+edk2-i386-vars.fd.bz2           multiboot.bin                           qboot.rom                 vgabios-ramfb.bin
+edk2-licenses.txt               multiboot_dma.bin                       QEMU,cgthree.bin          vgabios-stdvga.bin
+edk2-riscv-code.fd.bz2          npcm7xx_bootrom.bin                     qemu_logo.svg             vgabios-virtio.bin
+edk2-riscv-vars.fd.bz2          openbios-ppc                            qemu-nsis.bmp             vgabios-vmware.bin
+edk2-x86_64-code.fd.bz2         openbios-sparc32                        qemu-nsis.ico             vof
+edk2-x86_64-microvm.fd.bz2      openbios-sparc64                        qemu.rsrc                 vof.bin
+edk2-x86_64-secure-code.fd.bz2  opensbi-riscv32-generic-fw_dynamic.bin  QEMU,tcx.bin              vof-nvram.bin
+efi-e1000e.rom                  opensbi-riscv64-generic-fw_dynamic.bin  qemu_vga.ndrv
+```
 
-## 1.2. 清单 2 QEMU 源码树以子模块方式保存的 BIOS 代码
+## 1.2. BIOS 子模块源码
 
 ```
 $ cat .gitmodules
-[submodule "roms/vgabios"]
-        path = roms/vgabios
-        url = git://git.qemu-project.org/vgabios.git/
 [submodule "roms/seabios"]
         path = roms/seabios
-        url = git://git.qemu-project.org/seabios.git/
+        url = https://gitlab.com/qemu-project/seabios.git/
 [submodule "roms/SLOF"]
         path = roms/SLOF
-        url = git://git.qemu-project.org/SLOF.git
+        url = https://gitlab.com/qemu-project/SLOF.git
 [submodule "roms/ipxe"]
         path = roms/ipxe
-        url = git://git.qemu-project.org/ipxe.git
+        url = https://gitlab.com/qemu-project/ipxe.git
 [submodule "roms/openbios"]
         path = roms/openbios
-        url = git://git.qemu-project.org/openbios.git
-[submodule "roms/openhackware"]
-        path = roms/openhackware
-        url = git://git.qemu-project.org/openhackware.git
+        url = https://gitlab.com/qemu-project/openbios.git
 [submodule "roms/qemu-palcode"]
         path = roms/qemu-palcode
-        url = git://github.com/rth7680/qemu-palcode.git
-[submodule "roms/sgabios"]
-        path = roms/sgabios
-        url = git://git.qemu-project.org/sgabios.git
-[submodule "dtc"]
-        path = dtc
-        url = git://git.qemu-project.org/dtc.git
+        url = https://gitlab.com/qemu-project/qemu-palcode.git
 [submodule "roms/u-boot"]
         path = roms/u-boot
-        url = git://git.qemu-project.org/u-boot.git
+        url = https://gitlab.com/qemu-project/u-boot.git
 [submodule "roms/skiboot"]
         path = roms/skiboot
-        url = git://git.qemu.org/skiboot.git
+        url = https://gitlab.com/qemu-project/skiboot.git
 [submodule "roms/QemuMacDrivers"]
         path = roms/QemuMacDrivers
-        url = git://git.qemu.org/QemuMacDrivers.git
-[submodule "ui/keycodemapdb"]
-        path = ui/keycodemapdb
-        url = git://git.qemu.org/keycodemapdb.git
-[submodule "capstone"]
-        path = capstone
-        url = git://git.qemu.org/capstone.git
+        url = https://gitlab.com/qemu-project/QemuMacDrivers.git
+[submodule "roms/seabios-hppa"]
+        path = roms/seabios-hppa
+        url = https://gitlab.com/qemu-project/seabios-hppa.git
+[submodule "roms/u-boot-sam460ex"]
+        path = roms/u-boot-sam460ex
+        url = https://gitlab.com/qemu-project/u-boot-sam460ex.git
+[submodule "roms/edk2"]
+        path = roms/edk2
+        url = https://gitlab.com/qemu-project/edk2.git
+[submodule "roms/opensbi"]
+        path = roms/opensbi
+        url =   https://gitlab.com/qemu-project/opensbi.git
+[submodule "roms/qboot"]
+        path = roms/qboot
+        url = https://gitlab.com/qemu-project/qboot.git
+[submodule "roms/vbootrom"]
+        path = roms/vbootrom
+        url = https://gitlab.com/qemu-project/vbootrom.git
+[submodule "tests/lcitool/libvirt-ci"]
+        path = tests/lcitool/libvirt-ci
+        url = https://gitlab.com/libvirt/libvirt-ci.git
 ```
 
-当我们从源代码编译 QEMU 时候, QEMU 的 Makefile 会将这些二进制文件拷贝到 QEMU 的数据文件目录中.
+当源代码编译 QEMU 时候, QEMU 的 Makefile 会将这些二进制文件拷贝到 QEMU 的数据文件目录中.
 
-## 1.3. 清单 3 QEMU 的 Makefile 中关于 BIOS 的拷贝操作
+## 1.3. Makefile 中关于 BIOS 的拷贝操作
 
 ```
 ifneq ($(BLOBS),)
@@ -95,9 +121,11 @@ endif
 
 # 2. QEMU 加载 BIOS 过程分析
 
-当 QEMU 用户空间进程开始启动时, QEMU 进程会根据所**传递的参数**以及当前**宿主机平台类型(host 类型)**, 自动加载适当的 BIOS 固件. QEMU 进程启动初始阶段, 会通过 module\_call\_init 函数调用 qemu\_register\_machine 注册**该平台支持的全部机器类型**, 接着调用 find\_default\_machine**选择一个默认的机型**进行初始化.  以 QEMU 代码(1.7.0)的 x86_64 平台为例, 支持的机器类型有:
+当 QEMU 用户空间进程开始启动时, QEMU 进程会根据所**传递的参数**以及当前**宿主机平台类型(host 类型)**, 自动加载适当的 BIOS 固件.
 
-## 2.1. 清单 4 1.7.0 版本 x86_64 QEMU 中支持的类型
+QEMU 进程启动初始阶段, 会通过 `module_call_init` 函数调用 `qemu_register_machine` 注册**该平台支持的全部机器类型**, 接着调用 `find_default_machine` **选择一个默认的机型**进行初始化.  以 QEMU 代码(1.7.0)的 x86_64 平台为例, 支持的机器类型有:
+
+## 2.1. x86_64 QEMU 中支持的类型
 
 ```
 pc-q35-1.7 pc-q35-1.6 pc-q35-1.5 pc-q35-1.4 pc-i440fx-1.7 pc-i440fx-1.6 pc-i440fx-1.5
@@ -121,7 +149,7 @@ pc-i440fx-1.7 解释为 QEMU 模拟的是 INTEL 的 i440fx 硬件芯片组, 1.7 
 
 在 QEMU 中, 整个物理内存以一个结构体 struct MemoryRegion 表示, 具体定义见清单 5.
 
-## 2.2. 清单 5 QEMU 中 MemoryRegion 结构体
+## 2.2. QEMU 中 MemoryRegion 结构体
 
 ```
 struct MemoryRegion {

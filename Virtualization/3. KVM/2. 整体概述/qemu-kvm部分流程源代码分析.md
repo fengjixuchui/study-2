@@ -4,7 +4,7 @@
 <!-- code_chunk_output -->
 
 - [1. qemu-kvm 相关程序图](#1-qemu-kvm-相关程序图)
-- [2. qemu-kvm 创建的三种文件描述符:kvm_fd, vm_fd, vcpu_fd](#2-qemu-kvm-创建的三种文件描述符kvm_fd-vm_fd-vcpu_fd)
+- [2. qemu-kvm 创建的三种文件描述符: kvm_fd, vm_fd, vcpu_fd](#2-qemu-kvm-创建的三种文件描述符-kvm_fd-vm_fd-vcpu_fd)
 - [3. qemu-kvm 虚拟设备创建流程](#3-qemu-kvm-虚拟设备创建流程)
 - [4. qemu-kvm 网络虚拟化](#4-qemu-kvm-网络虚拟化)
 - [5. qemu-kvm 网络虚拟化流程](#5-qemu-kvm-网络虚拟化流程)
@@ -25,7 +25,7 @@
 
 ![2020-02-21-15-22-28.png](./images/2020-02-21-15-22-28.png)
 
-# 2. qemu-kvm 创建的三种文件描述符:kvm_fd, vm_fd, vcpu_fd
+# 2. qemu-kvm 创建的三种文件描述符: kvm_fd, vm_fd, vcpu_fd
 
 ![2020-02-21-15-22-45.png](./images/2020-02-21-15-22-45.png)
 
