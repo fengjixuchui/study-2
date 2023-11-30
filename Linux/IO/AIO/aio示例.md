@@ -81,11 +81,11 @@ struct io_iocb_common {
 
 iocb 是提交 IO 任务时用到的, 可以完整地描述一个 IO 请求:
 
-* data 是留给用来自定义的指针: 可以设置为 IO 完成后的 callback 函数；
+* data 是留给用来自定义的指针: 可以设置为 IO 完成后的 callback 函数;
 
-* `aio_lio_opcode` 表示操作的类型: `IO_CMD_PWRITE | IO_CMD_PREAD`；
+* `aio_lio_opcode` 表示操作的类型: `IO_CMD_PWRITE | IO_CMD_PREAD`;
 
-* `aio_fildes` 是要操作的文件: fd；
+* `aio_fildes` 是要操作的文件: fd;
 
 `io_iocb_common` 中的 buf, nbytes, offset 分别记录的 IO 请求的 mem buffer, 大小和偏移.
 
@@ -100,7 +100,7 @@ struct io_event {
 
 io_event 是用来描述返回结果的:
 
-obj 就是之前提交 IO 任务时的 iocb；
+obj 就是之前提交 IO 任务时的 iocb;
 
 res 和 res2 来表示 IO 任务完成的状态.
 

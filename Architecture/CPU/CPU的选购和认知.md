@@ -4,6 +4,8 @@ bilibili AV44270790
 
 # CPU 参数的认知
 
+英特尔® 处理器名称和编号: https://www.intel.cn/content/www/cn/zh/processors/processor-numbers.html
+
 CPU 的参数主要有: 系列、核心、频率、架构、缓存
 
 ## 系列
