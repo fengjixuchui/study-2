@@ -1,4 +1,4 @@
-在文件/etc/systemd/system/getty.target.wants/getty@tty1.service 中, 将 Service 中
+在文件 `/etc/systemd/system/getty.target.wants/getty@tty1.service` 中, 将 Service 中
 
 ```
 ExecStart=-/sbin/agetty --noclear %I $TERM

@@ -19,12 +19,12 @@ function dev_exist()
 }
 
 # output a format "<domain>:<bus>:<slot>.<func>" (e.g. 0000:01:10.0) of device
-function canon() 
+function canon()
 {
 	f=`expr "$1" : '.*\.\(.\)'`
 	d=`expr "$1" : ".*:\(.*\).$f"`
 	b=`expr "$1" : "\(.*\):$d\.$f"`
-	
+
 	if [ `expr "$d" : '..'` == 0 ]
 	then
 		d=0$d
@@ -44,7 +44,7 @@ function canon()
 }
 
 # output the device ID and vendor ID
-function show_id() 
+function show_id()
 {
 	lspci -Dn -s "$1" | awk '{print $3}' | sed "s/:/ /" > /dev/null 2>&1
 	if [ $? -eq 0 ]; then
@@ -61,21 +61,21 @@ function hide_pci()
 	local pre_driver=NULL
 	local pcidev=$(canon $1)
 	local pciid=$(show_id $pcidev)
-	
+
 	dev_exist $pcidev
-	
+
 	if [ -h /sys/bus/pci/devices/"$pcidev"/driver ]; then
 		pre_driver=$(basename $(readlink /sys/bus/pci/devices/"$pcidev"/driver))
 		echo "Unbinding $pcidev from $pre_driver"
 	else
 		echo "$pcidev wasn't bound to any drirver"
 	fi
-	
+
 	echo -n "$pciid" > /sys/bus/pci/drivers/pci-stub/new_id
 	echo -n "$pcidev" > /sys/bus/pci/devices/"$pcidev"/driver/unbind
 
 	echo "Binding $pcidev to pci-stub"
-	echo -n "$pcidev" > /sys/bus/pci/drivers/pci-stub/bind    
+	echo -n "$pcidev" > /sys/bus/pci/drivers/pci-stub/bind
 	return $?
 }
 

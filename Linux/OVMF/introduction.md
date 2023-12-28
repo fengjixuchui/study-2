@@ -343,3 +343,4 @@ Haiwei: Hello world
 > qemu-system-x86_64 -name ubuntu -accel kvm -drive file=/home/ubuntu/haiwei/edk2/Build/OvmfX64/DEBUG_GCC5/FV/OVMF.fd,format=raw,if=pflash -cpu host -m 2G -smp 2 -hda /home/ubuntu/haiwei/ubuntu22.04.qcow2 -netdev user,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:36:32:aa,bus=pci.0,addr=0x5 -chardev socket,id=montest,server=on,wait=off,path=/tmp/mon_test -mon chardev=montest,mode=readline -serial mon:stdio -nographic
 
 https://zhuanlan.zhihu.com/p/107360611
+

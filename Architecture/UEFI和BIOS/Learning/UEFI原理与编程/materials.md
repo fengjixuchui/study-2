@@ -1,4 +1,6 @@
 
+2015.01
+
 读书笔记: https://www.jianshu.com/p/73ee37f6b3b9
 
 edk2 环境搭建: https://github.com/yuanzhaoming/uefi

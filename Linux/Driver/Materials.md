@@ -6,6 +6,11 @@ Linux 设备模型: http://www.wowotech.net/sort/device_model
 https://biscuitos.github.io/blog/BiscuitOS_Catalogue/
 
 
+一个设备驱动的主要任务有两个:
+
+* 存取设备的内存
+* 处理设备产生的中断
+
 《深入 linux 设备驱动程序内核机制》, 陈学松, 2012-1,
 
 《LDD》

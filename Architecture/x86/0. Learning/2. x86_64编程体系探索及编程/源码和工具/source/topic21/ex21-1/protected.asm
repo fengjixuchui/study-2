@@ -6,65 +6,65 @@
 %include "..\inc\support.inc"
 %include "..\inc\protected.inc"
 
-; ï¿½ï¿½ï¿½ï¿½ protected Ä£ï¿½ï¿½
+;  protected ?
 
         bits 32
         
         org PROTECTED_SEG - 2
 
 PROTECTED_BEGIN:
-protected_length        dw        PROTECTED_END - PROTECTED_BEGIN       ; protected Ä£ï¿½é³¤ï¿½ï¿½
+protected_length        dw        PROTECTED_END - PROTECTED_BEGIN       ; protected ??
 
 entry:
         
-;; Îªï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½é£¬ï¿½Ø±ï¿½Ê±ï¿½ï¿½ï¿½Ğ¶ÏºÍ¼ï¿½ï¿½ï¿½ï¿½Ğ¶ï¿½
+;; ?????????
         call disable_timer
         
-;; ï¿½ï¿½ï¿½ï¿½ #PF handler
+;;  #PF handler
         mov esi, PF_HANDLER_VECTOR
         mov edi, PF_handler
         call set_interrupt_handler        
 
-;; ï¿½ï¿½ï¿½ï¿½ #GP handler
+;;  #GP handler
         mov esi, GP_HANDLER_VECTOR
         mov edi, GP_handler
         call set_interrupt_handler
 
-; ï¿½ï¿½ï¿½ï¿½ #DB handler
+;  #DB handler
         mov esi, DB_HANDLER_VECTOR
         mov edi, DB_handler
         call set_interrupt_handler
 
 
-;; ï¿½ï¿½ï¿½ï¿½ sysenter/sysexit Ê¹ï¿½Ã»ï¿½ï¿½ï¿½
+;;  sysenter/sysexit ?û
         call set_sysenter
 
-;; ï¿½ï¿½ï¿½ï¿½ system_service handler
+;;  system_service handler
         mov esi, SYSTEM_SERVICE_VECTOR
         mov edi, system_service
         call set_user_interrupt_handler 
 
-; ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ SSE Ö¸ï¿½ï¿½        
+; ? SSE ?        
         mov eax, cr4
         bts eax, 9                              ; CR4.OSFXSR = 1
         bts eax, 10                             ; CR4.OSXMMEXCPT = 1
         mov cr4, eax
         
         
-;ï¿½ï¿½ï¿½ï¿½ CR4.PAE
+; CR4.PAE
         call pae_enable
         
-; ï¿½ï¿½ï¿½ï¿½ XD ï¿½ï¿½ï¿½ï¿½
+;  XD 
         call execution_disable_enable
                 
-; ï¿½ï¿½Ê¼ï¿½ï¿½ paging ï¿½ï¿½ï¿½ï¿½
+; ? paging 
         call init_pae_paging
         
-;ï¿½ï¿½ï¿½ï¿½ PDPT ï¿½ï¿½ï¿½ï¿½Ö·        
+; PDPT ?        
         mov eax, PDPT_BASE
         mov cr3, eax
                                 
-; ï¿½ò¿ª¡ï¿½paging
+; ??paging
         mov eax, cr0
         bts eax, 31
         mov cr0, eax                                 
@@ -82,29 +82,29 @@ entry:
         call disable_8259
         sti
         
-;========= ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ =================
+;========= ? =================
 
 
-;; Êµï¿½é¡¡ex21-1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½#XMï¿½ì³£handler
+;; ??ex21-1#XM?handler
 
-;; ï¿½ï¿½ï¿½ï¿½ x87 FPU ï¿½ï¿½ MMX ï¿½ï¿½ï¿½ï¿½
+;;  x87 FPU  MMX 
         mov eax, cr0
         bts eax, 1              ; MP = 1
         btr eax, 2              ; EM = 0
         mov cr0, eax
 
-; ï¿½ï¿½ï¿½ï¿½ #XM handler
+;  #XM handler
         mov esi, XM_HANDLER_VECTOR
         mov edi, xm_handler
         call set_interrupt_handler
 
         
         stmxcsr [esp]
-        and DWORD [esp], 0xe07f         ; clear mask Î»
+        and DWORD [esp], 0xe07f         ; clear mask ?
         ldmxcsr [esp]
         movups xmm0, [a]
         movups xmm1, [b]
-        addps xmm0, xmm1                ; ï¿½ï¿½ï¿½ï¿½ numeric ï¿½ì³£
+        addps xmm0, xmm1                ;  numeric ?
         jmp $
 
 a       dd 0, 0, 0, 0x76000000
@@ -113,7 +113,7 @@ b       dd 0, 0x7fa00000, 1, 0x7f7fffff
 
 
 ;-------------------------------------
-; SIMD floating-point ï¿½ì³£ handler
+; SIMD floating-point ? handler
 ;-------------------------------------
 xm_handler:
         jmp do_xm_handler
@@ -170,11 +170,11 @@ set_mxcsr:
 
         
 
-; ×ªï¿½ï¿½ long Ä£ï¿½ï¿½
+; ? long ?
         ;jmp LONG_SEG
                                 
                                 
-; ï¿½ï¿½ï¿½ï¿½ ring 3 ï¿½ï¿½ï¿½ï¿½
+;  ring 3 
         push DWORD user_data32_sel | 0x3
         push DWORD USER_ESP
         push DWORD user_code32_sel | 0x3        
@@ -182,7 +182,7 @@ set_mxcsr:
         retf
 
         
-;; ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
+;; û
 
 user_entry:
         mov ax, user_data32_sel
@@ -200,11 +200,11 @@ user_start:
 
 %define APIC_PERFMON_HANDLER
 
-;******** include ï¿½Ğ¶ï¿½ handler ï¿½ï¿½ï¿½ï¿½ ********
+;******** include ? handler  ********
 %include "..\common\handler32.asm"
 
 
-;********* include Ä£ï¿½ï¿½ ********************
+;********* include ? ********************
 %include "..\lib\creg.asm"
 %include "..\lib\cpuid.asm"
 %include "..\lib\msr.asm"
@@ -217,10 +217,10 @@ user_start:
 %include "..\lib\x87.asm"
 %include "..\lib\sse.asm"
 
-;;************* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  *****************
+;;*************   *****************
 
-; ï¿½ï¿½ï¿½ lib32 ï¿½âµ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ common\ Ä¿Â¼ï¿½Â£ï¿½
-; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ protected.asm Ä£ï¿½ï¿½Ê¹ï¿½ï¿½
+;  lib32 ? common\ ?¼£
+; ? protected.asm ??
 
 %include "..\common\lib32_import_table.imt"
 
